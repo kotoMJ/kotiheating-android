@@ -1,5 +1,5 @@
 # kotiheating-android
 
-Android client for kotiheating-arduino
+Android client for kotiheating-arduino 
 
 
