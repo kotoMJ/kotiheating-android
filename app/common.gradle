@@ -1,0 +1,62 @@
+final APK_NAME = "LegalZoom"
+
+android {
+
+	signingConfigs {
+		release {
+			// passwords and alias are obtained via askForPasswords task
+			storeFile file("../${project.property('keystore.file')}")
+			storePassword ""
+			keyAlias ""
+			keyPassword ""
+		}
+	}
+
+	applicationVariants.all {
+		variant ->
+			renameArtifact(variant, APK_NAME)
+	}
+}
+
+task askForPasswords << {
+	def storePass
+	def keyAlias
+	def keyPass
+
+	def keystorePropertiesFile = new File((String) project.property("keystore.properties"))
+
+	if(project.hasProperty("keystore.properties") && keystorePropertiesFile.exists()) {
+		println "Loading keystore passwords from property file..."
+		Properties properties = new Properties()
+		properties.load(new FileInputStream(keystorePropertiesFile))
+		storePass = properties['keystore.store.password']
+		keyAlias = properties['keystore.key.alias']
+		keyPass = properties['keystore.key.password']
+	} else {
+		println "Getting keystore passwords from user input..."
+		storePass = new String(System.console().readPassword("\nStore password: "))
+		keyAlias = new String(System.console().readLine("Key alias: "))
+		keyPass = new String(System.console().readPassword("Key password: "))
+	}
+
+	android.signingConfigs.release.storePassword = storePass
+	android.signingConfigs.release.keyAlias = keyAlias
+	android.signingConfigs.release.keyPassword = keyPass
+}
+
+
+def renameArtifact(variant, apkName) {
+	variant.outputs.all {
+		output ->
+			def date = new Date().format('yyyyMMdd')
+			outputFileName = "${apkName}-${project.name}-${variant.versionName}-${variant.versionCode}-${date}-${variant.name}.apk"
+	}
+}
+
+
+tasks.whenTaskAdded {
+	theTask ->
+		if(theTask.name.contains("Release")) {
+			theTask.dependsOn "askForPasswords"
+		}
+}

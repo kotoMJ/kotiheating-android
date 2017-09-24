@@ -1,0 +1,10 @@
+/build
+
+
+# IntelliJ
+mobile.iml
+
+# Crashlytics
+crashlytics.properties
+crashlytics-build.properties
+/mobile/fabric.properties

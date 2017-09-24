@@ -1,0 +1,25 @@
+<resources>
+
+	<!-- Base application theme. -->
+	<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+		<!-- Customize your theme here. -->
+		<item name="colorPrimary">@color/primaryColor</item>
+		<item name="colorPrimaryDark">@color/primaryDarkColor</item>
+		<item name="colorAccent">@color/secondaryColor</item>
+	</style>
+
+
+	<style name="ThemeOverlay.AppCompat.SecurityShow.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
+		<!-- Used to for the title of the Toolbar -->
+		<item name="android:textColorPrimary">@color/primaryTextColor</item>
+		<!-- Used to for the title of the Toolbar when parent is Theme.AppCompat.Light -->
+		<item name="android:textColorPrimaryInverse">@color/primaryLightColor</item>
+		<!-- Used to color the text of the action menu icons -->
+		<item name="android:textColorSecondary">@color/primaryTextColor</item>
+		<!-- Used to color the overflow menu icon -->
+		<item name="actionMenuTextColor">@color/primaryTextColor</item>
+		<!-- Color of the Toolbar -->
+		<item name="android:background">@color/primaryColor</item>
+	</style>
+
+</resources>
