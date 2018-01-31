@@ -22,4 +22,10 @@
 		<item name="android:background">@color/primaryColor</item>
 	</style>
 
+	<style name="TextAppearance.KoTiHeating.Caption" parent="@style/TextAppearance.AppCompat.Caption">
+		<item name="android:textSize">@dimen/global_text_size_caption</item>
+		<item name="android:fontFamily">sans-serif</item>
+		<item name="android:textColor">@color/global_text_caption</item>
+	</style>
+
 </resources>

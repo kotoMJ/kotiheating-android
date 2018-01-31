@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+
+	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+		android:id="@+id/circle1"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="@dimen/global_elevation_4" />
+
+	<TextView
+		android:id="@+id/text1"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:maxLines="1"
+		android:letterSpacing="@dimen/global_letter_spacing_15"
+		android:textAllCaps="true"
+		style="@style/TextAppearance.KoTiHeating.Caption" />
+
+
+	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+		android:id="@+id/circle2"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="@dimen/global_elevation_4" />
+
+	<TextView
+		android:id="@+id/text2"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:maxLines="1"
+		android:letterSpacing="@dimen/global_letter_spacing_15"
+		android:textAllCaps="true"
+		style="@style/TextAppearance.KoTiHeating.Caption" />
+
+	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+		android:id="@+id/circle3"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="@dimen/global_elevation_4" />
+
+	<TextView
+		android:id="@+id/text3"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:maxLines="1"
+		android:textAllCaps="true"
+		android:letterSpacing="@dimen/global_letter_spacing_15"
+		style="@style/TextAppearance.KoTiHeating.Caption" />
+
+	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+		android:id="@+id/circle4"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="@dimen/global_elevation_4" />
+
+	<TextView
+		android:id="@+id/text4"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:maxLines="1"
+		android:textAllCaps="true"
+		android:letterSpacing="@dimen/global_letter_spacing_15"
+		style="@style/TextAppearance.KoTiHeating.Caption" />
+
+	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+		android:id="@+id/circle5"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="@dimen/global_elevation_4" />
+
+	<TextView
+		android:id="@+id/text5"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:maxLines="1"
+		android:textAllCaps="true"
+		android:letterSpacing="@dimen/global_letter_spacing_15"
+		style="@style/TextAppearance.KoTiHeating.Caption" />
+
+	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+		android:id="@+id/circle6"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="@dimen/global_elevation_4" />
+
+	<TextView
+		android:id="@+id/text6"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:maxLines="1"
+		android:textAllCaps="true"
+		android:letterSpacing="@dimen/global_letter_spacing_15"
+		style="@style/TextAppearance.KoTiHeating.Caption" />
+
+	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+		android:id="@+id/circle7"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="@dimen/global_elevation_4" />
+
+	<TextView
+		android:id="@+id/text7"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:maxLines="1"
+		android:textAllCaps="true"
+		android:letterSpacing="@dimen/global_letter_spacing_15"
+		style="@style/TextAppearance.KoTiHeating.Caption" />
+
+	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+		android:id="@+id/circle8"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="@dimen/global_elevation_4" />
+
+	<TextView
+		android:id="@+id/text8"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="end"
+		android:maxLines="1"
+		android:letterSpacing="@dimen/global_letter_spacing_15"
+		android:textAllCaps="true"
+		style="@style/TextAppearance.KoTiHeating.Caption" />
+</FrameLayout>
