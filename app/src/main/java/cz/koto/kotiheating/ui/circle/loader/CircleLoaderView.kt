@@ -46,8 +46,8 @@ internal class CircleLoaderView : View {
 
 	// Head and tail paints are used to properly draw arc ends, that is, the beginning shouldn't be rounded
 	// but the end should. So we create a head of #headAngle degrees in order to achieve this behavior.
-	private var backCirclePaintHead: Paint? = null
-	private var backCirclePaintTail: Paint? = null
+	private var circlePaintHead: Paint? = null
+	private var circlePaintTail: Paint? = null
 	private var currentAngle: Float = 0.toFloat()
 
 	private var endAngle: Float = 0f
@@ -108,15 +108,15 @@ internal class CircleLoaderView : View {
 	private fun drawInitBackground(canvas: Canvas, centerPoint: PointF) {
 		val startBackgroundAngel = -90f
 		val endBackgroundAngel = 90f
-		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel, headAngle, backCirclePaintHead!!)
-		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel + headAngle, endBackgroundAngel - headAngle, backCirclePaintTail!!)
+		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel, headAngle, circlePaintHead!!)
+		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel + headAngle, endBackgroundAngel - headAngle, circlePaintTail!!)
 	}
 
 	private fun drawCompleteBackground(canvas: Canvas, centerPoint: PointF) {
 		val startBackgroundAngel = -90f
 		val endBackgroundAngel = 270f
-		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel, headAngle, backCirclePaintHead!!)
-		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel + headAngle, endBackgroundAngel - headAngle, backCirclePaintTail!!)
+		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel, headAngle, circlePaintHead!!)
+		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel + headAngle, endBackgroundAngel - headAngle, circlePaintTail!!)
 	}
 
 	override fun onDraw(canvas: Canvas) {
@@ -131,7 +131,7 @@ internal class CircleLoaderView : View {
 
 		when (drawAction) {
 			DrawAction.CLEAN_VIEW -> onDrawCleanView()
-			DrawAction.ANIMATE_STATIC -> onDrawAnimateBackground(canvas, centerPoint)
+			DrawAction.ANIMATE_STATIC -> onDrawAnimateStatic(canvas, centerPoint)
 			else -> log(">>> Unimplemented draw action ${drawAction}")
 		}
 
@@ -139,16 +139,16 @@ internal class CircleLoaderView : View {
 	}
 
 	private fun onDrawCleanView() {
-		backCirclePaintHead?.alpha = 0
-		backCirclePaintTail?.alpha = 0
+		circlePaintHead?.alpha = 0
+		circlePaintTail?.alpha = 0
 		drawAction = DrawAction.NONE
 	}
 
 
-	private fun onDrawAnimateBackground(canvas: Canvas, centerPoint: PointF) {
-		val startBackgroundAngel = 0f
-		val endBackgroundAngel = 180f
-		endAngle = endBackgroundAngel
+	private fun onDrawAnimateStatic(canvas: Canvas, centerPoint: PointF) {
+		val startAngel = 0f
+		val endAngel = 180f
+		endAngle = endAngel
 
 		if (animationStartTime == 0.toLong()) {
 			animationStartTime = System.currentTimeMillis()
@@ -156,11 +156,11 @@ internal class CircleLoaderView : View {
 
 		drawInitBackground(canvas, centerPoint)
 
-		val inBounds = animateOnDisplay && currentFrameAngle < endBackgroundAngel
+		val inBounds = animateOnDisplay && currentFrameAngle < endAngel
 
-		val sweepAngleBack = if (inBounds) currentFrameAngle else endBackgroundAngel
-		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel, maxOf(sweepAngleBack, headAngle), backCirclePaintHead!!, 360, true)
-		ArcUtils.drawArc(canvas, centerPoint, radius, startBackgroundAngel + headAngle, maxOf(sweepAngleBack - headAngle, 0f), backCirclePaintTail!!, 360, true)
+		val sweepAngleBack = if (inBounds) currentFrameAngle else endAngel
+		ArcUtils.drawArc(canvas, centerPoint, radius, startAngel, maxOf(sweepAngleBack, headAngle), circlePaintHead!!, 360, true)
+		ArcUtils.drawArc(canvas, centerPoint, radius, startAngel + headAngle, maxOf(sweepAngleBack - headAngle, 0f), circlePaintTail!!, 360, true)
 
 		if (inBounds) {
 			invalidate()
@@ -220,14 +220,7 @@ internal class CircleLoaderView : View {
 	}
 
 	private fun computeEndAngle(): Float {
-//		val totalLength = endValue - startValue
-//		val pathGone = currentValue - startValue
-//		val v = pathGone.toFloat() / totalLength
-//		if (paintBackgroundOnly()) {
 			endAngle = 270f
-//		} else {
-//			endAngle = (maxAngle * v)
-//		}
 		return endAngle
 	}
 
@@ -237,16 +230,16 @@ internal class CircleLoaderView : View {
 	}
 
 	private fun setupBackCirclePaint() {
-		backCirclePaintHead = Paint()
-		backCirclePaintHead!!.color = backCircleColor
-		backCirclePaintHead!!.style = Paint.Style.STROKE
-		backCirclePaintHead!!.strokeWidth = strokeWidth
+		circlePaintHead = Paint()
+		circlePaintHead!!.color = backCircleColor
+		circlePaintHead!!.style = Paint.Style.STROKE
+		circlePaintHead!!.strokeWidth = strokeWidth
 
-		backCirclePaintTail = Paint()
-		backCirclePaintTail!!.color = backCircleColor
-		backCirclePaintTail!!.style = Paint.Style.STROKE
-		backCirclePaintTail!!.strokeCap = Paint.Cap.ROUND
-		backCirclePaintTail!!.strokeWidth = strokeWidth
+		circlePaintTail = Paint()
+		circlePaintTail!!.color = backCircleColor
+		circlePaintTail!!.style = Paint.Style.STROKE
+		circlePaintTail!!.strokeCap = Paint.Cap.ROUND
+		circlePaintTail!!.strokeWidth = strokeWidth
 	}
 
 	fun setOnCircleAnimationListener(l: OnCircleAnimationListener) {

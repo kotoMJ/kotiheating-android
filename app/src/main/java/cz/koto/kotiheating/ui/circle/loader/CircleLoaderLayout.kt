@@ -97,10 +97,7 @@ class CircleLoaderLayout : FrameLayout {
 
 	private fun calculateLayout(context: Context, maxRadius: Float) {
 		cleanUpLayout()
-		for (i in 0 until animItemsCount) {
-			val orderView = findViewById<CircleLoaderView>(orderViewsIds[i])
-			orderViews.add(orderView)
-		}
+		(0 until animItemsCount).mapTo(orderViews) { findViewById<CircleLoaderView>(orderViewsIds[it]) }
 		val circleSeparation = maxRadius * CIRCLE_SEPARATION_FACTOR
 		orderViews.forEachIndexed { index, orderStatusView ->
 			if (index >= animItemsCount) return
@@ -125,7 +122,7 @@ class CircleLoaderLayout : FrameLayout {
 	}
 
 	private fun animateCalculatedLayout() {
-		orderViews.forEachIndexed { index, orderStatusView ->
+		orderViews.forEachIndexed { _, orderStatusView ->
 			orderStatusView.animateStatic()
 		}
 	}

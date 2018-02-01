@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity(), MainView {
 				}
 			}
 		})
-//		vmb.binding.orderStatus.animateLayout()
 	}
 
 	override fun animateOrderStatus() {
