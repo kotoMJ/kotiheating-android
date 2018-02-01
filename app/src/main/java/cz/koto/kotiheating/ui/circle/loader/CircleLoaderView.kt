@@ -40,8 +40,6 @@ internal class CircleLoaderView : View {
 	private var animationDuration: Int = 0
 	private var backCircleColor: Int = 0
 
-	private var animateOnDisplay: Boolean = false
-
 	private var animationSpeed: Float = 0f
 
 	// Head and tail paints are used to properly draw arc ends, that is, the beginning shouldn't be rounded
@@ -52,8 +50,6 @@ internal class CircleLoaderView : View {
 
 	private var endAngle: Float = 0f
 	private var animationStartTime: Long = 0
-
-	private val maxAngle: Float = 270f
 
 	private var radius: Float = 0f
 
@@ -161,7 +157,6 @@ internal class CircleLoaderView : View {
 
 		val arcsPointsOnCircle = 360
 		val arcsOverlayPoints = true
-		var sweepAngleP = 0f
 
 		if (animationStartTime == 0.toLong()) {
 			animationStartTime = System.currentTimeMillis()
@@ -169,18 +164,15 @@ internal class CircleLoaderView : View {
 
 		//drawCompleteBackground(canvas, centerPoint)
 
-		val inBounds = animateOnDisplay && currentFrameAngle < endAngle
+		val inBounds = currentFrameAngle < endAngle
 
 
 		val sweepAngleRuntime = if (inBounds) currentFrameAngle else endAngle
 
-		//sweepAngleP = maxOf(sweepAngleRuntime, headAngle)
-		//ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngleP, circlePaintHead!!, arcsPointsOnCircle, arcsOverlayPoints) //sharp path
 
-
-		sweepAngleP = maxOf(sweepAngleRuntime, 0f)
-		log("sweepAngleP=$sweepAngleP, sweepAngleRuntime=$sweepAngleRuntime, currentFrameAngle=$currentFrameAngle, startAngle=$startAngle")
-		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngleP, circlePaintTail!!, arcsPointsOnCircle, arcsOverlayPoints) // soft path
+		val startAngleP = if (currentFrameAngle > 90) currentFrameAngle - 90 else startAngle
+		log("sweepAngleRuntime=$sweepAngleRuntime, currentFrameAngle=$currentFrameAngle, startAngle=$startAngle, startAngleP=$startAngleP")
+		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleP, sweepAngleRuntime, circlePaintTail!!, arcsPointsOnCircle, arcsOverlayPoints)
 
 
 
@@ -193,7 +185,6 @@ internal class CircleLoaderView : View {
 
 	fun animateStatic() {
 		drawAction = DrawAction.ANIMATE_STATIC
-		animateOnDisplay = true
 		currentAngle = 0f
 		animationStartTime = 0
 		invalidate()
@@ -207,17 +198,11 @@ internal class CircleLoaderView : View {
 
 	private fun readAttributesAndSetupFields(attrs: TypedArray) {
 		applyAttributes(attrs)
-
-		computeEndAngle()
-
 		setAnimationSpeed()
-
 	}
 
 	private fun applyAttributes(a: TypedArray) {
 		startValue = a.getInt(R.styleable.ProgressCircleLayout_startValue, 0)
-
-		animateOnDisplay = a.getBoolean(R.styleable.ProgressCircleLayout_animateOnDisplay, true)
 
 		animationDuration = a.getInt(R.styleable.ProgressCircleLayout_animationDuration, DEFAULT_ANIMATION_TIME)
 
@@ -239,11 +224,6 @@ internal class CircleLoaderView : View {
 		val seconds = animationDuration.toFloat() / 1000
 		val i = (seconds * 60).toInt()
 		animationSpeed = endAngle / i
-	}
-
-	private fun computeEndAngle(): Float {
-		endAngle = 270f
-		return endAngle
 	}
 
 
