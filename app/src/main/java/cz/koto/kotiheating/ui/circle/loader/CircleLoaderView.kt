@@ -40,7 +40,6 @@ internal class CircleLoaderView : View {
 	private var animationDuration: Int = 0
 	private var backCircleColor: Int = 0
 
-	private var animationSpeed: Float = 0f
 
 	// Head and tail paints are used to properly draw arc ends, that is, the beginning shouldn't be rounded
 	// but the end should. So we create a head of #headAngle degrees in order to achieve this behavior.
@@ -73,7 +72,7 @@ internal class CircleLoaderView : View {
 //					listener?.onCircleAnimation(getCurrentAnimationFrameValue(1.0f), currentValue)
 //				}
 			}
-
+			log("currentAngle=$currentAngle")
 			return currentAngle
 		}
 
@@ -152,7 +151,7 @@ internal class CircleLoaderView : View {
 
 	private fun onDrawAnimateStatic(canvas: Canvas, centerPoint: PointF) {
 		val startAngle = 0f
-		val endAngle = 180f
+		val endAngle = 360f
 
 		val sweepBoundaryAngle = 90f
 		this.endAngle = endAngle
@@ -168,13 +167,14 @@ internal class CircleLoaderView : View {
 
 		val inBounds = currentFrameAngle < endAngle
 
+		//log("currentFrameAngle=$currentFrameAngle, startAngle=$startAngle")
 
 		val sweepAngleRuntime = if (currentFrameAngle < sweepBoundaryAngle) currentFrameAngle else sweepBoundaryAngle
 		val startAngleP = if (currentFrameAngle > sweepBoundaryAngle) currentFrameAngle - sweepBoundaryAngle else startAngle
-		log("sweepAngleRuntime=$sweepAngleRuntime, currentFrameAngle=$currentFrameAngle, startAngle=$startAngle, startAngleP=$startAngleP")
 		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleP, sweepAngleRuntime, circlePaintTail!!, arcsPointsOnCircle, arcsOverlayPoints)
 
 
+		//log("sweepAngleRuntime=$sweepAngleRuntime, startAngleP=$startAngleP")
 
 		if (inBounds) {
 			invalidate()
@@ -198,7 +198,6 @@ internal class CircleLoaderView : View {
 
 	private fun readAttributesAndSetupFields(attrs: TypedArray) {
 		applyAttributes(attrs)
-		setAnimationSpeed()
 	}
 
 	private fun applyAttributes(a: TypedArray) {
@@ -218,12 +217,6 @@ internal class CircleLoaderView : View {
 		} else {
 			backCircleColor = Color.parseColor("#EBF0F6")
 		}
-	}
-
-	private fun setAnimationSpeed() {
-		val seconds = animationDuration.toFloat() / 1000
-		val i = (seconds * 60).toInt()
-		animationSpeed = endAngle / i
 	}
 
 
