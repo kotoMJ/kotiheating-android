@@ -6,6 +6,9 @@
 			name="viewModel"
 			type="cz.koto.kotiheating.MainViewModel" />
 
+		<variable
+			name="view"
+			type="cz.koto.kotiheating.MainView" />
 	</data>
 	<android.support.constraint.ConstraintLayout
 		xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,6 +28,7 @@
 		<!--android:layout_marginTop="8dp"-->
 		<!--android:layout_marginStart="8dp"-->
 		<!--android:layout_marginEnd="8dp"-->
+		<!--android:onClick="@{()-> view.animateOrderStatus()}"-->
 		<!--app:animItems="@{viewModel.circleItems}"-->
 		<!--app:completeColor="@{@color/global_text_caption}"-->
 		<!--app:uncompleteColor="@{@color/global_text_tertiary}"-->
@@ -42,6 +46,7 @@
 			android:layout_marginTop="8dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
+			android:onClick="@{()-> view.animateOrderStatus()}"
 			app:animItems="@{viewModel.circleItems}"
 			app:completeColor="@{@color/global_text_caption}"
 			app:uncompleteColor="@{@color/global_text_tertiary}"

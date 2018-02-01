@@ -10,7 +10,7 @@ import com.legalzoom.kollaborate.base.ui.ordersview.CircleAnimItem
 import cz.koto.kotiheating.common.vmb
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainView {
 
 	private val vmb by vmb<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
 		MainViewModel()
@@ -30,11 +30,14 @@ class MainActivity : AppCompatActivity() {
 //		vmb.binding.orderStatus.animateLayout()
 	}
 
-	fun animateOrderStatus() {
-		//vmb.binding.orderStatus.animateLayout()
+	override fun animateOrderStatus() {
+		vmb.binding.orderStatus.animateLayout()
 	}
 }
 
+interface MainView {
+	fun animateOrderStatus()
+}
 class MainViewModel : ViewModel() {
 
 	var circleItems = ObservableArrayList<CircleAnimItem>()

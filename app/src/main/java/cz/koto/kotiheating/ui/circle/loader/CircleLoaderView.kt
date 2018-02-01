@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
-import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -22,9 +21,7 @@ internal class CircleLoaderView : View {
 	enum class DrawAction {
 		NONE,
 		CLEAN_VIEW,
-		BACKGROUND_INIT,
-		BACKGROUND_ANIMATE,
-		FOREGROUND_ANIMATE
+		ANIMATE_STATIC
 	}
 
 	companion object {
@@ -43,7 +40,6 @@ internal class CircleLoaderView : View {
 	private var defaultStrokeWidth: Float = 0f
 	private var animationDuration: Int = 0
 	private var backCircleColor: Int = 0
-	private var foregroundCircleColor: Int = 0
 
 	private var animateOnDisplay: Boolean = false
 
@@ -53,8 +49,6 @@ internal class CircleLoaderView : View {
 	// but the end should. So we create a head of #headAngle degrees in order to achieve this behavior.
 	private var backCirclePaintHead: Paint? = null
 	private var backCirclePaintTail: Paint? = null
-	private var foregroundCirclePaintHead: Paint? = null
-	private var foregroundCirclePaintTail: Paint? = null
 	private var currentAngle: Float = 0.toFloat()
 
 	private var endAngle: Float = 0f
@@ -76,15 +70,14 @@ internal class CircleLoaderView : View {
 
 			if (pathGone < 1.0f) {
 				currentAngle = endAngle * interpolatedPathGone
-				if (drawAction == DrawAction.FOREGROUND_ANIMATE) {
-					listener?.onCircleAnimation(getCurrentAnimationFrameValue(interpolatedPathGone), currentValue)
-				}
+//				if (drawAction == DrawAction.FOREGROUND_ANIMATE) {
+//					listener?.onCircleAnimation(getCurrentAnimationFrameValue(interpolatedPathGone), currentValue)
+//				}
 			} else {
 				currentAngle = endAngle
-				if (drawAction == DrawAction.FOREGROUND_ANIMATE) {
-					listener?.onCircleAnimation(getCurrentAnimationFrameValue(1.0f), currentValue)
-				}
-
+//				if (drawAction == DrawAction.FOREGROUND_ANIMATE) {
+//					listener?.onCircleAnimation(getCurrentAnimationFrameValue(1.0f), currentValue)
+//				}
 			}
 
 			return currentAngle
@@ -108,7 +101,6 @@ internal class CircleLoaderView : View {
 		interpolator = AccelerateDecelerateInterpolator()
 		radius = customRadius
 		defaultStrokeWidth = customStrokeWidth
-		foregroundCircleColor = ContextCompat.getColor(context, customForegroundCircleColorRes)
 		endValue = customEndValue
 		currentValue = customCurrentValue
 		readAttributesAndSetupFields(attrs)
@@ -147,9 +139,7 @@ internal class CircleLoaderView : View {
 
 		when (drawAction) {
 			DrawAction.CLEAN_VIEW -> onDrawCleanView()
-			DrawAction.FOREGROUND_ANIMATE -> onDrawAnimateForeground(canvas, centerPoint)
-			DrawAction.BACKGROUND_ANIMATE -> onDrawAnimateBackground(canvas, centerPoint)
-			DrawAction.BACKGROUND_INIT -> onDrawInitBackground(canvas, centerPoint)
+			DrawAction.ANIMATE_STATIC -> onDrawAnimateBackground(canvas, centerPoint)
 			else -> log(">>> Unimplemented draw action ${drawAction}")
 		}
 
@@ -159,15 +149,9 @@ internal class CircleLoaderView : View {
 	private fun onDrawCleanView() {
 		backCirclePaintHead?.alpha = 0
 		backCirclePaintTail?.alpha = 0
-		foregroundCirclePaintHead?.alpha = 0
-		foregroundCirclePaintTail?.alpha = 0
 		drawAction = DrawAction.NONE
 	}
 
-	private fun onDrawInitBackground(canvas: Canvas, centerPoint: PointF) {
-		drawInitBackground(canvas, centerPoint)
-		drawAction = DrawAction.NONE
-	}
 
 	private fun onDrawAnimateBackground(canvas: Canvas, centerPoint: PointF) {
 		val startBackgroundAngel = 0f
@@ -193,71 +177,11 @@ internal class CircleLoaderView : View {
 		}
 	}
 
-	private fun onDrawAnimateForeground(canvas: Canvas, centerPoint: PointF) {
-
-		val startForegroundAngel = -90f
-		val endForegroundAngel = computeEndAngle()
-
-		if (animationStartTime == 0.toLong()) {
-			animationStartTime = System.currentTimeMillis()
-		}
-
-		drawCompleteBackground(canvas, centerPoint)
-
-
-		val circlePercentDone = (currentFrameAngle * 100 / endForegroundAngel).toInt()
-		val onePercentFromAlphaScale = 2.55
-		val currentAlpha = (circlePercentDone * onePercentFromAlphaScale).toInt()
-
-		if (paintBackgroundOnly()) {
-			foregroundCirclePaintHead?.alpha = 0
-			foregroundCirclePaintTail?.alpha = 0
-		} else {
-			// When animation starts, one can see the head of the arc and can notice that there are
-			// different alphas. Multiplying the alpha for the head will fade away this behavior a little.
-			foregroundCirclePaintHead?.alpha = minOf(currentAlpha * 3, 255)
-			foregroundCirclePaintTail?.alpha = currentAlpha
-		}
-
-		val circlePercentDoneBack = (currentFrameAngle * 100 / maxAngle).toInt()
-		val currentAlphaBack = (100/*circlePercentDoneBack*/ * onePercentFromAlphaScale).toInt()
-
-		backCirclePaintHead?.alpha = currentAlphaBack
-		backCirclePaintTail?.alpha = currentAlphaBack
-
-
-		val sweepAngle = if (animateOnDisplay) currentFrameAngle else endForegroundAngel
-		ArcUtils.drawArc(canvas, centerPoint, radius, startForegroundAngel, maxOf(sweepAngle, headAngle), foregroundCirclePaintHead!!, 360, true)
-		ArcUtils.drawArc(canvas, centerPoint, radius, startForegroundAngel + headAngle, maxOf(sweepAngle - headAngle, 0f), foregroundCirclePaintTail!!, 360, true)
-
-
-		val inBounds = animateOnDisplay && currentFrameAngle < endForegroundAngel
-		if (inBounds) {
-			invalidate()
-		} else {
-			drawAction = DrawAction.NONE
-		}
-	}
-
-	fun showBackgroundInit() {
-		drawAction = DrawAction.BACKGROUND_INIT
-		invalidate()
-	}
-
-	fun animateBackground() {
-		drawAction = DrawAction.BACKGROUND_ANIMATE
+	fun animateStatic() {
+		drawAction = DrawAction.ANIMATE_STATIC
 		animateOnDisplay = true
 		currentAngle = 0f
 		animationStartTime = 0
-		invalidate()
-	}
-
-	fun animateForeground() {
-		drawAction = DrawAction.FOREGROUND_ANIMATE
-		animateOnDisplay = true
-		currentAngle = 0f
-		animationStartTime = 0
-		computeEndAngle()
 		invalidate()
 	}
 
@@ -274,7 +198,6 @@ internal class CircleLoaderView : View {
 
 		setAnimationSpeed()
 
-		logme()
 	}
 
 	private fun applyAttributes(a: TypedArray) {
@@ -316,32 +239,9 @@ internal class CircleLoaderView : View {
 		return endAngle
 	}
 
-	private fun logme() {
-		log("readAttributesAndSetupFields: start value " + startValue)
-		log("readAttributesAndSetupFields: current value " + currentValue)
-		log("readAttributesAndSetupFields: end value " + endValue)
-		log("readAttributesAndSetupFields: end angle " + endAngle)
-		log("readAttributesAndSetupFields: animation speed " + animationSpeed)
-		log("readAttributesAndSetupFields: animation time " + animationDuration)
-	}
 
 	private fun setupPaint() {
 		setupBackCirclePaint()
-
-		setupFrontCirclePaint()
-	}
-
-	private fun setupFrontCirclePaint() {
-		foregroundCirclePaintHead = Paint()
-		foregroundCirclePaintHead!!.color = foregroundCircleColor
-		foregroundCirclePaintHead!!.style = Paint.Style.STROKE
-		foregroundCirclePaintHead!!.strokeWidth = strokeWidth
-
-		foregroundCirclePaintTail = Paint()
-		foregroundCirclePaintTail!!.color = foregroundCircleColor
-		foregroundCirclePaintTail!!.style = Paint.Style.STROKE
-		foregroundCirclePaintTail!!.strokeCap = Paint.Cap.ROUND
-		foregroundCirclePaintTail!!.strokeWidth = strokeWidth
 	}
 
 	private fun setupBackCirclePaint() {
