@@ -33,7 +33,6 @@ internal class CircleLoaderView : View {
 
 
 	private var startValue: Int = 0
-	private var currentValue: Int = 0
 	private var endValue: Int = 0
 
 	private var strokeWidth: Float = 0f
@@ -95,22 +94,15 @@ internal class CircleLoaderView : View {
 			 attrs: TypedArray,
 			 customRadius: Float,
 			 customStrokeWidth: Float,
-			 customForegroundCircleColorRes: Int,
-			 customEndValue: Int,
-			 customCurrentValue: Int) {
+			 customEndValue: Int) {
 		interpolator = AccelerateDecelerateInterpolator()
 		radius = customRadius
 		defaultStrokeWidth = customStrokeWidth
 		endValue = customEndValue
-		currentValue = customCurrentValue
 		readAttributesAndSetupFields(attrs)
 
 		setupPaint()
 		initialized = true
-	}
-
-	private fun paintBackgroundOnly(): Boolean {
-		return (currentValue == 0)
 	}
 
 	private fun drawInitBackground(canvas: Canvas, centerPoint: PointF) {
@@ -228,14 +220,14 @@ internal class CircleLoaderView : View {
 	}
 
 	private fun computeEndAngle(): Float {
-		val totalLength = endValue - startValue
-		val pathGone = currentValue - startValue
-		val v = pathGone.toFloat() / totalLength
-		if (paintBackgroundOnly()) {
+//		val totalLength = endValue - startValue
+//		val pathGone = currentValue - startValue
+//		val v = pathGone.toFloat() / totalLength
+//		if (paintBackgroundOnly()) {
 			endAngle = 270f
-		} else {
-			endAngle = (maxAngle * v)
-		}
+//		} else {
+//			endAngle = (maxAngle * v)
+//		}
 		return endAngle
 	}
 
@@ -264,10 +256,6 @@ internal class CircleLoaderView : View {
 
 	fun setInterpolator(i: Interpolator) {
 		interpolator = i
-	}
-
-	private fun getCurrentAnimationFrameValue(interpolatedPathGone: Float): Int {
-		return Math.round((currentValue - startValue) * interpolatedPathGone) + startValue
 	}
 
 }

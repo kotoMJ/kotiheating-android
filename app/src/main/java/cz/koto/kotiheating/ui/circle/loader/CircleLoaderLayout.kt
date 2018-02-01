@@ -3,7 +3,6 @@ package com.legalzoom.kollaborate.base.ui.ordersview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
-import android.databinding.ObservableArrayList
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Interpolator
@@ -34,17 +33,8 @@ class CircleLoaderLayout : FrameLayout {
 	var completeColor: Int? = null
 	var uncompleteColor: Int? = null
 
-	var animItems = ObservableArrayList<CircleAnimItem>()
+	private var animItemsCount = 8
 
-	init {
-		animItems.add(CircleAnimItem("A", R.color.order_status_color_1, 100))
-		animItems.add(CircleAnimItem("B", R.color.order_status_color_2, 80))
-		animItems.add(CircleAnimItem("C", R.color.order_status_color_3, 60))
-		animItems.add(CircleAnimItem("D", R.color.order_status_color_4, 40))
-		animItems.add(CircleAnimItem("E", R.color.order_status_color_5, 60))
-		animItems.add(CircleAnimItem("F", R.color.order_status_color_6, 100))
-		animItems.add(CircleAnimItem("G", R.color.order_status_color_7, 80))
-	}
 
 	constructor(context: Context) : super(context)
 
@@ -107,16 +97,16 @@ class CircleLoaderLayout : FrameLayout {
 
 	private fun calculateLayout(context: Context, maxRadius: Float) {
 		cleanUpLayout()
-		for (i in 0 until animItems.size) {
+		for (i in 0 until animItemsCount) {
 			val orderView = findViewById<CircleLoaderView>(orderViewsIds[i])
 			orderViews.add(orderView)
 		}
 		val circleSeparation = maxRadius * CIRCLE_SEPARATION_FACTOR
 		orderViews.forEachIndexed { index, orderStatusView ->
-			if (index >= animItems.count()) return
+			if (index >= animItemsCount) return
 			val radius = maxRadius - (circleSeparation * index)
-			orderStatusView.init(context, attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, animItems[index].colorResId,
-					100, animItems[index].progress)
+			orderStatusView.init(context, attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR,
+					100)
 
 		}
 	}
