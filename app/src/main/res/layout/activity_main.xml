@@ -47,7 +47,6 @@
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:onClick="@{()-> view.animateOrderStatus()}"
-			app:animItems="@{viewModel.circleItems}"
 			app:completeColor="@{@color/global_text_caption}"
 			app:uncompleteColor="@{@color/global_text_tertiary}"
 			app:layout_constraintBottom_toBottomOf="parent"

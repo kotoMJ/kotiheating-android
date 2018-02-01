@@ -3,6 +3,7 @@ package com.legalzoom.kollaborate.base.ui.ordersview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
+import android.databinding.ObservableArrayList
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Interpolator
@@ -29,9 +30,21 @@ class CircleLoaderLayout : FrameLayout {
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
-	lateinit var animItems: List<CircleAnimItem>
+
 	var completeColor: Int? = null
 	var uncompleteColor: Int? = null
+
+	var animItems = ObservableArrayList<CircleAnimItem>()
+
+	init {
+		animItems.add(CircleAnimItem("A", R.color.order_status_color_1, 100))
+		animItems.add(CircleAnimItem("B", R.color.order_status_color_2, 80))
+		animItems.add(CircleAnimItem("C", R.color.order_status_color_3, 60))
+		animItems.add(CircleAnimItem("D", R.color.order_status_color_4, 40))
+		animItems.add(CircleAnimItem("E", R.color.order_status_color_5, 60))
+		animItems.add(CircleAnimItem("F", R.color.order_status_color_6, 100))
+		animItems.add(CircleAnimItem("G", R.color.order_status_color_7, 80))
+	}
 
 	constructor(context: Context) : super(context)
 
