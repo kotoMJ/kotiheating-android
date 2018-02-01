@@ -54,7 +54,6 @@ internal class CircleLoaderView : View {
 	private var animationStartTime: Long = 0
 
 	private val maxAngle: Float = 270f
-	private val headAngle: Float = 5f
 
 	private var radius: Float = 0f
 
@@ -105,29 +104,29 @@ internal class CircleLoaderView : View {
 		initialized = true
 	}
 
-	private fun drawInitBackground(canvas: Canvas, centerPoint: PointF) {
-		var startAngle = -90f
-		val endAngle = 90f
-
-		var sweepAngle = headAngle
-		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintHead!!)//sharp head
-
-		startAngle += headAngle
-		sweepAngle = endAngle - headAngle
-		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintTail!!)//body
-	}
-
-	private fun drawCompleteBackground(canvas: Canvas, centerPoint: PointF) {
-		var startAngle = -90f
-		val endAngle = 270f
-
-		var sweepAngle = headAngle
-		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintHead!!)//sharp head
-
-		startAngle += headAngle
-		sweepAngle = endAngle - headAngle
-		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintTail!!)//body
-	}
+//	private fun drawInitBackground(canvas: Canvas, centerPoint: PointF) {
+//		var startAngle = -90f
+//		val endAngle = 90f
+//
+//		var sweepAngle = headAngle
+//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintHead!!)//sharp head
+//
+//		startAngle += headAngle
+//		sweepAngle = endAngle - headAngle
+//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintTail!!)//body
+//	}
+//
+//	private fun drawCompleteBackground(canvas: Canvas, centerPoint: PointF) {
+//		var startAngle = -90f
+//		val endAngle = 270f
+//
+//		var sweepAngle = headAngle
+//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintHead!!)//sharp head
+//
+//		startAngle += headAngle
+//		sweepAngle = endAngle - headAngle
+//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintTail!!)//body
+//	}
 
 	override fun onDraw(canvas: Canvas) {
 		super.onDraw(canvas)
@@ -160,33 +159,33 @@ internal class CircleLoaderView : View {
 		val endAngle = 180f
 		this.endAngle = endAngle
 
+		val arcsPointsOnCircle = 360
+		val arcsOverlayPoints = true
+		var sweepAngleP = 0f
+
 		if (animationStartTime == 0.toLong()) {
 			animationStartTime = System.currentTimeMillis()
 		}
 
-		drawCompleteBackground(canvas, centerPoint)
+		//drawCompleteBackground(canvas, centerPoint)
 
 		val inBounds = animateOnDisplay && currentFrameAngle < endAngle
 
 
-		log("currentFrameAngle=${currentFrameAngle}")
+		val sweepAngleRuntime = if (inBounds) currentFrameAngle else endAngle
 
-//		val sweepAngleRuntime = if (inBounds) currentFrameAngle else endAngle
-//
-//		var sweepAngleP = maxOf(sweepAngleRuntime, headAngle)
-//		val arcsPointsOnCircle = 360
-//		val arcsOverlayPoints = true
-//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngleP, circlePaintHead!!, arcsPointsOnCircle, arcsOverlayPoints)
-//
-//
-//		val startAngleP = startAngle + headAngle
-//		sweepAngleP = maxOf(sweepAngleRuntime - headAngle, 0f)
-//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleP, sweepAngleP, circlePaintTail!!, arcsPointsOnCircle, arcsOverlayPoints)
+		//sweepAngleP = maxOf(sweepAngleRuntime, headAngle)
+		//ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngleP, circlePaintHead!!, arcsPointsOnCircle, arcsOverlayPoints) //sharp path
+
+
+		sweepAngleP = maxOf(sweepAngleRuntime, 0f)
+		log("sweepAngleP=$sweepAngleP, sweepAngleRuntime=$sweepAngleRuntime, currentFrameAngle=$currentFrameAngle, startAngle=$startAngle")
+		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngleP, circlePaintTail!!, arcsPointsOnCircle, arcsOverlayPoints) // soft path
 
 
 
 		if (inBounds) {
-			//invalidate()
+			invalidate()
 		} else {
 			drawAction = DrawAction.NONE
 		}
