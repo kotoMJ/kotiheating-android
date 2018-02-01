@@ -13,6 +13,6 @@
 		app:contentInsetStartWithNavigation="@dimen/global_spacing_8"
 		app:layout_collapseMode="pin"
 		tools:showIn="@layout/activity_main"
-		app:title="@string/app_name">
+		app:title="">
 	</android.support.v7.widget.Toolbar>
 </android.support.design.widget.AppBarLayout>
