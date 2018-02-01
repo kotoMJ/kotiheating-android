@@ -43,8 +43,7 @@ internal class CircleLoaderView : View {
 
 	// Head and tail paints are used to properly draw arc ends, that is, the beginning shouldn't be rounded
 	// but the end should. So we create a head of #headAngle degrees in order to achieve this behavior.
-	private var circlePaintHead: Paint? = null
-	private var circlePaintTail: Paint? = null
+	private var circlePaint: Paint? = null
 	private var currentAngle: Float = 0.toFloat()
 
 	private var endAngle: Float = 0f
@@ -143,15 +142,14 @@ internal class CircleLoaderView : View {
 	}
 
 	private fun onDrawCleanView() {
-		circlePaintHead?.alpha = 0
-		circlePaintTail?.alpha = 0
+		circlePaint?.alpha = 0
 		drawAction = DrawAction.NONE
 	}
 
 
 	private fun onDrawAnimateStatic(canvas: Canvas, centerPoint: PointF) {
 		val startAngle = 0f
-		val endAngle = 360f
+		val endAngle = 270f
 
 		val sweepBoundaryAngle = 90f
 		this.endAngle = endAngle
@@ -171,7 +169,7 @@ internal class CircleLoaderView : View {
 
 		val sweepAngleRuntime = if (currentFrameAngle < sweepBoundaryAngle) currentFrameAngle else sweepBoundaryAngle
 		val startAngleP = if (currentFrameAngle > sweepBoundaryAngle) currentFrameAngle - sweepBoundaryAngle else startAngle
-		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleP, sweepAngleRuntime, circlePaintTail!!, arcsPointsOnCircle, arcsOverlayPoints)
+		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleP, sweepAngleRuntime, circlePaint!!, arcsPointsOnCircle, arcsOverlayPoints)
 
 
 		//log("sweepAngleRuntime=$sweepAngleRuntime, startAngleP=$startAngleP")
@@ -225,16 +223,11 @@ internal class CircleLoaderView : View {
 	}
 
 	private fun setupBackCirclePaint() {
-		circlePaintHead = Paint()
-		circlePaintHead!!.color = backCircleColor
-		circlePaintHead!!.style = Paint.Style.STROKE
-		circlePaintHead!!.strokeWidth = strokeWidth
-
-		circlePaintTail = Paint()
-		circlePaintTail!!.color = backCircleColor
-		circlePaintTail!!.style = Paint.Style.STROKE
-		circlePaintTail!!.strokeCap = Paint.Cap.ROUND
-		circlePaintTail!!.strokeWidth = strokeWidth
+		circlePaint = Paint()
+		circlePaint!!.color = backCircleColor
+		circlePaint!!.style = Paint.Style.STROKE
+		circlePaint!!.strokeCap = Paint.Cap.ROUND
+		circlePaint!!.strokeWidth = strokeWidth
 	}
 
 	fun setOnCircleAnimationListener(l: OnCircleAnimationListener) {
