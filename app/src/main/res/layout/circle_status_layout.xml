@@ -4,7 +4,7 @@
 	android:layout_height="match_parent">
 
 
-	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+	<cz.koto.kotiheating.ui.circle.status.CircleStatusView
 		android:id="@+id/circle1"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -21,7 +21,7 @@
 		style="@style/TextAppearance.KoTiHeating.Caption" />
 
 
-	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+	<cz.koto.kotiheating.ui.circle.status.CircleStatusView
 		android:id="@+id/circle2"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -37,7 +37,7 @@
 		android:textAllCaps="true"
 		style="@style/TextAppearance.KoTiHeating.Caption" />
 
-	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+	<cz.koto.kotiheating.ui.circle.status.CircleStatusView
 		android:id="@+id/circle3"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -53,7 +53,7 @@
 		android:letterSpacing="@dimen/global_letter_spacing_15"
 		style="@style/TextAppearance.KoTiHeating.Caption" />
 
-	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+	<cz.koto.kotiheating.ui.circle.status.CircleStatusView
 		android:id="@+id/circle4"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -69,7 +69,7 @@
 		android:letterSpacing="@dimen/global_letter_spacing_15"
 		style="@style/TextAppearance.KoTiHeating.Caption" />
 
-	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+	<cz.koto.kotiheating.ui.circle.status.CircleStatusView
 		android:id="@+id/circle5"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -85,7 +85,7 @@
 		android:letterSpacing="@dimen/global_letter_spacing_15"
 		style="@style/TextAppearance.KoTiHeating.Caption" />
 
-	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+	<cz.koto.kotiheating.ui.circle.status.CircleStatusView
 		android:id="@+id/circle6"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -101,7 +101,7 @@
 		android:letterSpacing="@dimen/global_letter_spacing_15"
 		style="@style/TextAppearance.KoTiHeating.Caption" />
 
-	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+	<cz.koto.kotiheating.ui.circle.status.CircleStatusView
 		android:id="@+id/circle7"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -117,7 +117,7 @@
 		android:letterSpacing="@dimen/global_letter_spacing_15"
 		style="@style/TextAppearance.KoTiHeating.Caption" />
 
-	<cz.koto.kotiheating.ui.circleview.CircleStatusView
+	<cz.koto.kotiheating.ui.circle.status.CircleStatusView
 		android:id="@+id/circle8"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

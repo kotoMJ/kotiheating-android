@@ -13,13 +13,13 @@ import android.view.animation.Interpolator
 import android.widget.FrameLayout
 import android.widget.TextView
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.ui.circleview.CircleStatusView
+import cz.koto.kotiheating.ui.circle.status.CircleStatusView
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
 
-class CircleStatusLayout : FrameLayout {
+class CircleLoaderLayout : FrameLayout {
 
 	companion object {
 		// Workable width is going to be 10 % less than total width
@@ -43,7 +43,7 @@ class CircleStatusLayout : FrameLayout {
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
-	lateinit var animItems: List<CircleStatusAnimItem>
+	lateinit var animItems: List<CircleAnimItem>
 	var completeColor: Int? = null
 	var uncompleteColor: Int? = null
 
@@ -188,7 +188,7 @@ class CircleStatusLayout : FrameLayout {
 						Completable.timer(delay2, TimeUnit.MILLISECONDS)
 								.subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread())
 								.subscribe({
-									orderStatusView.setOnCircleAnimationListener(object : OnCircleStatusAnimationListener {
+									orderStatusView.setOnCircleAnimationListener(object : OnCircleAnimationListener {
 										override fun onCircleAnimation(currentAnimationValue: Int, maxAnimationValue: Int) {
 											if (textViews.size >= index || animItems.size >= index) return
 											textViews[index].text = animItems[index].text

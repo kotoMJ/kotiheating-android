@@ -1,5 +1,5 @@
 package com.legalzoom.kollaborate.base.ui.ordersview
 
-interface OnCircleStatusAnimationListener {
+interface OnCircleAnimationListener {
 	fun onCircleAnimation(currentAnimationValue: Int, maxAnimationValue: Int)
 }

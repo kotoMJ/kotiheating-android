@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewTreeObserver
 import android.view.animation.DecelerateInterpolator
-import com.legalzoom.kollaborate.base.ui.ordersview.CircleStatusAnimItem
+import com.legalzoom.kollaborate.base.ui.ordersview.CircleAnimItem
 import cz.koto.kotiheating.common.vmb
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 
@@ -37,16 +37,16 @@ class MainActivity : AppCompatActivity() {
 
 class MainViewModel : ViewModel() {
 
-	var circleItems = ObservableArrayList<CircleStatusAnimItem>()
+	var circleItems = ObservableArrayList<CircleAnimItem>()
 
 	init {
-		circleItems.add(CircleStatusAnimItem("A", R.color.order_status_color_1, 20))
-		circleItems.add(CircleStatusAnimItem("B", R.color.order_status_color_2, 0))
-		circleItems.add(CircleStatusAnimItem("C", R.color.order_status_color_3, 40))
-		circleItems.add(CircleStatusAnimItem("D", R.color.order_status_color_4, 10))
-		circleItems.add(CircleStatusAnimItem("E", R.color.order_status_color_5, 60))
-		circleItems.add(CircleStatusAnimItem("F", R.color.order_status_color_6, 100))
-		circleItems.add(CircleStatusAnimItem("G", R.color.order_status_color_7, 80))
+		circleItems.add(CircleAnimItem("A", R.color.order_status_color_1, 100))
+		circleItems.add(CircleAnimItem("B", R.color.order_status_color_2, 80))
+		circleItems.add(CircleAnimItem("C", R.color.order_status_color_3, 60))
+		circleItems.add(CircleAnimItem("D", R.color.order_status_color_4, 40))
+//		circleItems.add(CircleAnimItem("E", R.color.order_status_color_5, 60))
+//		circleItems.add(CircleAnimItem("F", R.color.order_status_color_6, 100))
+//		circleItems.add(CircleAnimItem("G", R.color.order_status_color_7, 80))
 	}
 }
 

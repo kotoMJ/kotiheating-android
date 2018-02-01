@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.ui.circleview
+package cz.koto.kotiheating.ui.circle.loader
 
 import android.content.Context
 import android.content.res.TypedArray
@@ -11,13 +11,13 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
-import com.legalzoom.kollaborate.base.ui.ordersview.OnCircleStatusAnimationListener
+import com.legalzoom.kollaborate.base.ui.ordersview.OnCircleAnimationListener
 import common.log.log
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.ArcUtils
 
 
-internal class CircleStatusView : View {
+internal class CircleLoaderView : View {
 
 	enum class DrawAction {
 		NONE,
@@ -32,7 +32,7 @@ internal class CircleStatusView : View {
 	}
 
 	private var interpolator: Interpolator? = null
-	private var listener: OnCircleStatusAnimationListener? = null
+	private var listener: OnCircleAnimationListener? = null
 
 
 	private var startValue: Int = 0
@@ -357,7 +357,7 @@ internal class CircleStatusView : View {
 		backCirclePaintTail!!.strokeWidth = strokeWidth
 	}
 
-	fun setOnCircleAnimationListener(l: OnCircleStatusAnimationListener) {
+	fun setOnCircleAnimationListener(l: OnCircleAnimationListener) {
 		listener = l
 	}
 
