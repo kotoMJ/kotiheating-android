@@ -153,6 +153,8 @@ internal class CircleLoaderView : View {
 	private fun onDrawAnimateStatic(canvas: Canvas, centerPoint: PointF) {
 		val startAngle = 0f
 		val endAngle = 180f
+
+		val sweepBoundaryAngle = 90f
 		this.endAngle = endAngle
 
 		val arcsPointsOnCircle = 360
@@ -167,10 +169,8 @@ internal class CircleLoaderView : View {
 		val inBounds = currentFrameAngle < endAngle
 
 
-		val sweepAngleRuntime = if (inBounds) currentFrameAngle else endAngle
-
-
-		val startAngleP = if (currentFrameAngle > 90) currentFrameAngle - 90 else startAngle
+		val sweepAngleRuntime = if (currentFrameAngle < sweepBoundaryAngle) currentFrameAngle else sweepBoundaryAngle
+		val startAngleP = if (currentFrameAngle > sweepBoundaryAngle) currentFrameAngle - sweepBoundaryAngle else startAngle
 		log("sweepAngleRuntime=$sweepAngleRuntime, currentFrameAngle=$currentFrameAngle, startAngle=$startAngle, startAngleP=$startAngleP")
 		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleP, sweepAngleRuntime, circlePaintTail!!, arcsPointsOnCircle, arcsOverlayPoints)
 
