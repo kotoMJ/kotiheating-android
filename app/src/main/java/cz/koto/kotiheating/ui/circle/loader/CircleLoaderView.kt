@@ -25,7 +25,7 @@ internal class CircleLoaderView : View {
 	}
 
 	companion object {
-		val DEFAULT_ANIMATION_TIME = 1000
+		val DEFAULT_ANIMATION_TIME = 3000
 	}
 
 	private var interpolator: Interpolator? = null
@@ -33,7 +33,6 @@ internal class CircleLoaderView : View {
 
 
 	private var startValue: Int = 0
-	private var endValue: Int = 0
 
 	private var strokeWidth: Float = 0f
 	private var defaultStrokeWidth: Float = 0f
@@ -62,16 +61,10 @@ internal class CircleLoaderView : View {
 
 			if (pathGone < 1.0f) {
 				currentAngle = endAngle * interpolatedPathGone
-//				if (drawAction == DrawAction.FOREGROUND_ANIMATE) {
-//					listener?.onCircleAnimation(getCurrentAnimationFrameValue(interpolatedPathGone), currentValue)
-//				}
 			} else {
 				currentAngle = endAngle
-//				if (drawAction == DrawAction.FOREGROUND_ANIMATE) {
-//					listener?.onCircleAnimation(getCurrentAnimationFrameValue(1.0f), currentValue)
-//				}
 			}
-			log("currentAngle=$currentAngle")
+			//log("pathGone=$pathGone, currentAngle=$currentAngle")
 			return currentAngle
 		}
 
@@ -91,7 +84,6 @@ internal class CircleLoaderView : View {
 		interpolator = AccelerateDecelerateInterpolator()
 		radius = customRadius
 		defaultStrokeWidth = customStrokeWidth
-		endValue = customEndValue
 		readAttributesAndSetupFields(attrs)
 
 		setupPaint()
@@ -148,8 +140,9 @@ internal class CircleLoaderView : View {
 
 
 	private fun onDrawAnimateStatic(canvas: Canvas, centerPoint: PointF) {
+		val rounds = 2
 		val startAngle = 0f
-		val endAngle = 270f
+		val endAngle = 360f * rounds
 
 		val sweepBoundaryAngle = 90f
 		this.endAngle = endAngle
@@ -161,14 +154,25 @@ internal class CircleLoaderView : View {
 			animationStartTime = System.currentTimeMillis()
 		}
 
-		//drawCompleteBackground(canvas, centerPoint)
+		/**
+		 * START SHAPE (decreasing first 90, then invisible)
+		 */
+		if (currentFrameAngle < sweepBoundaryAngle) {
+			var startAngleI = startAngle - /*90*/sweepBoundaryAngle + currentFrameAngle
+			val endAngleI = /*90f*/sweepBoundaryAngle
+			startAngleI
+			val sweepAngleI = endAngleI
+			ArcUtils.drawArc(canvas, centerPoint, radius, startAngleI, sweepAngleI, circlePaint!!)//body
+		}
 
+		/**
+		 * DYNAMIC SHAPE
+		 */
 		val inBounds = currentFrameAngle < endAngle
-
 		//log("currentFrameAngle=$currentFrameAngle, startAngle=$startAngle")
-
 		val sweepAngleRuntime = if (currentFrameAngle < sweepBoundaryAngle) currentFrameAngle else sweepBoundaryAngle
 		val startAngleP = if (currentFrameAngle > sweepBoundaryAngle) currentFrameAngle - sweepBoundaryAngle else startAngle
+		log("startAngleP=$startAngleP, sweepAngleRuntime=$sweepAngleRuntime, currentFrameAngle=$currentFrameAngle")
 		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleP, sweepAngleRuntime, circlePaint!!, arcsPointsOnCircle, arcsOverlayPoints)
 
 

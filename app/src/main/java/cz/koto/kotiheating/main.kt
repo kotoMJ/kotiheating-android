@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), MainView {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		vmb.binding.orderStatus.setInterpolator(DecelerateInterpolator())
+		vmb.binding.orderStatus.setInterpolator(DecelerateInterpolator()/*LinearInterpolator()*/)
 		vmb.binding.orderStatus.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 			override fun onGlobalLayout() {
 				if (vmb.binding.orderStatus.animateLayout()) {
