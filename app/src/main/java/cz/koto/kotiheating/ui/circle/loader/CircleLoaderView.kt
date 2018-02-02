@@ -227,11 +227,12 @@ internal class CircleLoaderView : View {
 	}
 
 	private fun setupBackCirclePaint() {
-		circlePaint = Paint()
-		circlePaint!!.color = backCircleColor
-		circlePaint!!.style = Paint.Style.STROKE
-		circlePaint!!.strokeCap = Paint.Cap.ROUND
-		circlePaint!!.strokeWidth = strokeWidth
+		circlePaint = Paint().apply {
+			color = backCircleColor
+			style = Paint.Style.STROKE
+			strokeCap = Paint.Cap.ROUND
+			strokeWidth = this@CircleLoaderView.strokeWidth
+		}
 	}
 
 

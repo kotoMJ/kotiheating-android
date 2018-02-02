@@ -332,29 +332,33 @@ internal class CircleStatusView : View {
 	}
 
 	private fun setupFrontCirclePaint() {
-		foregroundCirclePaintHead = Paint()
-		foregroundCirclePaintHead!!.color = foregroundCircleColor
-		foregroundCirclePaintHead!!.style = Paint.Style.STROKE
-		foregroundCirclePaintHead!!.strokeWidth = strokeWidth
+		foregroundCirclePaintHead = Paint().apply {
+			color = foregroundCircleColor
+			style = Paint.Style.STROKE
+			strokeWidth = this@CircleStatusView.strokeWidth
+		}
 
-		foregroundCirclePaintTail = Paint()
-		foregroundCirclePaintTail!!.color = foregroundCircleColor
-		foregroundCirclePaintTail!!.style = Paint.Style.STROKE
-		foregroundCirclePaintTail!!.strokeCap = Paint.Cap.ROUND
-		foregroundCirclePaintTail!!.strokeWidth = strokeWidth
+		foregroundCirclePaintTail = Paint().apply {
+			color = foregroundCircleColor
+			style = Paint.Style.STROKE
+			strokeCap = Paint.Cap.ROUND
+			strokeWidth = this@CircleStatusView.strokeWidth
+		}
 	}
 
 	private fun setupBackCirclePaint() {
-		backCirclePaintHead = Paint()
-		backCirclePaintHead!!.color = backCircleColor
-		backCirclePaintHead!!.style = Paint.Style.STROKE
-		backCirclePaintHead!!.strokeWidth = strokeWidth
+		backCirclePaintHead = Paint().apply {
+			color = backCircleColor
+			style = Paint.Style.STROKE
+			strokeWidth = this@CircleStatusView.strokeWidth
+		}
 
-		backCirclePaintTail = Paint()
-		backCirclePaintTail!!.color = backCircleColor
-		backCirclePaintTail!!.style = Paint.Style.STROKE
-		backCirclePaintTail!!.strokeCap = Paint.Cap.ROUND
-		backCirclePaintTail!!.strokeWidth = strokeWidth
+		backCirclePaintTail = Paint().apply {
+			color = backCircleColor
+			style = Paint.Style.STROKE
+			strokeCap = Paint.Cap.ROUND
+			strokeWidth = this@CircleStatusView.strokeWidth
+		}
 	}
 
 	fun setOnCircleAnimationListener(l: OnCircleAnimationListener) {
