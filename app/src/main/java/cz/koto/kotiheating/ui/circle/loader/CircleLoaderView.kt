@@ -189,7 +189,7 @@ internal class CircleLoaderView : View {
 		return sweepAngleDelta
 	}
 
-	fun animateStatic() {
+	fun animateDynamic() {
 		resetSweepAngleDelta()
 		drawAction = DrawAction.ANIMATE_DYNAMIC
 		currentAngle = 0f

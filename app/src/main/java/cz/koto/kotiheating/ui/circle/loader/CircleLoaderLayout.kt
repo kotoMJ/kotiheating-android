@@ -122,7 +122,7 @@ class CircleLoaderLayout : FrameLayout {
 
 	private fun animateCalculatedLayout() {
 		orderViews.forEachIndexed { _, orderStatusView ->
-			orderStatusView.animateStatic()
+			orderStatusView.animateDynamic()
 		}
 	}
 

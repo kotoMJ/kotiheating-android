@@ -177,7 +177,7 @@ class CircleStatusLayout : FrameLayout {
 					}
 				})
 
-		//TODO this timing is workaround in first phase and should be solved (in the second) as chain - when animateStatic finished, start foreground drawing.
+		//TODO this timing is workaround in first phase and should be solved (in the second) as chain - when animateDynamic finished, start foreground drawing.
 		val roughAnimationTimeEstimateInMillis = 1500
 		Completable.timer(delay + roughAnimationTimeEstimateInMillis, TimeUnit.MILLISECONDS)
 				.subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread())
