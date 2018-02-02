@@ -127,7 +127,7 @@ internal class CircleLoaderView : View {
 	 */
 	private fun onDrawAnimateDynamic(canvas: Canvas, centerPoint: PointF) {
 		animationDuration = 4000
-		val speed = 5f
+		val speed = 5.5f
 		val rounds = 3
 
 
