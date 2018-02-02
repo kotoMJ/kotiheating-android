@@ -102,8 +102,7 @@ class CircleLoaderLayout : FrameLayout {
 		orderViews.forEachIndexed { index, orderStatusView ->
 			if (index >= animItemsCount) return
 			val radius = maxRadius - (circleSeparation * index)
-			orderStatusView.init(context, attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR,
-					100)
+			orderStatusView.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR)
 
 		}
 	}

@@ -10,7 +10,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
-import com.legalzoom.kollaborate.base.ui.ordersview.OnCircleAnimationListener
 import common.log.log
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.ArcUtils
@@ -31,10 +30,6 @@ internal class CircleLoaderView : View {
 	}
 
 	private var interpolator: Interpolator? = null
-	private var listener: OnCircleAnimationListener? = null
-
-
-	private var startValue: Int = 0
 
 	private var strokeWidth: Float = 0f
 	private var defaultStrokeWidth: Float = 0f
@@ -79,11 +74,9 @@ internal class CircleLoaderView : View {
 
 	constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
-	fun init(context: Context,
-			 attrs: TypedArray,
+	fun init(attrs: TypedArray,
 			 customRadius: Float,
-			 customStrokeWidth: Float,
-			 customEndValue: Int) {
+			 customStrokeWidth: Float) {
 		interpolator = AccelerateDecelerateInterpolator()
 		radius = customRadius
 		defaultStrokeWidth = customStrokeWidth
@@ -216,10 +209,7 @@ internal class CircleLoaderView : View {
 	}
 
 	private fun applyAttributes(a: TypedArray) {
-		startValue = a.getInt(R.styleable.ProgressCircleLayout_startValue, 0)
-
 		readBackCircleColorFromAttributes(a)
-
 		strokeWidth = a.getDimension(R.styleable.ProgressCircleLayout_strokeWidth, defaultStrokeWidth)
 	}
 
@@ -243,10 +233,6 @@ internal class CircleLoaderView : View {
 		circlePaint!!.style = Paint.Style.STROKE
 		circlePaint!!.strokeCap = Paint.Cap.ROUND
 		circlePaint!!.strokeWidth = strokeWidth
-	}
-
-	fun setOnCircleAnimationListener(l: OnCircleAnimationListener) {
-		listener = l
 	}
 
 
