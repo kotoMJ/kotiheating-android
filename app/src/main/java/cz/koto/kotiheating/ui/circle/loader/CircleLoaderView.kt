@@ -21,11 +21,13 @@ internal class CircleLoaderView : View {
 	enum class DrawAction {
 		NONE,
 		CLEAN_VIEW,
-		ANIMATE_STATIC
+		ANIMATE_DYNAMIC
 	}
 
-	companion object {
-		val DEFAULT_ANIMATION_TIME = 3000
+	enum class SweepAngleDeltaDirection {
+		NONE,
+		UP,
+		DOWN,
 	}
 
 	private var interpolator: Interpolator? = null
@@ -44,6 +46,8 @@ internal class CircleLoaderView : View {
 	// but the end should. So we create a head of #headAngle degrees in order to achieve this behavior.
 	private var circlePaint: Paint? = null
 	private var currentAngle: Float = 0.toFloat()
+	private var sweepAngleDelta: Float = 0f
+	private var sweepAngleDeltaDirection: SweepAngleDeltaDirection = SweepAngleDeltaDirection.UP
 
 	private var endAngle: Float = 0f
 	private var animationStartTime: Long = 0
@@ -64,7 +68,6 @@ internal class CircleLoaderView : View {
 			} else {
 				currentAngle = endAngle
 			}
-			//log("pathGone=$pathGone, currentAngle=$currentAngle")
 			return currentAngle
 		}
 
@@ -90,29 +93,6 @@ internal class CircleLoaderView : View {
 		initialized = true
 	}
 
-//	private fun drawInitBackground(canvas: Canvas, centerPoint: PointF) {
-//		var startAngle = -90f
-//		val endAngle = 90f
-//
-//		var sweepAngle = headAngle
-//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintHead!!)//sharp head
-//
-//		startAngle += headAngle
-//		sweepAngle = endAngle - headAngle
-//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintTail!!)//body
-//	}
-//
-//	private fun drawCompleteBackground(canvas: Canvas, centerPoint: PointF) {
-//		var startAngle = -90f
-//		val endAngle = 270f
-//
-//		var sweepAngle = headAngle
-//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintHead!!)//sharp head
-//
-//		startAngle += headAngle
-//		sweepAngle = endAngle - headAngle
-//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngle, sweepAngle, circlePaintTail!!)//body
-//	}
 
 	override fun onDraw(canvas: Canvas) {
 		super.onDraw(canvas)
@@ -126,7 +106,7 @@ internal class CircleLoaderView : View {
 
 		when (drawAction) {
 			DrawAction.CLEAN_VIEW -> onDrawCleanView()
-			DrawAction.ANIMATE_STATIC -> onDrawAnimateStatic(canvas, centerPoint)
+			DrawAction.ANIMATE_DYNAMIC -> onDrawAnimateDynamic(canvas, centerPoint)
 			else -> log(">>> Unimplemented draw action ${drawAction}")
 		}
 
@@ -139,12 +119,22 @@ internal class CircleLoaderView : View {
 	}
 
 
-	private fun onDrawAnimateStatic(canvas: Canvas, centerPoint: PointF) {
-		val rounds = 2
+	/**
+	 *	Dynamic behaviour is given by combining following attributes:
+	 *  1) animationDuration
+	 *  2) speed
+	 *  3) rounds
+	 */
+	private fun onDrawAnimateDynamic(canvas: Canvas, centerPoint: PointF) {
+		animationDuration = 4000
+		val speed = 5f
+		val rounds = 3
+
+
 		val startAngle = 0f
 		val endAngle = 360f * rounds
 
-		val sweepBoundaryAngle = 90f
+		val sweepBoundaryAngle = 90f + updateSweepAngleDelta(speed)
 		this.endAngle = endAngle
 
 		val arcsPointsOnCircle = 360
@@ -155,28 +145,20 @@ internal class CircleLoaderView : View {
 		}
 
 		/**
-		 * START SHAPE (decreasing first 90, then invisible)
+		 * START SHAPE (decreasing first 90, then invisible). Disappears as the dynamic one grows.
 		 */
 		if (currentFrameAngle < sweepBoundaryAngle) {
-			var startAngleI = startAngle - /*90*/sweepBoundaryAngle + currentFrameAngle
-			val endAngleI = /*90f*/sweepBoundaryAngle
-			startAngleI
-			val sweepAngleI = endAngleI
-			ArcUtils.drawArc(canvas, centerPoint, radius, startAngleI, sweepAngleI, circlePaint!!)//body
+			val startShapeStartAngle = startAngle - sweepBoundaryAngle + currentFrameAngle
+			ArcUtils.drawArc(canvas, centerPoint, radius, startShapeStartAngle, sweepBoundaryAngle, circlePaint!!)//body
 		}
 
 		/**
 		 * DYNAMIC SHAPE
 		 */
 		val inBounds = currentFrameAngle < endAngle
-		//log("currentFrameAngle=$currentFrameAngle, startAngle=$startAngle")
-		val sweepAngleRuntime = if (currentFrameAngle < sweepBoundaryAngle) currentFrameAngle else sweepBoundaryAngle
-		val startAngleP = if (currentFrameAngle > sweepBoundaryAngle) currentFrameAngle - sweepBoundaryAngle else startAngle
-		log("startAngleP=$startAngleP, sweepAngleRuntime=$sweepAngleRuntime, currentFrameAngle=$currentFrameAngle")
-		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleP, sweepAngleRuntime, circlePaint!!, arcsPointsOnCircle, arcsOverlayPoints)
-
-
-		//log("sweepAngleRuntime=$sweepAngleRuntime, startAngleP=$startAngleP")
+		val sweepAngleDynamic = if (currentFrameAngle < sweepBoundaryAngle) currentFrameAngle else sweepBoundaryAngle
+		val startAngleDynamic = if (currentFrameAngle > sweepBoundaryAngle) currentFrameAngle - sweepBoundaryAngle else startAngle
+		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleDynamic, sweepAngleDynamic, circlePaint!!, arcsPointsOnCircle, arcsOverlayPoints)
 
 		if (inBounds) {
 			invalidate()
@@ -185,8 +167,39 @@ internal class CircleLoaderView : View {
 		}
 	}
 
+	private fun resetSweepAngleDelta() {
+		sweepAngleDelta = 0f
+		sweepAngleDeltaDirection = SweepAngleDeltaDirection.UP
+	}
+
+	private fun updateSweepAngleDelta(speed: Float, upperBoundary: Int = 179, bottomBoundary: Int = 0): Float {
+
+		if (sweepAngleDelta > upperBoundary) {
+			sweepAngleDeltaDirection = SweepAngleDeltaDirection.DOWN
+		}
+
+		if (sweepAngleDelta < bottomBoundary) {
+			sweepAngleDeltaDirection = SweepAngleDeltaDirection.NONE
+		}
+
+		when (sweepAngleDeltaDirection) {
+			SweepAngleDeltaDirection.UP -> {
+				if (currentFrameAngle > 120) {
+					sweepAngleDelta += speed
+				}
+			}
+			SweepAngleDeltaDirection.DOWN -> sweepAngleDelta -= speed
+			else -> {
+				sweepAngleDelta = 0f
+			}
+		}
+
+		return sweepAngleDelta
+	}
+
 	fun animateStatic() {
-		drawAction = DrawAction.ANIMATE_STATIC
+		resetSweepAngleDelta()
+		drawAction = DrawAction.ANIMATE_DYNAMIC
 		currentAngle = 0f
 		animationStartTime = 0
 		invalidate()
@@ -204,8 +217,6 @@ internal class CircleLoaderView : View {
 
 	private fun applyAttributes(a: TypedArray) {
 		startValue = a.getInt(R.styleable.ProgressCircleLayout_startValue, 0)
-
-		animationDuration = a.getInt(R.styleable.ProgressCircleLayout_animationDuration, DEFAULT_ANIMATION_TIME)
 
 		readBackCircleColorFromAttributes(a)
 
