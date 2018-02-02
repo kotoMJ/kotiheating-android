@@ -165,7 +165,7 @@ internal class CircleLoaderView : View {
 		sweepAngleDeltaDirection = SweepAngleDeltaDirection.UP
 	}
 
-	private fun updateSweepAngleDelta(speed: Float, upperBoundary: Int = 179, bottomBoundary: Int = 0): Float {
+	private fun updateSweepAngleDelta(speed: Float, upperBoundary: Int = 170, bottomBoundary: Int = 0): Float {
 
 		if (sweepAngleDelta > upperBoundary) {
 			sweepAngleDeltaDirection = SweepAngleDeltaDirection.DOWN
