@@ -114,20 +114,19 @@ internal class CircleLoaderView : View {
 
 	/**
 	 *	Dynamic behaviour is given by combining following attributes:
-	 *  1) animationDuration
-	 *  2) speed
-	 *  3) rounds
+	 *  1) speed - speed of dynamic delta of sweep angle
+	 *  2) rounds - how many rounds to load per animation
+	 *  3) animationDuration - how long should animation take
 	 */
 	private fun onDrawAnimateDynamic(canvas: Canvas, centerPoint: PointF) {
+		val sweepAngleDeltaSpeed = 5.5f
+		val animationRounds = 3
 		animationDuration = 4000
-		val speed = 5.5f
-		val rounds = 3
-
 
 		val startAngle = 0f
-		val endAngle = 360f * rounds
+		val endAngle = 360f * animationRounds
 
-		val sweepBoundaryAngle = 90f + updateSweepAngleDelta(speed)
+		val sweepBoundaryAngle = 90f + updateSweepAngleDelta(sweepAngleDeltaSpeed)
 		this.endAngle = endAngle
 
 		val arcsPointsOnCircle = 360
