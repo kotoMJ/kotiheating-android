@@ -56,4 +56,18 @@
 
 	<dimen name="card_corner_radius">2dp</dimen>
 
+	<item name="global_letter_spacing_05" format="float" type="dimen">0.05</item>
+	<item name="global_letter_spacing_1" format="float" type="dimen">0.1</item>
+	<item name="global_letter_spacing_15" format="float" type="dimen">0.15</item>
+	<item name="global_letter_spacing_2" format="float" type="dimen">0.2</item>
+
+	<dimen name="global_elevation_0">0dp</dimen>
+	<dimen name="global_elevation_2">2dp</dimen>
+	<dimen name="global_elevation_4">4dp</dimen>
+	<dimen name="global_elevation_6">6dp</dimen>
+	<dimen name="global_elevation_8">8dp</dimen>
+	<dimen name="global_elevation_12">12dp</dimen>
+	<dimen name="global_elevation_16">16dp</dimen>
+	<dimen name="global_elevation_24">24dp</dimen>
+
 </resources>

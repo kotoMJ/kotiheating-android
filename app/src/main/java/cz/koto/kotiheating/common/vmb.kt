@@ -68,7 +68,7 @@ class ViewModelBinding<VM : ViewModel, out B : ViewDataBinding>(
 			fun onCreate() {
 				// setup binding variables
 				binding.setVariable(BR.viewModel, viewModel)
-//                binding.setVariable(BR.view, fragment ?: activity)
+				binding.setVariable(BR.view, fragment ?: activity)
 				(viewModel as? LifecycleReceiver)?.onLifecycleReady(lifecycleOwner)
 				(lifecycleOwner as? Activity)?.setContentView(binding.root)
 			}

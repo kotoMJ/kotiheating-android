@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import cz.koto.kotiheating.common.vmb
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainView {
 
 	private val vmb by vmb<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
 		MainViewModel()
@@ -14,11 +14,21 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
 		vmb
 	}
+
+}
+
+interface MainView {
+
 }
 
 class MainViewModel : ViewModel() {
 
+
+	init {
+
+	}
 }
 
