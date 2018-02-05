@@ -6,6 +6,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
+import android.support.v4.content.res.ResourcesCompat
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -82,7 +84,7 @@ internal class CircleStatusView : View {
 		defaultStrokeWidth = customStrokeWidth
 		readAttributesAndSetupFields(attrs)
 
-		setupPaint()
+		setupStatusGeneralCirclePaint()
 		initialized = true
 	}
 
@@ -138,7 +140,37 @@ internal class CircleStatusView : View {
 //			ArcUtils.drawArc(canvas, centerPoint, radius, startShapeStartAngle, sweepBoundaryAngle, circlePaint!!)//body
 //		}
 
-		ArcUtils.drawArc(canvas, centerPoint, radius, -90f, 355f, circlePaint!!)//body
+		//https://stackoverflow.com/questions/27850634/how-to-draw-an-arc-segment-with-different-fill-and-stroke-colors-for-each-side
+
+		circlePaint?.let {
+			it.color = Color.parseColor("#55E08F")
+			ArcUtils.drawArc(canvas, centerPoint, radius, -90f, 90f, it)//body
+			it.color = Color.parseColor("#3274ff")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 0f, 90f, it)//body
+			it.color = Color.parseColor("#EE4F4F")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 90f, 90f, it)//body
+			it.color = Color.parseColor("#90caf9")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 180f, 90f, it)//body
+		}
+
+		val scaledValues = scale() // Get the scaled values
+		var sliceStartPoint = -90f
+
+		var textPaint = TextPaint().apply {
+			isDither = true
+			isAntiAlias = true
+			color = Color.parseColor("#313131")
+			textSize = 24f//radius * 0.05f//0.66f
+			typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
+		}
+
+		for (i in 0 until scaledValues.size) {
+			sliceStartPoint += scaledValues[i] // Update starting point of the next slice
+			val radius = 360f
+			val x = (radius * Math.cos(sliceStartPoint * Math.PI / 180f)).toFloat() + width / 2 - 10
+			val y = (radius * Math.sin(sliceStartPoint * Math.PI / 180f)).toFloat() + height / 2 - 20
+			canvas.drawText("$i", x, y, textPaint)
+		}
 
 //		/**
 //		 * DYNAMIC SHAPE
@@ -155,6 +187,25 @@ internal class CircleStatusView : View {
 //		}
 		drawAction = DrawAction.NONE
 	}
+
+	private val datapoints = arrayOf(1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f, 12f)
+
+	private fun getTotal(): Float {
+		var total = 0f
+		for (`val` in this.datapoints)
+			total += `val`
+		return total
+	}
+
+	private fun scale(): FloatArray {
+		val scaledValues = FloatArray(this.datapoints.size)
+		val total = getTotal() // Total all values supplied to the chart
+		for (i in 0 until this.datapoints.size) {
+			scaledValues[i] = this.datapoints[i] / total * 360 // Scale each value
+		}
+		return scaledValues
+	}
+
 
 	private fun resetSweepAngleDelta() {
 		sweepAngleDelta = 0f
@@ -205,29 +256,14 @@ internal class CircleStatusView : View {
 	}
 
 	private fun applyAttributes(a: TypedArray) {
-		readBackCircleColorFromAttributes(a)
 		strokeWidth = a.getDimension(R.styleable.ProgressCircleLayout_strokeWidth, defaultStrokeWidth)
 	}
 
-	private fun readBackCircleColorFromAttributes(a: TypedArray) {
-		val bc = a.getColorStateList(R.styleable.ProgressCircleLayout_backgroundCircleColor)
-		if (bc != null) {
-			backCircleColor = bc.defaultColor
-		} else {
-			backCircleColor = Color.parseColor("#55E08F")
-		}
-	}
 
-
-	private fun setupPaint() {
-		setupStatusCirclePaint()
-	}
-
-	private fun setupStatusCirclePaint() {
+	private fun setupStatusGeneralCirclePaint() {
 		circlePaint = Paint().apply {
-			color = backCircleColor
 			style = Paint.Style.STROKE
-			strokeCap = Paint.Cap.ROUND
+			strokeCap = Paint.Cap.BUTT
 			strokeWidth = this@CircleStatusView.strokeWidth
 		}
 	}

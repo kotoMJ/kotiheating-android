@@ -5,10 +5,15 @@
 
 
 	<cz.koto.kotiheating.ui.status.CircleStatusView
-		android:id="@+id/circle1"
+		android:id="@+id/circleAm"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:elevation="@dimen/global_elevation_4" />
 
+	<cz.koto.kotiheating.ui.status.CircleStatusView
+		android:id="@+id/circlePm"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:elevation="@dimen/global_elevation_4" />
 
 </FrameLayout>

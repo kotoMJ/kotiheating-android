@@ -22,7 +22,7 @@ class HeatingStatusLayout : FrameLayout {
 		private const val CIRCLE_STROKE_WIDTH_FACTOR = 1.75f
 	}
 
-	private val orderViewsIds: IntArray = intArrayOf(R.id.circle1)
+	private val orderViewsIds: IntArray = intArrayOf(R.id.circleAm, R.id.circlePm)
 	private val orderViews: MutableList<CircleStatusView> = mutableListOf()
 
 
@@ -32,7 +32,7 @@ class HeatingStatusLayout : FrameLayout {
 	var completeColor: Int? = null
 	var uncompleteColor: Int? = null
 
-	private var animItemsCount = 1
+	private var animItemsCount = 2
 
 
 	constructor(context: Context) : super(context)
