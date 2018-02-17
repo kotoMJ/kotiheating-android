@@ -58,14 +58,16 @@ android {
     }
 
     sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+
         mock {
             java {
-                srcDirs('src/server/java')
+                srcDirs('src/server/kotlin')
             }
         }
         production {
             java {
-                srcDirs('src/server/java')
+                srcDirs('src/server/kotlin')
             }
         }
     }
