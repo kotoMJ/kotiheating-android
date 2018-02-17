@@ -2,10 +2,7 @@ package cz.koto.kotiheating.ui.status
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PointF
+import android.graphics.*
 import android.support.v4.content.res.ResourcesCompat
 import android.text.TextPaint
 import android.util.AttributeSet
@@ -144,14 +141,63 @@ internal class CircleStatusView : View {
 
 		circlePaint?.let {
 			it.color = Color.parseColor("#55E08F")
-			ArcUtils.drawArc(canvas, centerPoint, radius, -90f, 90f, it)//body
+			ArcUtils.drawArc(canvas, centerPoint, radius, -90f, 30f, it)//body
 			it.color = Color.parseColor("#3274ff")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 0f, 90f, it)//body
+			ArcUtils.drawArc(canvas, centerPoint, radius, -60f, 30f, it)//body
 			it.color = Color.parseColor("#EE4F4F")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 90f, 90f, it)//body
+			ArcUtils.drawArc(canvas, centerPoint, radius, -30f, 30f, it)//body
 			it.color = Color.parseColor("#90caf9")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 180f, 90f, it)//body
+			ArcUtils.drawArc(canvas, centerPoint, radius, 0f, 30f, it)//body
+			it.color = Color.parseColor("#55E08F")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 30f, 30f, it)//body
+			it.color = Color.parseColor("#3274ff")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 60f, 30f, it)//body
+			it.color = Color.parseColor("#EE4F4F")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 90f, 30f, it)//body
+			it.color = Color.parseColor("#90caf9")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 120f, 30f, it)//body
+			it.color = Color.parseColor("#55E08F")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 150f, 30f, it)//body
+			it.color = Color.parseColor("#3274ff")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 180f, 30f, it)//body
+			it.color = Color.parseColor("#EE4F4F")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 210f, 30f, it)//body
+			it.color = Color.parseColor("#90caf9")
+			ArcUtils.drawArc(canvas, centerPoint, radius, 240f, 30f, it)//body
 		}
+
+
+		fun getHorizontalCenterDelta(text: String, typeface: Typeface, fontSize: Float): Float {
+			val p = Paint()
+			p.typeface = typeface
+			p.textSize = fontSize
+			val textWidth = p.measureText(text)
+			return textWidth / 2f
+		}
+
+		fun getVerticalCenterDelta(fontSize: Float): Float {
+			return fontSize / 4 //This is magic, empiric value
+		}
+
+
+		var centerTextPaint = TextPaint().apply {
+			isDither = true
+			isAntiAlias = true
+			color = Color.parseColor("#313131")
+			textSize = 140f//radius * 0.05f//0.66f
+			typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
+		}
+
+		val text = "18°C"
+		val fm = centerTextPaint.getFontMetrics()
+		//val height = fm.descent - fm.ascent
+		val height = fm.bottom - fm.top + fm.leading // 265.4297
+
+		canvas.drawText(text,
+				centerPoint.x - getHorizontalCenterDelta(text, centerTextPaint.typeface, centerTextPaint.textSize),
+				centerPoint.y + getVerticalCenterDelta(centerTextPaint.textSize),
+				centerTextPaint)
+
 
 		val scaledValues = scale() // Get the scaled values
 		var sliceStartPoint = -90f
@@ -163,6 +209,7 @@ internal class CircleStatusView : View {
 			textSize = 24f//radius * 0.05f//0.66f
 			typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
 		}
+
 
 		for (i in 0 until scaledValues.size) {
 			sliceStartPoint += scaledValues[i] // Update starting point of the next slice
