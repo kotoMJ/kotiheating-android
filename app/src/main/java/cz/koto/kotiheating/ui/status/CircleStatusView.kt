@@ -12,7 +12,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
-import common.log.log
+import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.ArcUtils
 
@@ -102,7 +102,7 @@ internal class CircleStatusView : View {
 		when (drawAction) {
 			DrawAction.CLEAN_VIEW -> onDrawCleanView()
 			DrawAction.ANIMATE_DYNAMIC -> onDrawAnimateDynamic(canvas, centerPoint)
-			else -> log(">>> Unimplemented draw action ${drawAction}")
+			else -> logk(">>> Unimplemented draw action ${drawAction}")
 		}
 
 
