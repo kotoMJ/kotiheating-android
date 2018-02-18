@@ -12,6 +12,8 @@ import android.view.animation.Interpolator
 import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.ArcUtils
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 internal class CircleStatusView : View {
@@ -139,32 +141,31 @@ internal class CircleStatusView : View {
 
 		//https://stackoverflow.com/questions/27850634/how-to-draw-an-arc-segment-with-different-fill-and-stroke-colors-for-each-side
 
-		circlePaint?.let {
-			it.color = Color.parseColor("#55E08F")
-			ArcUtils.drawArc(canvas, centerPoint, radius, -90f, 30f, it)//body
-			it.color = Color.parseColor("#3274ff")
-			ArcUtils.drawArc(canvas, centerPoint, radius, -60f, 30f, it)//body
-			it.color = Color.parseColor("#EE4F4F")
-			ArcUtils.drawArc(canvas, centerPoint, radius, -30f, 30f, it)//body
-			it.color = Color.parseColor("#90caf9")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 0f, 30f, it)//body
-			it.color = Color.parseColor("#55E08F")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 30f, 30f, it)//body
-			it.color = Color.parseColor("#3274ff")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 60f, 30f, it)//body
-			it.color = Color.parseColor("#EE4F4F")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 90f, 30f, it)//body
-			it.color = Color.parseColor("#90caf9")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 120f, 30f, it)//body
-			it.color = Color.parseColor("#55E08F")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 150f, 30f, it)//body
-			it.color = Color.parseColor("#3274ff")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 180f, 30f, it)//body
-			it.color = Color.parseColor("#EE4F4F")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 210f, 30f, it)//body
-			it.color = Color.parseColor("#90caf9")
-			ArcUtils.drawArc(canvas, centerPoint, radius, 240f, 30f, it)//body
+
+		val startCircleNumberAngel = 75f
+		var circleNumberPaint = TextPaint().apply {
+			isDither = true
+			isAntiAlias = true
+			color = Color.parseColor("#313131")
+			textSize = 40f//radius * 0.05f//0.66f
+			typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
 		}
+
+
+		val circleHourSweepAngle = 30f
+		var circleHourTextCurrentAngel = 75f
+		var circleHourBackgroundAngel = -90f
+		var colorArray = arrayOf("#55E08F","#3274ff","#EE4F4F","#90caf9","#55E08F","#3274ff","#EE4F4F","#90caf9","#55E08F","#3274ff","#EE4F4F","#90caf9")
+		circlePaint?.let {
+
+			for (i in 0 until 12) {
+				it.color = Color.parseColor(colorArray.get(i))
+				ArcUtils.drawArc(canvas, centerPoint, radius, circleHourBackgroundAngel.apply { circleHourBackgroundAngel += circleHourSweepAngle }, circleHourSweepAngle, it)//body
+				paintCircleNumber("$i", circleHourTextCurrentAngel.apply { circleHourTextCurrentAngel -= circleHourSweepAngle }, canvas, centerPoint, circleNumberPaint)
+			}
+		}
+
+
 
 
 		fun getHorizontalCenterDelta(text: String, typeface: Typeface, fontSize: Float): Float {
@@ -189,50 +190,24 @@ internal class CircleStatusView : View {
 		}
 
 		val text = "18°C"
-		val fm = centerTextPaint.getFontMetrics()
-		//val height = fm.descent - fm.ascent
-		val height = fm.bottom - fm.top + fm.leading // 265.4297
-
 		canvas.drawText(text,
 				centerPoint.x - getHorizontalCenterDelta(text, centerTextPaint.typeface, centerTextPaint.textSize),
 				centerPoint.y + getVerticalCenterDelta(centerTextPaint.textSize),
 				centerTextPaint)
 
 
-		val scaledValues = scale() // Get the scaled values
-		var sliceStartPoint = -90f
-
-		var textPaint = TextPaint().apply {
-			isDither = true
-			isAntiAlias = true
-			color = Color.parseColor("#313131")
-			textSize = 24f//radius * 0.05f//0.66f
-			typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
-		}
-
-
-		for (i in 0 until scaledValues.size) {
-			sliceStartPoint += scaledValues[i] // Update starting point of the next slice
-			val radius = 360f
-			val x = (radius * Math.cos(sliceStartPoint * Math.PI / 180f)).toFloat() + width / 2 - 10
-			val y = (radius * Math.sin(sliceStartPoint * Math.PI / 180f)).toFloat() + height / 2 - 20
-			canvas.drawText("$i", x, y, textPaint)
-		}
-
-//		/**
-//		 * DYNAMIC SHAPE
-//		 */
-//		val sweepAngleDynamic = if (currentFrameAngle < sweepBoundaryAngle) currentFrameAngle else sweepBoundaryAngle
-//		val startAngleDynamic = if (currentFrameAngle > sweepBoundaryAngle) currentFrameAngle - sweepBoundaryAngle else startAngle
-//		ArcUtils.drawArc(canvas, centerPoint, radius, startAngleDynamic, sweepAngleDynamic, circlePaint!!, arcsPointsOnCircle, arcsOverlayPoints)
-
-		val inBounds = currentFrameAngle < endAngle
-//		if (inBounds) {
-//			invalidate()
-//		} else {
-//			drawAction = DrawAction.NONE
-//		}
 		drawAction = DrawAction.NONE
+	}
+
+	private fun paintCircleNumber(text:String, angleInDegrees: Float, canvas: Canvas, centerPoint: PointF, circleNumberPaint: TextPaint) {
+		val angleInRadians = angleInDegrees * (Math.PI / 180)
+		var shiftX = -circleNumberPaint.textSize / 2
+		var shiftY = +circleNumberPaint.textSize / 2
+
+		canvas.drawText(text,
+				(centerPoint.x + radius * Math.cos(angleInRadians) + shiftX).toFloat(),
+				(centerPoint.y - radius * Math.sin(angleInRadians) + shiftY).toFloat(),
+				circleNumberPaint)
 	}
 
 	private val datapoints = arrayOf(1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f, 12f)
