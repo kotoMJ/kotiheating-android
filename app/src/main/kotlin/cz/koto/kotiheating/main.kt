@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), MainView {
 		vmb.binding.circleProgress.setInterpolator(DecelerateInterpolator()/*LinearInterpolator()*/)
 		vmb.binding.circleProgress.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 			override fun onGlobalLayout() {
-				if (vmb.binding.circleProgress.animateLayout()) {
+				if (vmb.binding.circleProgress.showLayout()) {
 					vmb.binding.circleProgress.viewTreeObserver.removeOnGlobalLayoutListener(this)
 				}
 			}
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), MainView {
 	}
 
 	override fun reloadStatus() {
-		vmb.binding.circleProgress.animateLayout()
+		vmb.binding.circleProgress.showLayout()
 	}
 }
 

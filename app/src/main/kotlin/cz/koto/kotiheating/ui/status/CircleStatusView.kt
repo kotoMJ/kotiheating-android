@@ -12,8 +12,6 @@ import android.view.animation.Interpolator
 import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.ArcUtils
-import kotlin.math.cos
-import kotlin.math.sin
 
 
 internal class CircleStatusView : View {
@@ -21,7 +19,7 @@ internal class CircleStatusView : View {
 	enum class DrawAction {
 		NONE,
 		CLEAN_VIEW,
-		ANIMATE_DYNAMIC
+		SHOW_VIEW
 	}
 
 	enum class SweepAngleDeltaDirection {
@@ -100,7 +98,7 @@ internal class CircleStatusView : View {
 
 		when (drawAction) {
 			DrawAction.CLEAN_VIEW -> onDrawCleanView()
-			DrawAction.ANIMATE_DYNAMIC -> onDrawAnimateDynamic(canvas, centerPoint)
+			DrawAction.SHOW_VIEW -> onDrawAnimateDynamic(canvas, centerPoint)
 			else -> logk(">>> Unimplemented draw action ${drawAction}")
 		}
 
@@ -259,9 +257,9 @@ internal class CircleStatusView : View {
 		return sweepAngleDelta
 	}
 
-	fun animateDynamic() {
+	fun showView() {
 		resetSweepAngleDelta()
-		drawAction = DrawAction.ANIMATE_DYNAMIC
+		drawAction = DrawAction.SHOW_VIEW
 		currentAngle = 0f
 		animationStartTime = 0
 		invalidate()

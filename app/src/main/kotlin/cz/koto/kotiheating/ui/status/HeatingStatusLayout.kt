@@ -22,8 +22,8 @@ class HeatingStatusLayout : FrameLayout {
 		private const val CIRCLE_STROKE_WIDTH_FACTOR = 1.3f
 	}
 
-	private val orderViewsIds: IntArray = intArrayOf(R.id.circleAm, R.id.circlePm)
-	private val orderViews: MutableList<CircleStatusView> = mutableListOf()
+	private val circleViewIds: IntArray = intArrayOf(R.id.circleAm, R.id.circlePm)
+	private val circleViews: MutableList<CircleStatusView> = mutableListOf()
 
 
 	// Attributes from layout
@@ -85,10 +85,10 @@ class HeatingStatusLayout : FrameLayout {
 		View.inflate(context, R.layout.heating_status_layout, this)
 	}
 
-	fun animateLayout(): Boolean {
+	fun showLayout(): Boolean {
 		if (measuredWidth != 0) {
 			calculateLayout(context, measuredWidth * MAX_RADIUS_MULTIPLIER)
-			animateCalculatedLayout()
+			showViews()
 			return true
 		}
 		return false
@@ -96,9 +96,9 @@ class HeatingStatusLayout : FrameLayout {
 
 	private fun calculateLayout(context: Context, maxRadius: Float) {
 		cleanUpLayout()
-		(0 until animItemsCount).mapTo(orderViews) { findViewById<CircleStatusView>(orderViewsIds[it]) }
+		(0 until animItemsCount).mapTo(circleViews) { findViewById<CircleStatusView>(circleViewIds[it]) }
 		val circleSeparation = maxRadius * CIRCLE_SEPARATION_FACTOR
-		orderViews.forEachIndexed { index, orderStatusView ->
+		circleViews.forEachIndexed { index, orderStatusView ->
 			if (index >= animItemsCount) return
 			val radius = maxRadius - (circleSeparation * index)
 			orderStatusView.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR)
@@ -107,21 +107,21 @@ class HeatingStatusLayout : FrameLayout {
 	}
 
 	private fun cleanUpLayout() {
-		orderViews.clear()
+		circleViews.clear()
 
-		(0 until orderViewsIds.size)
-				.map { findViewById<CircleStatusView>(orderViewsIds[it]) }
+		(0 until circleViewIds.size)
+				.map { findViewById<CircleStatusView>(circleViewIds[it]) }
 				.forEach { it.cleanView() }
 
 	}
 
 	fun setInterpolator(i: Interpolator) {
-		orderViews.forEach { it.setInterpolator(i) }
+		circleViews.forEach { it.setInterpolator(i) }
 	}
 
-	private fun animateCalculatedLayout() {
-		orderViews.forEachIndexed { _, orderStatusView ->
-			orderStatusView.animateDynamic()
+	private fun showViews() {
+		circleViews.forEachIndexed { _, orderStatusView ->
+			orderStatusView.showView()
 		}
 	}
 
