@@ -20,7 +20,7 @@
 			android:id="@+id/include" layout="@layout/toolbar" />
 
 
-		<cz.koto.customview.view.circle.loader.HeatingStatusLayout
+		<cz.koto.kotiheating.ui.status.HeatingStatusLayout
 			android:id="@+id/circleProgress"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"

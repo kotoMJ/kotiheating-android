@@ -1,4 +1,4 @@
-package cz.koto.customview.view.circle.loader
+package cz.koto.kotiheating.ui.status
 
 import android.annotation.SuppressLint
 import android.content.Context
