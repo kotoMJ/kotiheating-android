@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Interpolator
 import android.widget.FrameLayout
+import common.log.logk
 import cz.koto.kotiheating.R
 
 
@@ -91,7 +92,6 @@ class HeatingStatusLayout : FrameLayout {
 	}
 
 	private fun calculateLayout(context: Context, maxRadius: Float) {
-		cleanUpLayout()
 		(0 until animItemsCount).mapTo(circleViews) { findViewById<CircleStatusView>(circleViewIds[it]) }
 		val circleSeparation = maxRadius * CIRCLE_SEPARATION_FACTOR
 		circleViews.forEachIndexed { index, orderStatusView ->
@@ -102,20 +102,9 @@ class HeatingStatusLayout : FrameLayout {
 		}
 	}
 
-	private fun cleanUpLayout() {
-		circleViews.clear()
-
-		(0 until circleViewIds.size)
-				.map { findViewById<CircleStatusView>(circleViewIds[it]) }
-				.forEach { it.cleanView() }
-
-	}
-
-	fun setInterpolator(i: Interpolator) {
-		circleViews.forEach { it.setInterpolator(i) }
-	}
 
 	private fun showViews() {
+		logk(">>showViews ${circleViews.size}")
 		circleViews.forEachIndexed { _, orderStatusView ->
 			orderStatusView.showView()
 		}

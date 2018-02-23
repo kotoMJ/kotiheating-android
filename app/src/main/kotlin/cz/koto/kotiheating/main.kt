@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity(), MainView {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		vmb.binding.circleProgress.setInterpolator(DecelerateInterpolator()/*LinearInterpolator()*/)
 		vmb.binding.circleProgress.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 			override fun onGlobalLayout() {
 				if (vmb.binding.circleProgress.showLayout()) {
