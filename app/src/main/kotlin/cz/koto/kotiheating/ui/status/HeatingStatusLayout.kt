@@ -8,7 +8,6 @@ import android.view.View
 import android.view.animation.Interpolator
 import android.widget.FrameLayout
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.ui.status.CircleStatusView
 
 
 class HeatingStatusLayout : FrameLayout {
@@ -28,9 +27,6 @@ class HeatingStatusLayout : FrameLayout {
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
-
-	var completeColor: Int? = null
-	var uncompleteColor: Int? = null
 
 	private var animItemsCount = 2
 
