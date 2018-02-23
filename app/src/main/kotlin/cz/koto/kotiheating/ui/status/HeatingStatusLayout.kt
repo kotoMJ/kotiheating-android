@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.Interpolator
 import android.widget.FrameLayout
-import common.log.logk
 import cz.koto.kotiheating.R
 
 
@@ -22,15 +20,11 @@ class HeatingStatusLayout : FrameLayout {
 		private const val CIRCLE_STROKE_WIDTH_FACTOR = 1.3f
 	}
 
-	private val circleViewIds: IntArray = intArrayOf(R.id.circleAm, R.id.circlePm)
-	private val circleViews: MutableList<CircleStatusView> = mutableListOf()
-
+	private lateinit var circleViewPm: CircleStatusView
+	private lateinit var circleViewAm: CircleStatusView
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
-
-	private var animItemsCount = 2
-
 
 	constructor(context: Context) : super(context)
 
@@ -92,22 +86,21 @@ class HeatingStatusLayout : FrameLayout {
 	}
 
 	private fun calculateLayout(context: Context, maxRadius: Float) {
-		(0 until animItemsCount).mapTo(circleViews) { findViewById<CircleStatusView>(circleViewIds[it]) }
 		val circleSeparation = maxRadius * CIRCLE_SEPARATION_FACTOR
-		circleViews.forEachIndexed { index, orderStatusView ->
-			if (index >= animItemsCount) return
-			val radius = maxRadius - (circleSeparation * index)
-			orderStatusView.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR)
 
-		}
+		circleViewPm = findViewById(R.id.circlePm)
+		var radius = maxRadius - (circleSeparation * 0)
+		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR)
+
+		circleViewAm = findViewById(R.id.circleAm)
+		radius = maxRadius - (circleSeparation * 1)
+		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR)
 	}
 
 
 	private fun showViews() {
-		logk(">>showViews ${circleViews.size}")
-		circleViews.forEachIndexed { _, orderStatusView ->
-			orderStatusView.showView()
-		}
+		circleViewPm.showView()
+		circleViewAm.showView()
 	}
 
 }
