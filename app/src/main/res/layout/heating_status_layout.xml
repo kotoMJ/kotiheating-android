@@ -16,4 +16,9 @@
 		android:layout_height="match_parent"
 		android:elevation="@dimen/global_elevation_4" />
 
+	<cz.koto.kotiheating.ui.status.TextStatusView
+		android:id="@+id/centralTextStatusView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+
 </FrameLayout>

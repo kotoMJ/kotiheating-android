@@ -22,6 +22,7 @@ class HeatingStatusLayout : FrameLayout {
 
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
+	private lateinit var textStatusView: TextStatusView
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
@@ -95,12 +96,16 @@ class HeatingStatusLayout : FrameLayout {
 		circleViewAm = findViewById(R.id.circleAm)
 		radius = maxRadius - (circleSeparation * 1)
 		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR)
+
+		textStatusView = findViewById(R.id.centralTextStatusView)
+		textStatusView.init(attrs)
 	}
 
 
 	private fun showViews() {
 		circleViewPm.showView()
 		circleViewAm.showView()
+		textStatusView.showView()
 	}
 
 }

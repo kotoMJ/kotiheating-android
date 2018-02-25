@@ -33,7 +33,6 @@ internal class CircleStatusView : View {
 	private var strokeWidth: Float = 0f
 	private var defaultStrokeWidth: Float = 0f
 	private var animationDuration: Int = 0
-	private var backCircleColor: Int = 0
 
 
 	// Head and tail paints are used to properly draw arc ends, that is, the beginning shouldn't be rounded
@@ -112,30 +111,17 @@ internal class CircleStatusView : View {
 
 
 	private fun onDrawAnimateDynamic(canvas: Canvas, centerPoint: PointF) {
-		val sweepAngleDeltaSpeed = 5.5f
 		val animationRounds = 3
 		animationDuration = 4000
 
-		val startAngle = 0f
 		val endAngle = 360f * animationRounds
-
-		val sweepBoundaryAngle = 90f + updateSweepAngleDelta(sweepAngleDeltaSpeed)
 		this.endAngle = endAngle
 
-		val arcsPointsOnCircle = 360
-		val arcsOverlayPoints = true
 
 		if (animationStartTime == 0.toLong()) {
 			animationStartTime = System.currentTimeMillis()
 		}
 
-		/**
-		 * START SHAPE (decreasing first 90, then invisible). Disappears as the dynamic one grows.
-		 */
-//		if (currentFrameAngle < sweepBoundaryAngle) {
-//			val startShapeStartAngle = startAngle - sweepBoundaryAngle + currentFrameAngle
-//			ArcUtils.drawArc(canvas, centerPoint, radius, startShapeStartAngle, sweepBoundaryAngle, circlePaint!!)//body
-//		}
 
 		//https://stackoverflow.com/questions/27850634/how-to-draw-an-arc-segment-with-different-fill-and-stroke-colors-for-each-side
 
@@ -163,37 +149,6 @@ internal class CircleStatusView : View {
 			}
 		}
 
-
-
-
-		fun getHorizontalCenterDelta(text: String, typeface: Typeface, fontSize: Float): Float {
-			val p = Paint()
-			p.typeface = typeface
-			p.textSize = fontSize
-			val textWidth = p.measureText(text)
-			return textWidth / 2f
-		}
-
-		fun getVerticalCenterDelta(fontSize: Float): Float {
-			return fontSize / 4 //This is magic, empiric value
-		}
-
-
-		var centerTextPaint = TextPaint().apply {
-			isDither = true
-			isAntiAlias = true
-			color = Color.parseColor("#313131")
-			textSize = 140f//radius * 0.05f//0.66f
-			typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
-		}
-
-		val text = "18°C"
-		canvas.drawText(text,
-				centerPoint.x - getHorizontalCenterDelta(text, centerTextPaint.typeface, centerTextPaint.textSize),
-				centerPoint.y + getVerticalCenterDelta(centerTextPaint.textSize),
-				centerTextPaint)
-
-
 		drawAction = DrawAction.NONE
 	}
 
@@ -206,24 +161,6 @@ internal class CircleStatusView : View {
 				(centerPoint.x + radius * Math.cos(angleInRadians) + shiftX).toFloat(),
 				(centerPoint.y - radius * Math.sin(angleInRadians) + shiftY).toFloat(),
 				circleNumberPaint)
-	}
-
-	private val datapoints = arrayOf(1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f, 11f, 12f)
-
-	private fun getTotal(): Float {
-		var total = 0f
-		for (`val` in this.datapoints)
-			total += `val`
-		return total
-	}
-
-	private fun scale(): FloatArray {
-		val scaledValues = FloatArray(this.datapoints.size)
-		val total = getTotal() // Total all values supplied to the chart
-		for (i in 0 until this.datapoints.size) {
-			scaledValues[i] = this.datapoints[i] / total * 360 // Scale each value
-		}
-		return scaledValues
 	}
 
 
