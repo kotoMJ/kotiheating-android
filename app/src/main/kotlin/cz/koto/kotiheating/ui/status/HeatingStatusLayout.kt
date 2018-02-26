@@ -12,12 +12,12 @@ import cz.koto.kotiheating.R
 class HeatingStatusLayout : FrameLayout {
 
 	companion object {
-		// Workable width is going to be 20 % less than total width
-		// 0.4f comes from 80 % / 2, because the radius is half of the workable width
-		private const val MAX_RADIUS_MULTIPLIER = 0.4f
+		// Workable width is going to be 10 % less than total width
+		// 0.45f comes from 90 % / 2, because the radius is half of the workable width
+		private const val MAX_RADIUS_MULTIPLIER = 0.45f
 		// 25 % of the max radius
 		private const val CIRCLE_SEPARATION_FACTOR = 0.25f
-		private const val CIRCLE_STROKE_WIDTH_FACTOR = 1.3f
+		private const val CIRCLE_STROKE_WIDTH_FACTOR = 1.2f
 	}
 
 	private lateinit var circleViewPm: CircleStatusView
