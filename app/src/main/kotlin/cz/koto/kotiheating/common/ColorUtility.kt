@@ -6,7 +6,8 @@ package cz.koto.kotiheating.common
 fun getColorForTemperature(temperature: Float?): String {
 
 	when (temperature) {
-		null -> return ""
+		null -> return "#ffffff"
+
 		/* marginal freeze values : Light Blue */
 		in 0..1 -> return "#81D4FA"//200
 		in 1..2 -> return "#81D4FA"//200

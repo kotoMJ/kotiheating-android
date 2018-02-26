@@ -12,6 +12,7 @@ import android.view.animation.Interpolator
 import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.ArcUtils
+import cz.koto.kotiheating.common.getColorForTemperature
 
 
 internal class CircleStatusView : View {
@@ -50,6 +51,8 @@ internal class CircleStatusView : View {
 	private var initialized: Boolean = false
 	private var drawAction: DrawAction = DrawAction.NONE
 
+	private lateinit var statusItemList: List<Pair<Int,Float>>
+
 	private val currentFrameAngle: Float
 		get() {
 			val now = System.currentTimeMillis()
@@ -74,10 +77,12 @@ internal class CircleStatusView : View {
 
 	fun init(attrs: TypedArray,
 			 customRadius: Float,
-			 customStrokeWidth: Float) {
+			 customStrokeWidth: Float,
+			 statusItemList: List<Pair<Int,Float>>) {
 		interpolator = AccelerateDecelerateInterpolator()
 		radius = customRadius
 		defaultStrokeWidth = customStrokeWidth
+		this.statusItemList = statusItemList
 		readAttributesAndSetupFields(attrs)
 
 		setupStatusGeneralCirclePaint()
@@ -139,20 +144,28 @@ internal class CircleStatusView : View {
 		val circleHourSweepAngle = 30f
 		var circleHourTextCurrentAngel = 75f
 		var circleHourBackgroundAngel = -90f
-		var colorArray = arrayOf("#55E08F","#3274ff","#EE4F4F","#90caf9","#55E08F","#3274ff","#EE4F4F","#90caf9","#55E08F","#3274ff","#EE4F4F","#90caf9")
 		circlePaint?.let {
 
 			for (i in 0 until 12) {
-				it.color = Color.parseColor(colorArray.get(i))
+				it.color = Color.parseColor(getColorForTemperature(if (statusItemList.size <= i) {
+					null
+				} else {
+					statusItemList[i].second
+				}))
+				val text = if (statusItemList.size <= i) {
+					"N/A"
+				} else {
+					"${statusItemList[i].first}"
+				}
 				ArcUtils.drawArc(canvas, centerPoint, radius, circleHourBackgroundAngel.apply { circleHourBackgroundAngel += circleHourSweepAngle }, circleHourSweepAngle, it)//body
-				paintCircleNumber("$i", circleHourTextCurrentAngel.apply { circleHourTextCurrentAngel -= circleHourSweepAngle }, canvas, centerPoint, circleNumberPaint)
+				paintCircleNumber("$text", circleHourTextCurrentAngel.apply { circleHourTextCurrentAngel -= circleHourSweepAngle }, canvas, centerPoint, circleNumberPaint)
 			}
 		}
 
 		drawAction = DrawAction.NONE
 	}
 
-	private fun paintCircleNumber(text:String, angleInDegrees: Float, canvas: Canvas, centerPoint: PointF, circleNumberPaint: TextPaint) {
+	private fun paintCircleNumber(text: String, angleInDegrees: Float, canvas: Canvas, centerPoint: PointF, circleNumberPaint: TextPaint) {
 		val angleInRadians = angleInDegrees * (Math.PI / 180)
 		var shiftX = -circleNumberPaint.textSize / 2
 		var shiftY = +circleNumberPaint.textSize / 2

@@ -23,6 +23,7 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
+	lateinit var statusItemMap: HashMap<Int, Float>
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
@@ -79,26 +80,26 @@ class HeatingStatusLayout : FrameLayout {
 
 	fun showLayout(): Boolean {
 		if (measuredWidth != 0) {
-			calculateLayout(context, measuredWidth * MAX_RADIUS_MULTIPLIER)
+			calculateLayout(measuredWidth * MAX_RADIUS_MULTIPLIER)
 			showViews()
 			return true
 		}
 		return false
 	}
 
-	private fun calculateLayout(context: Context, maxRadius: Float) {
+	private fun calculateLayout(maxRadius: Float) {
 		val circleSeparation = maxRadius * CIRCLE_SEPARATION_FACTOR
 
 		circleViewPm = findViewById(R.id.circlePm)
 		var radius = maxRadius - (circleSeparation * 0)
-		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR)
+		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.filterKeys { it > 11 }.toList())
 
 		circleViewAm = findViewById(R.id.circleAm)
 		radius = maxRadius - (circleSeparation * 1)
-		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR)
+		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.filterKeys { it <= 11 }.toList())
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
-		centralTextStatusView.init(attrs)
+		centralTextStatusView.init(attrs, statusItemMap)
 	}
 
 
