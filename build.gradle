@@ -26,6 +26,7 @@ buildscript {
     ext.rxjava_version = '2.1.2'
     ext.arch_lifecycle_version = "1.1.0"
     ext.fabric_version = "1.25.1"
+    ext.tatarka_version = "2.3.0-beta1"
 
     repositories {
         maven {url 'https://maven.google.com'}

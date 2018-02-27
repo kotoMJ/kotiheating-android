@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.common
+package cz.koto.kotiheating.ktools
 
 import android.app.Activity
 import android.arch.lifecycle.Lifecycle

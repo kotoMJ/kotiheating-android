@@ -2,12 +2,9 @@ package cz.koto.kotiheating
 
 import android.arch.lifecycle.ViewModel
 import android.os.Bundle
-import android.support.v4.graphics.ColorUtils
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewTreeObserver
-import android.view.animation.DecelerateInterpolator
-import cz.koto.kotiheating.common.getColorForTemperature
-import cz.koto.kotiheating.common.vmb
+import cz.koto.kotiheating.ktools.vmb
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), MainView {
