@@ -51,7 +51,7 @@ internal class CircleStatusView : View {
 	private var initialized: Boolean = false
 	private var drawAction: DrawAction = DrawAction.NONE
 
-	private lateinit var statusItemList: List<Pair<Int, StatusItem>>
+	private lateinit var statusItemList: List<StatusItem>
 
 	private val currentFrameAngle: Float
 		get() {
@@ -78,7 +78,7 @@ internal class CircleStatusView : View {
 	fun init(attrs: TypedArray,
 			 customRadius: Float,
 			 customStrokeWidth: Float,
-			 statusItemList: List<Pair<Int, StatusItem>>) {
+			 statusItemList: List<StatusItem>) {
 		interpolator = AccelerateDecelerateInterpolator()
 		radius = customRadius
 		defaultStrokeWidth = customStrokeWidth
@@ -150,12 +150,12 @@ internal class CircleStatusView : View {
 				it.color = Color.parseColor(getColorForTemperature(if (statusItemList.size <= i) {
 					null
 				} else {
-					statusItemList[i].second.temperature
+					statusItemList[i].temperature
 				}))
 				val text = if (statusItemList.size <= i) {
 					"N/A"
 				} else {
-					"${statusItemList[i].first}"
+					"${statusItemList[i].hour}"
 				}
 				ArcUtils.drawArc(canvas, centerPoint, radius, circleHourBackgroundAngel.apply { circleHourBackgroundAngel += circleHourSweepAngle }, circleHourSweepAngle, it)//body
 				paintCircleNumber("$text", circleHourTextCurrentAngel.apply { circleHourTextCurrentAngel -= circleHourSweepAngle }, canvas, centerPoint, circleNumberPaint)

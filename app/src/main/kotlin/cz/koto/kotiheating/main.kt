@@ -41,33 +41,33 @@ class MainViewModel : ViewModel() {
 //			.bindExtra(BR.viewModel, this)
 //			.bindExtra(BR.listener, itemClickCallback)!!
 
-	var statusItemMap: HashMap<Int, StatusItem> = hashMapOf(
+	var statusItemMap: List<StatusItem> = listOf(
 
-			0 to StatusItem(15f),
-			1 to StatusItem(15f),
-			2 to StatusItem(15f),
-			3 to StatusItem(15f),
-			4 to StatusItem(15f),
-			5 to StatusItem(15f),
-			6 to StatusItem(15f),
-			7 to StatusItem(15f),
-			8 to StatusItem(15f),
-			9 to StatusItem(15f),
-			10 to StatusItem(15f),
-			11 to StatusItem(16f),
+			StatusItem(15f, 0),
+			StatusItem(15f, 1),
+			StatusItem(15f, 2),
+			StatusItem(15f, 3),
+			StatusItem(15f, 4),
+			StatusItem(15f, 5),
+			StatusItem(15f, 6),
+			StatusItem(15f, 7),
+			StatusItem(15f, 8),
+			StatusItem(15f, 9),
+			StatusItem(15f, 10),
+			StatusItem(16f, 11),
 
-			12 to StatusItem(17f),
-			13 to StatusItem(18f),
-			14 to StatusItem(19f),
-			15 to StatusItem(20f),
-			16 to StatusItem(21f),
-			17 to StatusItem(22f),
-			18 to StatusItem(23f),
-			19 to StatusItem(23f),
-			20 to StatusItem(23f),
-			21 to StatusItem(22f),
-			22 to StatusItem(15f),
-			23 to StatusItem(15f))
+			StatusItem(17f, 12),
+			StatusItem(18f, 13),
+			StatusItem(19f, 14),
+			StatusItem(20f, 15),
+			StatusItem(21f, 16),
+			StatusItem(22f, 17),
+			StatusItem(23f, 18),
+			StatusItem(23f, 19),
+			StatusItem(23f, 20),
+			StatusItem(22f, 21),
+			StatusItem(15f, 22),
+			StatusItem(15f, 23))
 
 }
 

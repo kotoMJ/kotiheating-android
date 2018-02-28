@@ -5,6 +5,10 @@
 	<data>
 
 		<variable
+			name="item"
+			type="cz.koto.kotiheating.ui.status.StatusItem" />
+
+		<variable
 			name="viewModel"
 			type="cz.koto.kotiheating.MainViewModel" />
 

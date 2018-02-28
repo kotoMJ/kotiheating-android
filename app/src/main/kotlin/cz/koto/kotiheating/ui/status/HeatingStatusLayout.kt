@@ -23,7 +23,7 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
-	lateinit var statusItemMap: HashMap<Int, StatusItem>
+	lateinit var statusItemMap: List<StatusItem>
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
@@ -92,11 +92,11 @@ class HeatingStatusLayout : FrameLayout {
 
 		circleViewPm = findViewById(R.id.circlePm)
 		var radius = maxRadius - (circleSeparation * 0)
-		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.filterKeys { it > 11 }.toList())
+		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.filter { it.hour > 11 })
 
 		circleViewAm = findViewById(R.id.circleAm)
 		radius = maxRadius - (circleSeparation * 1)
-		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.filterKeys { it <= 11 }.toList())
+		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.filter { it.hour <= 11 })
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
 		centralTextStatusView.init(attrs, statusItemMap)

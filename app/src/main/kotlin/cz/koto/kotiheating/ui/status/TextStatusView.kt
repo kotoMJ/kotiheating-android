@@ -22,14 +22,14 @@ internal class TextStatusView : View {
 
 	private var initialized: Boolean = false
 	private var drawAction: DrawAction = DrawAction.NONE
-	private lateinit var statusItemMap: HashMap<Int, StatusItem>
+	private lateinit var statusList: List<StatusItem>
 
 	constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
 
 	constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
-	fun init(attrs: TypedArray, statusItemMap: HashMap<Int, StatusItem>) {
-		this.statusItemMap = statusItemMap
+	fun init(attrs: TypedArray, statusItemMap: List<StatusItem>) {
+		this.statusList = statusItemMap
 		readAttributesAndSetupFields(attrs)
 		initialized = true
 	}
@@ -83,7 +83,7 @@ internal class TextStatusView : View {
 		}
 
 
-		val text = "${statusItemMap.get(getCurrentHour())?.temperature?.toInt() ?: "N/A"}°C"
+		val text = "${statusList.get(getCurrentHour())?.temperature?.toInt() ?: "N/A"}°C"
 		canvas.drawText(text,
 				centerPoint.x - getHorizontalCenterDelta(text, centerTextPaint.typeface, centerTextPaint.textSize),
 				centerPoint.y + getVerticalCenterDelta(centerTextPaint.textSize),
