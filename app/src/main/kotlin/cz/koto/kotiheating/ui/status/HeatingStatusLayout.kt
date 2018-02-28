@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import cz.koto.kotiheating.R
+import cz.koto.kotiheating.ktools.DiffObservableListLiveData
 
 
 class HeatingStatusLayout : FrameLayout {
@@ -23,7 +24,7 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
-	lateinit var statusItemMap: List<StatusItem>
+	lateinit var statusItemMap: DiffObservableListLiveData<StatusItem>
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
@@ -92,11 +93,11 @@ class HeatingStatusLayout : FrameLayout {
 
 		circleViewPm = findViewById(R.id.circlePm)
 		var radius = maxRadius - (circleSeparation * 0)
-		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.filter { it.hour > 11 })
+		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.value?.data?.filter { it.hour > 11 }?: emptyList())
 
 		circleViewAm = findViewById(R.id.circleAm)
 		radius = maxRadius - (circleSeparation * 1)
-		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.filter { it.hour <= 11 })
+		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.value?.data?.filter { it.hour <= 11 }?: emptyList())
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
 		centralTextStatusView.init(attrs, statusItemMap)

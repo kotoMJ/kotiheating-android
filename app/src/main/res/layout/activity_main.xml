@@ -27,28 +27,39 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
-			android:layout_marginBottom="8dp"
 			android:layout_marginTop="8dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:onClick="@{()-> view.reloadStatus()}"
-			app:statusItemMap="@{viewModel.statusItemMap}"
-			app:layout_constraintBottom_toBottomOf="parent"
+			app:statusItemMap="@{viewModel.statusList}"
 			app:layout_constraintTop_toBottomOf="@+id/include"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent" />
 
-		<!--<android.support.v7.widget.RecyclerView-->
-			<!--android:layout_width="match_parent"-->
-			<!--android:layout_height="match_parent"-->
-			<!--android:padding="@dimen/global_spacing_8"-->
-			<!--android:paddingBottom="@dimen/global_spacing_96"-->
-			<!--android:clipToPadding="false"-->
-			<!--app:layoutManager="@{LayoutManagers.linear()}"-->
-			<!--app:liveDataItemBinding="@{viewModel.itemBinding}"-->
-			<!--app:liveDataItems="@{viewModel.wallets}"-->
-			<!--app:liveDataAdapter="@{view.lifecycleAwareAdapter}"-->
-			<!--tools:listitem="@layout/item_heating" />-->
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="8dp"
+			app:layout_constraintTop_toBottomOf="@+id/circleProgress"
+			app:layout_constraintBottom_toBottomOf="parent">
+
+			<android.support.v7.widget.RecyclerView
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginBottom="8dp"
+				android:layout_marginTop="8dp"
+				android:padding="@dimen/global_spacing_8"
+				android:paddingBottom="@dimen/global_spacing_96"
+				android:clipToPadding="false"
+				app:layoutManager="@{LayoutManagers.linear()}"
+				app:liveDataItemBinding="@{viewModel.itemBinding}"
+				app:liveDataItems="@{viewModel.statusList}"
+				app:liveDataAdapter="@{view.lifecycleAwareAdapter}"
+				tools:listitem="@layout/item_heating"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/circleProgress" />
+		</LinearLayout>
+
 
 	</android.support.constraint.ConstraintLayout>
 </layout>

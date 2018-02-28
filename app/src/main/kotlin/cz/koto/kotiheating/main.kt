@@ -6,8 +6,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.ViewTreeObserver
 import cz.koto.kotiheating.ktools.vmb
 import cz.koto.kotiheating.databinding.ActivityMainBinding
+import cz.koto.kotiheating.ktools.DiffObservableListLiveData
+import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
+import cz.koto.kotiheating.ui.status.MockListLiveData
 import cz.koto.kotiheating.ui.status.StatusItem
 import me.tatarka.bindingcollectionadapter2.ItemBinding
+import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
 class MainActivity : AppCompatActivity(), MainView {
 
@@ -29,45 +33,31 @@ class MainActivity : AppCompatActivity(), MainView {
 	override fun reloadStatus() {
 		vmb.binding.circleProgress.showLayout()
 	}
+
+	override val lifecycleAwareAdapter = LifecycleAwareBindingRecyclerViewAdapter<StatusItem>(this)
 }
 
 interface MainView {
 	fun reloadStatus()
+	val lifecycleAwareAdapter: LifecycleAwareBindingRecyclerViewAdapter<StatusItem> // TODO: Temp fix for tatarka - remove when tatarka adds support for lifecycle
+
 }
+
 
 class MainViewModel : ViewModel() {
 
-//	val itemBinding = ItemBinding.of<WalletOverview>(BR.item, R.layout.item_dashboard)
-//			.bindExtra(BR.viewModel, this)
-//			.bindExtra(BR.listener, itemClickCallback)!!
+	val itemBinding = ItemBinding.of<StatusItem>(BR.item, R.layout.item_heating)
+			.bindExtra(BR.viewModel, this)
 
-	var statusItemMap: List<StatusItem> = listOf(
 
-			StatusItem(15f, 0),
-			StatusItem(15f, 1),
-			StatusItem(15f, 2),
-			StatusItem(15f, 3),
-			StatusItem(15f, 4),
-			StatusItem(15f, 5),
-			StatusItem(15f, 6),
-			StatusItem(15f, 7),
-			StatusItem(15f, 8),
-			StatusItem(15f, 9),
-			StatusItem(15f, 10),
-			StatusItem(16f, 11),
+	var statusList: DiffObservableListLiveData<StatusItem>
 
-			StatusItem(17f, 12),
-			StatusItem(18f, 13),
-			StatusItem(19f, 14),
-			StatusItem(20f, 15),
-			StatusItem(21f, 16),
-			StatusItem(22f, 17),
-			StatusItem(23f, 18),
-			StatusItem(23f, 19),
-			StatusItem(23f, 20),
-			StatusItem(22f, 21),
-			StatusItem(15f, 22),
-			StatusItem(15f, 23))
+	init {
+		statusList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
+			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem == newItem
+			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem == newItem
+		})
+	}
 
 }
 
