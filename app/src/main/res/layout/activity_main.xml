@@ -2,6 +2,8 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
+		<import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
+
 		<variable
 			name="viewModel"
 			type="cz.koto.kotiheating.MainViewModel" />
@@ -36,6 +38,17 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent" />
 
+		<!--<android.support.v7.widget.RecyclerView-->
+			<!--android:layout_width="match_parent"-->
+			<!--android:layout_height="match_parent"-->
+			<!--android:padding="@dimen/global_spacing_8"-->
+			<!--android:paddingBottom="@dimen/global_spacing_96"-->
+			<!--android:clipToPadding="false"-->
+			<!--app:layoutManager="@{LayoutManagers.linear()}"-->
+			<!--app:liveDataItemBinding="@{viewModel.itemBinding}"-->
+			<!--app:liveDataItems="@{viewModel.wallets}"-->
+			<!--app:liveDataAdapter="@{view.lifecycleAwareAdapter}"-->
+			<!--tools:listitem="@layout/item_heating" />-->
 
 	</android.support.constraint.ConstraintLayout>
 </layout>

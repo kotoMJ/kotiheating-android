@@ -51,7 +51,7 @@ internal class CircleStatusView : View {
 	private var initialized: Boolean = false
 	private var drawAction: DrawAction = DrawAction.NONE
 
-	private lateinit var statusItemList: List<Pair<Int,Float>>
+	private lateinit var statusItemList: List<Pair<Int, StatusItem>>
 
 	private val currentFrameAngle: Float
 		get() {
@@ -78,7 +78,7 @@ internal class CircleStatusView : View {
 	fun init(attrs: TypedArray,
 			 customRadius: Float,
 			 customStrokeWidth: Float,
-			 statusItemList: List<Pair<Int,Float>>) {
+			 statusItemList: List<Pair<Int, StatusItem>>) {
 		interpolator = AccelerateDecelerateInterpolator()
 		radius = customRadius
 		defaultStrokeWidth = customStrokeWidth
@@ -150,7 +150,7 @@ internal class CircleStatusView : View {
 				it.color = Color.parseColor(getColorForTemperature(if (statusItemList.size <= i) {
 					null
 				} else {
-					statusItemList[i].second
+					statusItemList[i].second.temperature
 				}))
 				val text = if (statusItemList.size <= i) {
 					"N/A"

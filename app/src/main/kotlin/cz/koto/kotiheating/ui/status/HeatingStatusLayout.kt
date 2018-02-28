@@ -23,7 +23,7 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
-	lateinit var statusItemMap: HashMap<Int, Float>
+	lateinit var statusItemMap: HashMap<Int, StatusItem>
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
