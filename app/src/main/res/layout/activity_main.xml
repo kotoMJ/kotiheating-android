@@ -37,7 +37,7 @@
 					android:layout_height="match_parent"
 					app:contentScrim="?attr/colorPrimary"
 					app:titleEnabled="false"
-					app:layout_scrollFlags="scroll|enterAlways|snap"
+					app:layout_scrollFlags="scroll|enterAlways"
 					app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title">
 
 					<cz.koto.kotiheating.ui.status.HeatingStatusLayout
