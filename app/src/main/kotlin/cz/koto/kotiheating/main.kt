@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.ViewTreeObserver
-import common.log.logk
 import cz.koto.kotiheating.ktools.vmb
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ktools.DiffObservableListLiveData
@@ -17,6 +16,9 @@ import cz.koto.kotiheating.ui.status.MockListLiveData
 import cz.koto.kotiheating.ui.status.StatusItem
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
+import android.databinding.adapters.CompoundButtonBindingAdapter.setChecked
+
+
 
 class MainActivity : AppCompatActivity(), MainView {
 
@@ -51,6 +53,8 @@ class MainActivity : AppCompatActivity(), MainView {
 		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
 		itemTouchRightHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
 	}
+
+
 
 	private fun updateItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean) {
 		val position = viewHolder.layoutPosition

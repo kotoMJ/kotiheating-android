@@ -6,6 +6,7 @@ import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.RadioButton
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.ktools.DiffObservableListLiveData
 
@@ -77,6 +78,45 @@ class HeatingStatusLayout : FrameLayout {
 
 	private fun inflateViews() {
 		View.inflate(context, R.layout.heating_status_layout, this)
+		setCustomRadioGroups()
+	}
+
+	private fun setCustomRadioGroups() {
+		val statusDeviceProgressRadio: RadioButton = findViewById(R.id.deviceStatusProgress)
+		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
+		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
+
+		statusDeviceProgressRadio.setOnClickListener({
+			statusDeviceProgressRadio.isChecked = true
+			statusDeviceSyncedRadio.isChecked = false
+			statusRequestRadio.isChecked = false
+		})
+
+		statusDeviceSyncedRadio.setOnClickListener({
+			statusDeviceSyncedRadio.isChecked = true
+			statusDeviceProgressRadio.isChecked = false
+			statusRequestRadio.isChecked = false
+		})
+
+		statusRequestRadio.setOnClickListener({
+			statusRequestRadio.isChecked = true
+			statusDeviceProgressRadio.isChecked = false
+			statusDeviceSyncedRadio.isChecked = false
+		})
+
+		val unitHeatingRadio: RadioButton = findViewById(R.id.heatingUnit)
+		val unitTimeRadio: RadioButton = findViewById(R.id.timeUnit)
+
+		unitHeatingRadio.setOnClickListener({
+			unitHeatingRadio.isChecked = true
+			unitTimeRadio.isChecked = false
+		})
+
+		unitTimeRadio.setOnClickListener({
+			unitTimeRadio.isChecked = true
+			unitHeatingRadio.isChecked = false
+		})
+
 	}
 
 	fun showLayout(): Boolean {
@@ -93,11 +133,13 @@ class HeatingStatusLayout : FrameLayout {
 
 		circleViewPm = findViewById(R.id.circlePm)
 		var radius = maxRadius - (circleSeparation * 0)
-		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.value?.data?.filter { it.hour > 11 }?: emptyList())
+		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.value?.data?.filter { it.hour > 11 }
+				?: emptyList())
 
 		circleViewAm = findViewById(R.id.circleAm)
 		radius = maxRadius - (circleSeparation * 1)
-		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.value?.data?.filter { it.hour <= 11 }?: emptyList())
+		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, statusItemMap.value?.data?.filter { it.hour <= 11 }
+				?: emptyList())
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
 		centralTextStatusView.init(attrs, statusItemMap)

@@ -3,6 +3,69 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top">
+		<RadioGroup
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<RadioButton
+				android:id="@+id/deviceStatusProgress"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableRight="@drawable/ic_cloud_download" />
+
+			<RadioButton
+				android:id="@+id/deviceStatusSynced"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableRight="@drawable/ic_cloud_done" />
+
+			<LinearLayout
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:gravity="end">
+				<RadioButton
+					android:id="@+id/requestStatus"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:drawableRight="@drawable/ic_cloud_upload" />
+			</LinearLayout>
+
+		</RadioGroup>
+	</FrameLayout>
+
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom">
+		<RadioGroup
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
+			<RadioButton
+				android:id="@+id/timeUnit"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableRight="@drawable/ic_time" />
+			<LinearLayout
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:gravity="end">
+				<RadioButton
+					android:id="@+id/heatingUnit"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="°C" />
+			</LinearLayout>
+		</RadioGroup>
+	</FrameLayout>
 
 	<cz.koto.kotiheating.ui.status.CircleStatusView
 		android:id="@+id/circleAm"
