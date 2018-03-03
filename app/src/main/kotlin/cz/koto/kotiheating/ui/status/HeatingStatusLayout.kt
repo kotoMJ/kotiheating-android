@@ -202,6 +202,19 @@ class HeatingStatusLayout : FrameLayout {
 
 	private fun setProperDataSource(invokedByValueChange: Boolean) {
 
+		val (statusDeviceProgressRadio: RadioButton, statusDeviceSyncedRadio: RadioButton, statusRequestRadio: RadioButton)
+				= updateStatusRadioVisibility(invokedByValueChange)
+
+		if (statusDeviceProgressRadio.isChecked || statusDeviceSyncedRadio.isChecked) {
+			listToDisplay = statusServerItemList
+		} else if (statusRequestRadio.isChecked) {
+			listToDisplay = statusRequestItemList
+		} else {
+			throw IllegalStateException("Unexpected state of status radio group!")
+		}
+	}
+
+	private fun updateStatusRadioVisibility(invokedByValueChange: Boolean): Triple<RadioButton, RadioButton, RadioButton> {
 		val statusDeviceProgressRadio: RadioButton = findViewById(R.id.deviceStatusProgress)
 		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
 		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
@@ -226,16 +239,7 @@ class HeatingStatusLayout : FrameLayout {
 				statusRequestRadio.isChecked = true //Default option
 			}
 		}
-
-
-
-		if (statusDeviceProgressRadio.isChecked || statusDeviceSyncedRadio.isChecked) {
-			listToDisplay = statusServerItemList
-		} else if (statusRequestRadio.isChecked) {
-			listToDisplay = statusRequestItemList
-		} else {
-			throw IllegalStateException("Unexpected state of status radio group!")
-		}
+		return Triple(statusDeviceProgressRadio, statusDeviceSyncedRadio, statusRequestRadio)
 	}
 
 
