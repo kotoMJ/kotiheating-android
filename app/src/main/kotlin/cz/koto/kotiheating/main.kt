@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), MainView {
 
 		val swipeLeftHandler = object : SwipeToLeftCallback(this, vmb.viewModel) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateItem(viewHolder,increase = false)
+				updateItem(viewHolder, increase = false)
 			}
 		}
 		val itemTouchLeftHelper = ItemTouchHelper(swipeLeftHandler)
@@ -45,13 +45,12 @@ class MainActivity : AppCompatActivity(), MainView {
 
 		val swipeRightHandler = object : SwipeToRightCallback(this, vmb.viewModel) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateItem(viewHolder,increase = true)
+				updateItem(viewHolder, increase = true)
 			}
 		}
 		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
 		itemTouchRightHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
 	}
-
 
 
 	private fun updateItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean) {
@@ -76,7 +75,7 @@ class MainActivity : AppCompatActivity(), MainView {
 		vmb.binding.viewModel?.statusRequestList?.diffList?.update(newList)
 
 		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-		vmb.binding.circleProgress.showLayout()
+		vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 	}
 
 	override fun reloadStatus() {

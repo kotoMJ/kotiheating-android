@@ -120,24 +120,27 @@ class HeatingStatusLayout : FrameLayout {
 			statusDeviceProgressRadio.isChecked = true
 			statusDeviceSyncedRadio.isChecked = false
 			statusRequestRadio.isChecked = false
+			showLayout()
 		})
 
 		statusDeviceSyncedRadio.setOnClickListener({
 			statusDeviceSyncedRadio.isChecked = true
 			statusDeviceProgressRadio.isChecked = false
 			statusRequestRadio.isChecked = false
+			showLayout()
 		})
 
 		statusRequestRadio.setOnClickListener({
 			statusRequestRadio.isChecked = true
 			statusDeviceProgressRadio.isChecked = false
 			statusDeviceSyncedRadio.isChecked = false
+			showLayout()
 		})
 	}
 
-	fun showLayout(): Boolean {
+	fun showLayout(invokedByValueChange: Boolean = false): Boolean {
 		if (measuredWidth != 0) {
-			calculateLayout(measuredWidth * MAX_RADIUS_MULTIPLIER)
+			calculateLayout(measuredWidth * MAX_RADIUS_MULTIPLIER, invokedByValueChange)
 			showViews()
 			return true
 		}
@@ -145,8 +148,8 @@ class HeatingStatusLayout : FrameLayout {
 	}
 
 
-	private fun calculateLayout(maxRadius: Float) {
-		setProperDatasource()
+	private fun calculateLayout(maxRadius: Float, invokedByValueChange: Boolean) {
+		setProperDataSource(invokedByValueChange)
 
 		val circleSeparation = maxRadius * CIRCLE_SEPARATION_FACTOR
 
@@ -164,7 +167,7 @@ class HeatingStatusLayout : FrameLayout {
 		centralTextStatusView.init(attrs, listToDisplay)
 	}
 
-	private fun setProperDatasource() {
+	private fun setProperDataSource(invokedByValueChange: Boolean) {
 
 		val statusDeviceProgressRadio: RadioButton = findViewById(R.id.deviceStatusProgress)
 		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
@@ -179,7 +182,12 @@ class HeatingStatusLayout : FrameLayout {
 			statusDeviceProgressRadio.visibility = View.VISIBLE
 			statusRequestRadio.visibility = View.VISIBLE
 			statusDeviceSyncedRadio.visibility = View.GONE
-			if (!statusDeviceProgressRadio.isChecked &&
+
+			if (invokedByValueChange) {
+				statusRequestRadio.isChecked = true
+				statusDeviceProgressRadio.isChecked = false
+				statusDeviceSyncedRadio.isChecked = false
+			} else if (!statusDeviceProgressRadio.isChecked &&
 					!statusDeviceSyncedRadio.isChecked &&
 					!statusRequestRadio.isChecked) {
 				statusRequestRadio.isChecked = true //Default option
