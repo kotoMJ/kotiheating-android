@@ -6,18 +6,16 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.ViewTreeObserver
-import cz.koto.kotiheating.ktools.vmb
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ktools.DiffObservableListLiveData
 import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
+import cz.koto.kotiheating.ktools.vmb
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.koto.kotiheating.ui.status.MockListLiveData
 import cz.koto.kotiheating.ui.status.StatusItem
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
-import android.databinding.adapters.CompoundButtonBindingAdapter.setChecked
-
 
 
 class MainActivity : AppCompatActivity(), MainView {
@@ -59,7 +57,7 @@ class MainActivity : AppCompatActivity(), MainView {
 	private fun updateItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean) {
 		val position = viewHolder.layoutPosition
 
-		val updatedItem = vmb.binding.viewModel?.statusList?.diffList?.get(position)
+		val updatedItem = vmb.binding.viewModel?.statusRequestList?.diffList?.get(position)
 
 		updatedItem?.apply {
 			if (increase) {
@@ -69,13 +67,13 @@ class MainActivity : AppCompatActivity(), MainView {
 			}
 		}
 
-		val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusList?.diffList?.toList())
+		val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusRequestList?.diffList?.toList())
 
 		updatedItem?.let {
 			newList.set(position, it)
 		}
 
-		vmb.binding.viewModel?.statusList?.diffList?.update(newList)
+		vmb.binding.viewModel?.statusRequestList?.diffList?.update(newList)
 
 		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 		vmb.binding.circleProgress.showLayout()
@@ -101,10 +99,16 @@ class MainViewModel : ViewModel() {
 			.bindExtra(BR.viewModel, this)
 
 
-	var statusList: DiffObservableListLiveData<StatusItem>
+	var statusServerList: DiffObservableListLiveData<StatusItem>
+	var statusRequestList: DiffObservableListLiveData<StatusItem>
 
 	init {
-		statusList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
+		statusServerList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
+			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
+			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
+		})
+
+		statusRequestList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
 			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
 			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
 		})

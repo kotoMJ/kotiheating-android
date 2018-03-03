@@ -47,7 +47,8 @@
 						android:layout_gravity="center"
 						android:layout_margin="8dp"
 						android:onClick="@{()-> view.reloadStatus()}"
-						app:statusItemMap="@{viewModel.statusList}"/>
+						app:statusServerItemList="@{viewModel.statusServerList}"
+						app:statusRequestItemList="@{viewModel.statusRequestList}" />
 
 				</android.support.design.widget.CollapsingToolbarLayout>
 			</android.support.design.widget.AppBarLayout>
@@ -63,7 +64,7 @@
 				android:clipToPadding="false"
 				app:layoutManager="@{LayoutManagers.linear()}"
 				app:liveDataItemBinding="@{viewModel.itemBinding}"
-				app:liveDataItems="@{viewModel.statusList}"
+				app:liveDataItems="@{viewModel.statusRequestList}"
 				app:liveDataAdapter="@{view.lifecycleAwareAdapter}"
 				tools:listitem="@layout/item_heating"
 				app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
