@@ -47,12 +47,8 @@
 	<color name="global_text_danger">#FF4632</color>
 
 	<!-- Status animation colors -->
-	<color name="order_status_color_1">#143380</color>
-	<color name="order_status_color_2">#00A2FF</color>
-	<color name="order_status_color_3">#00C1E5</color>
-	<color name="order_status_color_4">#00E0CB</color>
-	<color name="order_status_color_5">#55E08F</color>
-	<color name="order_status_color_6">#AAE052</color>
-	<color name="order_status_color_7">#FFE016</color>
-	<color name="order_status_color_default">#EBF0F6</color>
+	<!-- Status animation colors -->
+	<!-- Status animation colors -->
+	<color name="status_color_1">#55E08F</color>
+	<color name="status_color_default">#EBF0F6</color>
 </resources>

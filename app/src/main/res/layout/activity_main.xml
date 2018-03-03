@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
+		<import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
+
 		<variable
 			name="viewModel"
 			type="cz.koto.kotiheating.MainViewModel" />
@@ -10,30 +14,61 @@
 			name="view"
 			type="cz.koto.kotiheating.MainView" />
 	</data>
-	<android.support.constraint.ConstraintLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		tools:context="cz.koto.kotiheating">
+		android:orientation="vertical">
 
 		<include
 			android:id="@+id/include" layout="@layout/toolbar" />
 
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
-			android:layout_marginBottom="8dp"
-			android:layout_marginStart="8dp"
-			android:layout_marginEnd="8dp"
-			android:text="KoTiHeating"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintEnd_toEndOf="parent" />
+		<android.support.design.widget.CoordinatorLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
 
+			<android.support.design.widget.AppBarLayout
+				android:id="@+id/collapsing_appbar_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
 
-	</android.support.constraint.ConstraintLayout>
+				<android.support.design.widget.CollapsingToolbarLayout
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					app:contentScrim="?attr/colorPrimary"
+					app:titleEnabled="false"
+					app:layout_scrollFlags="scroll|enterAlways|snap"
+					app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title">
+
+					<cz.koto.kotiheating.ui.status.HeatingStatusLayout
+						android:id="@+id/circleProgress"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center"
+						android:layout_margin="8dp"
+						android:onClick="@{()-> view.reloadStatus()}"
+						app:statusItemMap="@{viewModel.statusList}"/>
+
+				</android.support.design.widget.CollapsingToolbarLayout>
+			</android.support.design.widget.AppBarLayout>
+
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/dailyScheduleRecycler"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_marginBottom="8dp"
+				android:layout_marginTop="8dp"
+				android:padding="@dimen/global_spacing_8"
+				android:paddingBottom="@dimen/global_spacing_96"
+				android:clipToPadding="false"
+				app:layoutManager="@{LayoutManagers.linear()}"
+				app:liveDataItemBinding="@{viewModel.itemBinding}"
+				app:liveDataItems="@{viewModel.statusList}"
+				app:liveDataAdapter="@{view.lifecycleAwareAdapter}"
+				tools:listitem="@layout/item_heating"
+				app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+		</android.support.design.widget.CoordinatorLayout>
+
+	</LinearLayout>
 </layout>
 
