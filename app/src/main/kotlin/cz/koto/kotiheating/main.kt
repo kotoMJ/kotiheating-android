@@ -12,6 +12,7 @@ import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ktools.DiffObservableListLiveData
 import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
+import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.koto.kotiheating.ui.status.MockListLiveData
 import cz.koto.kotiheating.ui.status.StatusItem
 import me.tatarka.bindingcollectionadapter2.ItemBinding
@@ -33,31 +34,47 @@ class MainActivity : AppCompatActivity(), MainView {
 			}
 		})
 
-		val swipeHandler = object : SwipeToLeftCallback(this, vmb.viewModel) {
+		val swipeLeftHandler = object : SwipeToLeftCallback(this, vmb.viewModel) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				var position = viewHolder.layoutPosition
+				updateItem(viewHolder,increase = false)
+			}
+		}
+		val itemTouchLeftHelper = ItemTouchHelper(swipeLeftHandler)
+		itemTouchLeftHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
 
-				var updatedItem = vmb.binding.viewModel?.statusList?.diffList?.get(position)
 
-				updatedItem?.apply {
-					temperature -= 1
-				}
+		val swipeRightHandler = object : SwipeToRightCallback(this, vmb.viewModel) {
+			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+				updateItem(viewHolder,increase = true)
+			}
+		}
+		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
+		itemTouchRightHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
+	}
 
-				var newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusList?.diffList?.toList())
+	private fun updateItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean) {
+		val position = viewHolder.layoutPosition
 
-				updatedItem?.let {
-					newList.set(position, it)
-				}
+		val updatedItem = vmb.binding.viewModel?.statusList?.diffList?.get(position)
 
-				vmb.binding.viewModel?.statusList?.diffList?.update(newList)
-
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-				vmb.binding.circleProgress.showLayout()
+		updatedItem?.apply {
+			if (increase) {
+				temperature += 1
+			} else {
+				temperature -= 1
 			}
 		}
 
-		val itemTouchHelper = ItemTouchHelper(swipeHandler)
-		itemTouchHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
+		val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusList?.diffList?.toList())
+
+		updatedItem?.let {
+			newList.set(position, it)
+		}
+
+		vmb.binding.viewModel?.statusList?.diffList?.update(newList)
+
+		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+		vmb.binding.circleProgress.showLayout()
 	}
 
 	override fun reloadStatus() {
