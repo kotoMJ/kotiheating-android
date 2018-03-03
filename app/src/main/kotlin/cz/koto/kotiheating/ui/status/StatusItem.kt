@@ -1,4 +1,4 @@
 package cz.koto.kotiheating.ui.status;
 
 
-class StatusItem(val temperature: Float, val hour: Int)
+class StatusItem(var temperature: Float, val hour: Int)

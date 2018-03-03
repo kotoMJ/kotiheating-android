@@ -3,11 +3,15 @@ package cz.koto.kotiheating
 import android.arch.lifecycle.ViewModel
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.ViewTreeObserver
+import common.log.logk
 import cz.koto.kotiheating.ktools.vmb
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ktools.DiffObservableListLiveData
 import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
+import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.status.MockListLiveData
 import cz.koto.kotiheating.ui.status.StatusItem
 import me.tatarka.bindingcollectionadapter2.ItemBinding
@@ -28,6 +32,32 @@ class MainActivity : AppCompatActivity(), MainView {
 				}
 			}
 		})
+
+		val swipeHandler = object : SwipeToLeftCallback(this, vmb.viewModel) {
+			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+				var position = viewHolder.layoutPosition
+
+				var updatedItem = vmb.binding.viewModel?.statusList?.diffList?.get(position)
+
+				updatedItem?.apply {
+					temperature -= 1
+				}
+
+				var newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusList?.diffList?.toList())
+
+				updatedItem?.let {
+					newList.set(position, it)
+				}
+
+				vmb.binding.viewModel?.statusList?.diffList?.update(newList)
+
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				vmb.binding.circleProgress.showLayout()
+			}
+		}
+
+		val itemTouchHelper = ItemTouchHelper(swipeHandler)
+		itemTouchHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
 	}
 
 	override fun reloadStatus() {
@@ -54,8 +84,8 @@ class MainViewModel : ViewModel() {
 
 	init {
 		statusList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
-			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem == newItem
-			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem == newItem
+			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
+			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
 		})
 	}
 
