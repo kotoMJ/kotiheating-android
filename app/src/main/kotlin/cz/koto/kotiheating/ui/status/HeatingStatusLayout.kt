@@ -23,6 +23,12 @@ class HeatingStatusLayout : FrameLayout {
 		private const val CIRCLE_STROKE_WIDTH_FACTOR = 1.2f
 	}
 
+	enum class DeviceStatusView {
+		SERVER_PROGRESS,
+		SERVER_SYNCED,
+		REQUEST
+	}
+
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
@@ -35,6 +41,9 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var attrs: TypedArray
 
 	private lateinit var circleNumberUnit: CircleStatusView.CircleNumberUnit
+
+	private var deviceStatusView: DeviceStatusView = DeviceStatusView.SERVER_PROGRESS
+
 
 	constructor(context: Context) : super(context)
 
@@ -118,36 +127,48 @@ class HeatingStatusLayout : FrameLayout {
 	}
 
 	private fun initStatusRadioGroup() {
+
 		val statusDeviceProgressRadio: RadioButton = findViewById(R.id.deviceStatusProgress)
 		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
 		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
 
-		if (!statusDeviceProgressRadio.isChecked &&
-				!statusDeviceSyncedRadio.isChecked &&
-				!statusRequestRadio.isChecked) {
-			statusDeviceProgressRadio.isChecked = true //Default option
-		}
-
 		statusDeviceProgressRadio.setOnClickListener({
-			statusDeviceProgressRadio.isChecked = true
-			statusDeviceSyncedRadio.isChecked = false
-			statusRequestRadio.isChecked = false
-			showLayout()
+			deviceStatusView = DeviceStatusView.SERVER_PROGRESS
+			updateStatusRadio(statusDeviceProgressRadio, statusDeviceSyncedRadio, statusRequestRadio)
 		})
 
 		statusDeviceSyncedRadio.setOnClickListener({
-			statusDeviceSyncedRadio.isChecked = true
-			statusDeviceProgressRadio.isChecked = false
-			statusRequestRadio.isChecked = false
-			showLayout()
+			deviceStatusView = DeviceStatusView.SERVER_SYNCED
+			updateStatusRadio(statusDeviceProgressRadio, statusDeviceSyncedRadio, statusRequestRadio)
 		})
 
 		statusRequestRadio.setOnClickListener({
-			statusRequestRadio.isChecked = true
-			statusDeviceProgressRadio.isChecked = false
-			statusDeviceSyncedRadio.isChecked = false
-			showLayout()
+			deviceStatusView = DeviceStatusView.REQUEST
+			updateStatusRadio(statusDeviceProgressRadio, statusDeviceSyncedRadio, statusRequestRadio)
 		})
+
+
+	}
+
+	private fun updateStatusRadio(statusDeviceProgressRadio: RadioButton, statusDeviceSyncedRadio: RadioButton, statusRequestRadio: RadioButton) {
+		when (deviceStatusView) {
+			DeviceStatusView.SERVER_PROGRESS -> {
+				statusDeviceProgressRadio.isChecked = true
+				statusDeviceSyncedRadio.isChecked = false
+				statusRequestRadio.isChecked = false
+			}
+			DeviceStatusView.SERVER_SYNCED -> {
+				statusDeviceSyncedRadio.isChecked = true
+				statusDeviceProgressRadio.isChecked = false
+				statusRequestRadio.isChecked = false
+			}
+			DeviceStatusView.REQUEST -> {
+				statusRequestRadio.isChecked = true
+				statusDeviceProgressRadio.isChecked = false
+				statusDeviceSyncedRadio.isChecked = false
+			}
+		}
+		showLayout()
 	}
 
 	fun showLayout(invokedByValueChange: Boolean = false): Boolean {
