@@ -2,7 +2,10 @@ package cz.koto.kotiheating.ui.status
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PointF
 import android.support.v4.content.res.ResourcesCompat
 import android.text.TextPaint
 import android.util.AttributeSet
@@ -13,6 +16,7 @@ import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.ArcUtils
 import cz.koto.kotiheating.common.getColorForTemperature
+import kotlin.math.round
 
 
 internal class CircleStatusView : View {
@@ -26,7 +30,12 @@ internal class CircleStatusView : View {
 	enum class SweepAngleDeltaDirection {
 		NONE,
 		UP,
-		DOWN,
+		DOWN
+	}
+
+	enum class CircleNumberUnit {
+		HOURS,
+		CELSIUS
 	}
 
 	private var interpolator: Interpolator? = null
@@ -51,6 +60,7 @@ internal class CircleStatusView : View {
 	private var initialized: Boolean = false
 	private var drawAction: DrawAction = DrawAction.NONE
 
+	private lateinit var circleNumberUnit: CircleNumberUnit
 	private lateinit var statusItemList: List<StatusItem>
 
 	private val currentFrameAngle: Float
@@ -78,11 +88,13 @@ internal class CircleStatusView : View {
 	fun init(attrs: TypedArray,
 			 customRadius: Float,
 			 customStrokeWidth: Float,
-			 statusItemList: List<StatusItem>) {
+			 statusItemList: List<StatusItem>,
+			 circleNumberUnit: CircleNumberUnit) {
 		interpolator = AccelerateDecelerateInterpolator()
 		radius = customRadius
 		defaultStrokeWidth = customStrokeWidth
 		this.statusItemList = statusItemList
+		this.circleNumberUnit = circleNumberUnit
 		readAttributesAndSetupFields(attrs)
 
 		setupStatusGeneralCirclePaint()
@@ -155,10 +167,13 @@ internal class CircleStatusView : View {
 				val text = if (statusItemList.size <= i) {
 					"N/A"
 				} else {
-					"${statusItemList[i].hour}"
+					when (circleNumberUnit) {
+						CircleNumberUnit.HOURS -> "${statusItemList[i].hour}"
+						CircleNumberUnit.CELSIUS -> "${round(statusItemList[i].temperature).toInt()}°"
+					}
 				}
 				ArcUtils.drawArc(canvas, centerPoint, radius, circleHourBackgroundAngel.apply { circleHourBackgroundAngel += circleHourSweepAngle }, circleHourSweepAngle, it)//body
-				paintCircleNumber("$text", circleHourTextCurrentAngel.apply { circleHourTextCurrentAngel -= circleHourSweepAngle }, canvas, centerPoint, circleNumberPaint)
+				paintCircleNumber(text, circleHourTextCurrentAngel.apply { circleHourTextCurrentAngel -= circleHourSweepAngle }, canvas, centerPoint, circleNumberPaint)
 			}
 		}
 

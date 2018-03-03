@@ -34,6 +34,8 @@ class HeatingStatusLayout : FrameLayout {
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
 
+	private lateinit var circleNumberUnit: CircleStatusView.CircleNumberUnit
+
 	constructor(context: Context) : super(context)
 
 	constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -97,12 +99,22 @@ class HeatingStatusLayout : FrameLayout {
 		unitHeatingRadio.setOnClickListener({
 			unitHeatingRadio.isChecked = true
 			unitTimeRadio.isChecked = false
+			circleNumberUnit = CircleStatusView.CircleNumberUnit.CELSIUS
+			showLayout()
 		})
 
 		unitTimeRadio.setOnClickListener({
 			unitTimeRadio.isChecked = true
 			unitHeatingRadio.isChecked = false
+			circleNumberUnit = CircleStatusView.CircleNumberUnit.HOURS
+			showLayout()
 		})
+
+		if (!unitHeatingRadio.isChecked &&
+				!unitTimeRadio.isChecked) {
+			unitTimeRadio.isChecked = true //Default option
+			circleNumberUnit = CircleStatusView.CircleNumberUnit.HOURS
+		}
 	}
 
 	private fun initStatusRadioGroup() {
@@ -156,12 +168,12 @@ class HeatingStatusLayout : FrameLayout {
 		circleViewPm = findViewById(R.id.circlePm)
 		var radius = maxRadius - (circleSeparation * 0)
 		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.value?.data?.filter { it.hour > 11 }
-				?: emptyList())
+				?: emptyList(), circleNumberUnit)
 
 		circleViewAm = findViewById(R.id.circleAm)
 		radius = maxRadius - (circleSeparation * 1)
 		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.value?.data?.filter { it.hour <= 11 }
-				?: emptyList())
+				?: emptyList(), circleNumberUnit)
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
 		centralTextStatusView.init(attrs, listToDisplay)
