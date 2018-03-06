@@ -22,7 +22,6 @@
 		<include
 			android:id="@+id/include" layout="@layout/toolbar" />
 
-
 		<android.support.design.widget.CoordinatorLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">

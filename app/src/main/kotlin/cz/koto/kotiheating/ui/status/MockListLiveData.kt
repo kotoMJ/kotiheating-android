@@ -2,8 +2,9 @@ package cz.koto.kotiheating.ui.status
 
 import android.arch.lifecycle.LiveData
 import cz.koto.kotiheating.ktools.Resource
+import cz.koto.kotiheating.ui.StatusItem
 
-class MockListLiveData : LiveData<Resource<List<cz.koto.kotiheating.ui.status.StatusItem>>>() {
+class MockListLiveData : LiveData<Resource<List<StatusItem>>>() {
 
 	init {
 		value = Resource(Resource.Status.SUCCESS, listOf(

@@ -1,24 +1,33 @@
 package cz.koto.kotiheating
 
 import android.arch.lifecycle.ViewModel
+import android.content.DialogInterface
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.view.Menu
+import android.view.MenuItem
 import android.view.ViewTreeObserver
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ktools.DiffObservableListLiveData
 import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.koto.kotiheating.ktools.vmb
+import cz.koto.kotiheating.ui.StatusItem
+import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.koto.kotiheating.ui.status.MockListLiveData
-import cz.koto.kotiheating.ui.status.StatusItem
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
 
-class MainActivity : AppCompatActivity(), MainView {
+class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListener {
+
+	private val profileDialog: AlertDialog by lazy {
+		createProfileDialog(this, vmb.binding.viewModel!!, this)
+	}
 
 	private val vmb by vmb<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
 		MainViewModel()
@@ -26,6 +35,16 @@ class MainActivity : AppCompatActivity(), MainView {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+
+		setSupportActionBar(vmb.binding.include?.findViewById(R.id.toolbar))
+		supportActionBar?.apply {
+			setDisplayUseLogoEnabled(false)
+			setDisplayShowTitleEnabled(false)
+			setDisplayShowHomeEnabled(false)
+			setDisplayHomeAsUpEnabled(false)
+			setHomeButtonEnabled(false)
+		}
+
 		vmb.binding.circleProgress.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 			override fun onGlobalLayout() {
 				if (vmb.binding.circleProgress.showLayout()) {
@@ -50,8 +69,13 @@ class MainActivity : AppCompatActivity(), MainView {
 		}
 		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
 		itemTouchRightHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
+
 	}
 
+	override fun onPostResume() {
+		super.onPostResume()
+		reloadStatus()
+	}
 
 	private fun updateItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean) {
 		val position = viewHolder.layoutPosition
@@ -83,6 +107,24 @@ class MainActivity : AppCompatActivity(), MainView {
 	}
 
 	override val lifecycleAwareAdapter = LifecycleAwareBindingRecyclerViewAdapter<StatusItem>(this)
+
+	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+		menuInflater.inflate(R.menu.menu_main, menu)
+		return super.onCreateOptionsMenu(menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		if (item?.itemId == R.id.action_profile) {
+			profileDialog.show()
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	override fun onClick(dialog: DialogInterface?, which: Int) {
+		profileDialog.dismiss()
+	}
 }
 
 interface MainView {

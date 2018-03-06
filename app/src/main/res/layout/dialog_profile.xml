@@ -1,0 +1,42 @@
+<layout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<data>
+		<variable
+			name="viewModel"
+			type="cz.koto.kotiheating.MainViewModel" />
+	</data>
+
+	<android.support.constraint.ConstraintLayout
+		android:id="@+id/fingerprint_layout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="@dimen/global_spacing_24">
+
+		<ImageView
+			android:id="@+id/profileImageView"
+			android:layout_width="@dimen/global_spacing_56"
+			android:layout_height="@dimen/global_spacing_56"
+			android:layout_marginTop="8dp"
+			app:srcCompat="@drawable/ic_account_circle"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintEnd_toStartOf="@+id/profileName"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<TextView
+			android:id="@+id/profileName"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="8dp"
+			android:text="@string/demo_user_name"
+			style="@style/TextAppearance.KoTiHeating.Title"
+			app:layout_constraintStart_toEndOf="@+id/profileImageView"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent" />
+	</android.support.constraint.ConstraintLayout>
+</layout>

@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.ui.status;
+package cz.koto.kotiheating.ui;
 
 
 class StatusItem(var temperature: Float, val hour: Int) : Comparable<StatusItem> {

@@ -10,6 +10,7 @@ import android.widget.RadioButton
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.ktools.DiffObservableListLiveData
+import cz.koto.kotiheating.ui.StatusItem
 
 
 class HeatingStatusLayout : FrameLayout {
