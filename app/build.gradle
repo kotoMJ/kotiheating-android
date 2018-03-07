@@ -9,7 +9,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
 
 kapt {
     correctErrorTypes = true // avoid unknown type replacing with NonExistentClass
@@ -149,6 +148,8 @@ dependencies {
 
 	implementation "android.arch.lifecycle:extensions:$rootProject.arch_lifecycle_version"
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.arch_lifecycle_version"
+
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
 
 	implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
 	implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
