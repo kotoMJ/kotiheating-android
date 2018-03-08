@@ -1,4 +1,5 @@
 <resources>
 	<string name="demo_user_name">Demo Profile</string>
+	<string name="demo_email">demo@profile.com</string>
 	<string name="close">close</string>
 </resources>
