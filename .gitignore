@@ -47,6 +47,4 @@ out/
 
 
 #SSL
-#/extras/keystore/*.properties
-#/extras/keystore/*.jks
-
+/extras/keystore

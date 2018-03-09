@@ -28,4 +28,10 @@
 		<item name="android:textColor">@color/global_text_caption</item>
 	</style>
 
+	<style name="TextAppearance.KoTiHeating.Title" parent="@style/TextAppearance.AppCompat.Title">
+		<item name="android:textSize">@dimen/global_text_size_title</item>
+		<item name="android:fontFamily">sans-serif</item>
+		<item name="android:textColor">@color/global_text_header</item>
+	</style>
+
 </resources>

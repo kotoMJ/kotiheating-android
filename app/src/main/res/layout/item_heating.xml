@@ -6,7 +6,7 @@
 
 		<variable
 			name="item"
-			type="cz.koto.kotiheating.ui.status.StatusItem" />
+			type="cz.koto.kotiheating.ui.StatusItem" />
 
 		<variable
 			name="viewModel"

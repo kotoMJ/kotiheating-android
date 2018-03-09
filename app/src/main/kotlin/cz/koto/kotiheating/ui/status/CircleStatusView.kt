@@ -16,6 +16,7 @@ import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.ArcUtils
 import cz.koto.kotiheating.common.getColorForTemperature
+import cz.koto.kotiheating.ui.StatusItem
 import kotlin.math.round
 
 

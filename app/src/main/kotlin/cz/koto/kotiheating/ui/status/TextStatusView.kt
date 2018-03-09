@@ -11,6 +11,7 @@ import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.getCurrentHour
 import cz.koto.kotiheating.ktools.DiffObservableListLiveData
+import cz.koto.kotiheating.ui.StatusItem
 
 
 internal class TextStatusView : View {
