@@ -44,11 +44,11 @@ android {
     flavorDimensions "env"
     //https://developer.android.com/studio/build/gradle-plugin-3-0-0-migration.html
     productFlavors {
-        mock {
+        localhost {
             dimension = "env"
-            applicationIdSuffix ".mock"
-            versionNameSuffix "-mock"
-            resValue "string", "app_name", "KoTiHeating (Mock)"
+            applicationIdSuffix ".loc"
+            versionNameSuffix "-loc"
+            resValue "string", "app_name", "KoTiHeating (Localhost)"
         }
         production {
             dimension = "env"
@@ -59,7 +59,7 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
 
-        mock {
+        localhost {
             java {
                 srcDirs('src/server/kotlin')
             }
