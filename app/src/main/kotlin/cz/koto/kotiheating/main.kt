@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		// Configure sign-in to request the user's ID, email address, and basic
 		// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
 		val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+				.requestProfile()
 				.requestEmail()
 				.build()
 
@@ -185,7 +186,6 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 	private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
 		try {
 			val account = completedTask.getResult(ApiException::class.java)
-
 			// Signed in successfully, show authenticated UI.
 			vmb.viewModel.googleSignInAccount = account
 		} catch (e: ApiException) {
