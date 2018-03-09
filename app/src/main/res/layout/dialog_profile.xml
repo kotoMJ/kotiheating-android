@@ -35,7 +35,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
 			android:layout_marginBottom="8dp"
-			android:text="@{view.email}"
+			android:text="@{viewModel.googleName}"
 			tools:text="@string/demo_user_name"
 			style="@style/TextAppearance.KoTiHeating.Title"
 			app:layout_constraintStart_toEndOf="@+id/profile_image_view"
@@ -50,7 +50,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
 			android:layout_marginBottom="8dp"
-			android:text="@{view.email}"
+			android:text="@{viewModel.googleEmail}"
 			tools:text="@string/demo_email"
 			style="@style/TextAppearance.KoTiHeating.Caption"
 			app:layout_constraintStart_toEndOf="@+id/profile_image_view"
@@ -69,6 +69,20 @@
 			android:visibility="@{viewModel.googleSignInAccount==null}"
 			android:onClickListener="@{() -> view.onGoogleSignIn()}"
 			app:layout_constraintTop_toBottomOf="@+id/profile_image_view"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent" />
+
+		<Button
+			android:id="@+id/sign_out_button"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
+			android:text="@string/sign_out"
+			android:onClick="@{() -> view.onSignOut()}"
+			android:visibility="@{viewModel.googleSignInAccount!=null}"
+			app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintEnd_toEndOf="parent" />
 

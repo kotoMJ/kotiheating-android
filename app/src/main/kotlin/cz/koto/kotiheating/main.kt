@@ -1,9 +1,8 @@
 package cz.koto.kotiheating
 
-import android.arch.lifecycle.ViewModel
 import android.content.DialogInterface
 import android.content.Intent
-import android.databinding.ObservableField
+import android.databinding.Bindable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -107,7 +106,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			account.photoUrl
 			account.displayName
 			account.email
-			vmb.viewModel.googleSignInAccount.set(account)
+			vmb.viewModel.googleSignInAccount = account
 		}
 	}
 
@@ -160,18 +159,15 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		profileDialog.dismiss()
 	}
 
-	override fun getEmail(): String {
-		return vmb.viewModel.googleSignInAccount.get()?.email ?: getString(R.string.demo_email)
-	}
-
-	override fun getUserName(): String {
-		return vmb.viewModel.googleSignInAccount.get()?.displayName ?: getString(R.string.demo_user_name)
-	}
-
 
 	override fun onGoogleSignIn() {
 		val signInIntent = vmb.viewModel.googleSignInClient.signInIntent
 		startActivityForResult(signInIntent, 33)
+	}
+
+	override fun onSignOut() {
+		vmb.viewModel.googleSignInClient.signOut()
+		vmb.viewModel.googleSignInAccount = null
 	}
 
 	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -191,12 +187,12 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			val account = completedTask.getResult(ApiException::class.java)
 
 			// Signed in successfully, show authenticated UI.
-			vmb.viewModel.googleSignInAccount.set(account)
+			vmb.viewModel.googleSignInAccount = account
 		} catch (e: ApiException) {
 			// The ApiException status code indicates the detailed failure reason.
 			// Please refer to the GoogleSignInStatusCodes class reference for more information.
 			logk("exception=$e")
-			vmb.viewModel.googleSignInAccount.set(null)
+			vmb.viewModel.googleSignInAccount = null
 		}
 
 	}
@@ -204,14 +200,13 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 interface MainView {
 	fun reloadStatus()
-	fun getEmail(): String
-	fun getUserName(): String
 	fun onGoogleSignIn()
+	fun onSignOut()
 	val lifecycleAwareAdapter: LifecycleAwareBindingRecyclerViewAdapter<StatusItem> // TODO: Temp fix for tatarka - remove when tatarka adds support for lifecycle
 }
 
 
-class MainViewModel : ViewModel() {
+class MainViewModel : BaseViewModel() {
 
 	val itemBinding = ItemBinding.of<StatusItem>(BR.item, R.layout.item_heating)
 			.bindExtra(BR.viewModel, this)
@@ -220,8 +215,25 @@ class MainViewModel : ViewModel() {
 	var statusServerList: DiffObservableListLiveData<StatusItem>
 	var statusRequestList: DiffObservableListLiveData<StatusItem>
 
-	var googleSignInAccount: ObservableField<GoogleSignInAccount> = ObservableField()
+	var googleSignInAccount: GoogleSignInAccount? = null
+		@Bindable get
+		set(value) {
+			field = value
+			notifyPropertyChanged(BR.googleSignInAccount)
+		}
+
+
+	val googleEmail: String
+		@Bindable("googleSignInAccount")
+		get() = googleSignInAccount?.email ?: "demo@profile.com"
+
+	val googleName: String
+		@Bindable("googleSignInAccount")
+		get() = googleSignInAccount?.displayName ?: "Demo User"
+
+
 	lateinit var googleSignInClient: GoogleSignInClient
+
 
 	init {
 		statusServerList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
