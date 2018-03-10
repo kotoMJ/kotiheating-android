@@ -7,9 +7,9 @@ import android.graphics.drawable.ColorDrawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import cz.koto.kotiheating.MainViewModel
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.getColorForTemperature
+import cz.koto.kotiheating.ui.MainViewModel
 
 abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: MainViewModel) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 

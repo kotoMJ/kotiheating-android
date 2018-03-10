@@ -1,9 +1,9 @@
-package cz.koto.kotiheating
+package cz.koto.kotiheating.ui
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.databinding.Bindable
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
@@ -13,22 +13,17 @@ import android.view.MenuItem
 import android.view.ViewTreeObserver
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import common.log.logk
+import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
-import cz.koto.kotiheating.ktools.DiffObservableListLiveData
 import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.koto.kotiheating.ktools.vmb
-import cz.koto.kotiheating.ui.StatusItem
 import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
-import cz.koto.kotiheating.ui.status.MockListLiveData
-import me.tatarka.bindingcollectionadapter2.ItemBinding
-import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
 
 class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListener {
@@ -40,6 +35,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 	private val vmb by vmb<MainViewModel, ActivityMainBinding>(R.layout.activity_main) {
 		MainViewModel()
 	}
+	private var profileMenu: MenuItem? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -108,6 +104,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			account.displayName
 			account.email
 			vmb.viewModel.googleSignInAccount = account
+			updateProfileMenuIcon()
 		}
 	}
 
@@ -144,6 +141,8 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.menu_main, menu)
+		profileMenu = menu?.findItem(R.id.action_profile)
+		updateProfileMenuIcon()
 		return super.onCreateOptionsMenu(menu)
 	}
 
@@ -169,6 +168,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 	override fun onSignOut() {
 		vmb.viewModel.googleSignInClient.signOut()
 		vmb.viewModel.googleSignInAccount = null
+		updateProfileMenuIcon()
 	}
 
 	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -188,13 +188,23 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			val account = completedTask.getResult(ApiException::class.java)
 			// Signed in successfully, show authenticated UI.
 			vmb.viewModel.googleSignInAccount = account
+			updateProfileMenuIcon()
 		} catch (e: ApiException) {
 			// The ApiException status code indicates the detailed failure reason.
 			// Please refer to the GoogleSignInStatusCodes class reference for more information.
 			logk("exception=$e")
 			vmb.viewModel.googleSignInAccount = null
+			updateProfileMenuIcon()
 		}
 
+	}
+
+	private fun updateProfileMenuIcon() {
+		if (vmb.viewModel.googleSignInAccount == null) {
+			profileMenu?.icon = ContextCompat.getDrawable(this, R.drawable.ic_person_outline)
+		} else {
+			profileMenu?.icon = ContextCompat.getDrawable(this, R.drawable.ic_person_full)
+		}
 	}
 }
 
@@ -205,48 +215,4 @@ interface MainView {
 	val lifecycleAwareAdapter: LifecycleAwareBindingRecyclerViewAdapter<StatusItem> // TODO: Temp fix for tatarka - remove when tatarka adds support for lifecycle
 }
 
-
-class MainViewModel : BaseViewModel() {
-
-	val itemBinding = ItemBinding.of<StatusItem>(BR.item, R.layout.item_heating)
-			.bindExtra(BR.viewModel, this)
-
-
-	var statusServerList: DiffObservableListLiveData<StatusItem>
-	var statusRequestList: DiffObservableListLiveData<StatusItem>
-
-	var googleSignInAccount: GoogleSignInAccount? = null
-		@Bindable get
-		set(value) {
-			field = value
-			notifyPropertyChanged(BR.googleSignInAccount)
-		}
-
-
-	val googleEmail: String
-		@Bindable("googleSignInAccount")
-		get() = googleSignInAccount?.email ?: "demo@profile.com"
-
-	val googleName: String
-		@Bindable("googleSignInAccount")
-		get() = googleSignInAccount?.displayName ?: "Demo User"
-
-
-	lateinit var googleSignInClient: GoogleSignInClient
-
-
-	init {
-		statusServerList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
-			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
-			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
-		})
-
-		statusRequestList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
-			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
-			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
-		})
-	}
-
-
-}
 

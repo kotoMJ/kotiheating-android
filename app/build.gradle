@@ -14,6 +14,12 @@ kapt {
     correctErrorTypes = true // avoid unknown type replacing with NonExistentClass
 }
 
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
 // Last Git tag name on current branch
 final GIT_TAG_NAME = "git describe --tags --abbrev=0".execute([], project.rootDir).text.trim()
 
@@ -49,10 +55,12 @@ android {
             applicationIdSuffix ".loc"
             versionNameSuffix "-loc"
             resValue "string", "app_name", "KoTiHeating (Localhost)"
+            buildConfigField "String", "REST_BASE_URL", "\"http://localhost:8080/api/\""
         }
         production {
             dimension = "env"
             resValue "string", "app_name", "KoTiHeating"
+            buildConfigField "String", "REST_BASE_URL", "\"https://kotopeky.cz/api/\""
         }
     }
 
@@ -104,6 +112,7 @@ android {
             proguardFile 'proguard-rules/proguard-support-v7-cardview.pro'
             proguardFile 'proguard-rules/proguard-realm.pro'
             proguardFile 'proguard-rules/proguard-reactive.pro'
+            proguardFile 'proguard-rules/proguard-coroutines.pro'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -130,6 +139,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$koroutines_version"
 
     kapt "com.android.databinding:compiler:$android_gradle_version"
     implementation "com.android.databinding:library:$android_binding_version"
@@ -174,6 +185,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit-mock:$retrofit_version") {
         exclude group: 'com.squareup.retrofit2', module: 'retrofit'
     }
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
 
     // leakcanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"

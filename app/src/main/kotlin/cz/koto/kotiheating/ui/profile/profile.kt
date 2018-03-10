@@ -5,10 +5,10 @@ import android.content.DialogInterface
 import android.databinding.DataBindingUtil
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
-import cz.koto.kotiheating.MainView
-import cz.koto.kotiheating.MainViewModel
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.DialogProfileBinding
+import cz.koto.kotiheating.ui.MainView
+import cz.koto.kotiheating.ui.MainViewModel
 
 fun createProfileDialog(context: Context,
 						viewModel: MainViewModel,

@@ -1,4 +1,4 @@
-package cz.koto.kotiheating
+package cz.koto.kotiheating.ui
 
 import android.arch.lifecycle.ViewModel
 import android.databinding.Observable

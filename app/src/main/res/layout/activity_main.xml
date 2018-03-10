@@ -8,11 +8,11 @@
 
 		<variable
 			name="viewModel"
-			type="cz.koto.kotiheating.MainViewModel" />
+			type="cz.koto.kotiheating.ui.MainViewModel" />
 
 		<variable
 			name="view"
-			type="cz.koto.kotiheating.MainView" />
+			type="cz.koto.kotiheating.ui.MainView" />
 	</data>
 	<LinearLayout
 		android:layout_width="match_parent"
