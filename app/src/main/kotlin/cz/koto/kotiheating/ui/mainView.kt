@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		// Configure sign-in to request the user's ID, email address, and basic
 		// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
 		val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+				.requestIdToken(application.getString(R.string.init_client_id))
 				.requestProfile()
 				.requestEmail()
 				.build()
@@ -100,9 +101,6 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(this)
 
 		if (account != null) {
-			account.photoUrl
-			account.displayName
-			account.email
 			vmb.viewModel.googleSignInAccount = account
 			updateProfileMenuIcon()
 		}
@@ -141,7 +139,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.menu_main, menu)
-		profileMenu = menu?.findItem(R.id.action_profile)
+		profileMenu = menu.findItem(R.id.action_profile)
 		updateProfileMenuIcon()
 		return super.onCreateOptionsMenu(menu)
 	}
@@ -187,6 +185,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		try {
 			val account = completedTask.getResult(ApiException::class.java)
 			// Signed in successfully, show authenticated UI.
+			logk(">>>idToken=${account.idToken}")
 			vmb.viewModel.googleSignInAccount = account
 			updateProfileMenuIcon()
 		} catch (e: ApiException) {
