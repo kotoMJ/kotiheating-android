@@ -59,36 +59,51 @@
 			style="@style/TextAppearance.KoTiHeating.Caption"
 			app:layout_constraintStart_toEndOf="@+id/profile_image_view"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toBottomOf="parent" />
+			app:layout_constraintHorizontal_bias="0.465"
+			app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toTopOf="@+id/sign_in_button" />
 
 		<com.google.android.gms.common.SignInButton
 			android:id="@+id/sign_in_button"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="8dp"
+			android:layout_height="52dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:visibility="@{viewModel.googleSignInAccount==null}"
 			android:onClickListener="@{() -> view.onGoogleSignIn()}"
-			app:layout_constraintTop_toBottomOf="@+id/profile_image_view"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintEnd_toEndOf="parent" />
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintBottom_toTopOf="@+id/errorText"
+			app:layout_constraintTop_toBottomOf="@+id/profile_image_view" />
+
+		<TextView
+			android:id="@+id/errorText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="8dp"
+			android:layout_marginStart="8dp"
+			android:text="@{viewModel.googleSignInAccountError}"
+			android:visibility="@{viewModel.googleSignInAccountError.length>0}"
+			style="@style/TextAppearance.KoTiHeating.Caption.Error"
+			tools:text="Auth error"
+			app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
+			app:layout_constraintBottom_toTopOf="@+id/sign_out_button"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent" />
 
 		<Button
 			android:id="@+id/sign_out_button"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:text="@string/sign_out"
 			android:onClick="@{() -> view.onSignOut()}"
 			android:visibility="@{viewModel.googleSignInAccount!=null}"
-			app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintEnd_toEndOf="parent" />
+			app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/errorText"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintHorizontal_bias="0.5" />
 
 	</android.support.constraint.ConstraintLayout>
 </layout>

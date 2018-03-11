@@ -26,6 +26,10 @@ import cz.koto.kotiheating.rest.HeatingApi
 import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import retrofit2.HttpException
+import java.io.IOException
 
 
 class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListener {
@@ -188,24 +192,32 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 	private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
 		try {
 			val account = completedTask.getResult(ApiException::class.java)
-			// Signed in successfully, show authenticated UI.
-			logk(">>>idToken=${account.idToken}")
-
-			if (heatingApi.authorizeGoogleUser(account.idToken)) {
-				vmb.viewModel.googleSignInAccount = account
-				updateProfileMenuIcon()
-			} else {
-				//TODO display error to the user
-				vmb.viewModel.googleSignInAccount = null
-				updateProfileMenuIcon()
+			vmb.viewModel.googleSignInAccountError.set("")
+			launch(UI) {
+				try {
+					val res = heatingApi.authorizeGoogleUser(account.idToken)
+					vmb.viewModel.googleSignInAccount = account
+					logk("authResult=[$res]")
+					updateProfileMenuIcon()
+				} catch (e: Throwable) {
+					logk("e=$e")
+					val message = when (e) {
+						is IOException -> getString(R.string.auth_io_exception)
+						is HttpException -> getString(R.string.auth_http_exception)
+						else -> getString(R.string.auth_else)
+					}
+					vmb.viewModel.googleSignInAccount = null
+					vmb.viewModel.googleSignInAccountError.set(message)
+					updateProfileMenuIcon()
+				}
 			}
 
 		} catch (e: ApiException) {
 			// The ApiException status code indicates the detailed failure reason.
 			// Please refer to the GoogleSignInStatusCodes class reference for more information.
-			//TODO display error to the user
 			logk("exception=$e")
 			vmb.viewModel.googleSignInAccount = null
+			vmb.viewModel.googleSignInAccountError.set(getString(R.string.auth_else))
 			updateProfileMenuIcon()
 		}
 

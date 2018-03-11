@@ -13,18 +13,18 @@ import retrofit2.http.POST
 
 interface HeatingBaseRouter {
 
-	@GET("/kotinode/heating/status")
+	@GET("kotinode/heating/status")
 	fun getHeatingStatus(): Single<Response<List<HeatingStatusResult>>>
 
-	@GET("/kotinode/heating/status")
+	@GET("kotinode/heating/status")
 	fun getHeatingStatusLive(): Call<List<HeatingStatusResult>>
 
-	@GET("/kotinode/heating/status")
+	@GET("kotinode/heating/status")
 	fun getHeatingStatusDeferred(): Deferred<Response<List<HeatingStatusResult>>>
 
 
 	@FormUrlEncoded
-	@POST("/kotinode/auth/google")
+	@POST("kotinode/auth/google")
 	fun authorizeGoogleUser(@Field("idToken") idToken: String): Deferred<HeatingAuthResult>
 
 }

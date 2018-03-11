@@ -1,6 +1,7 @@
 package cz.koto.kotiheating.ui
 
 import android.databinding.Bindable
+import android.databinding.ObservableField
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import cz.koto.kotiheating.BR
@@ -25,6 +26,8 @@ class MainViewModel : BaseViewModel() {
 			field = value
 			notifyPropertyChanged(BR.googleSignInAccount)
 		}
+
+	var googleSignInAccountError: ObservableField<String> = ObservableField()
 
 
 	val googleEmail: String

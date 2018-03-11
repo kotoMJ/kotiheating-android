@@ -4,4 +4,7 @@
 	<string name="sign_out">Sign Out</string>
 	<string name="close">close</string>
 	<string name="init_client_id">950395156002-1emg9edo9g73u6bi1uuiksij6r05ddi6.apps.googleusercontent.com</string>
+	<string name="auth_io_exception">Unable to connect server.</string>
+	<string name="auth_http_exception">User is not authorized to any heating.</string>
+	<string name="auth_else">Authorization error.</string>
 </resources>
