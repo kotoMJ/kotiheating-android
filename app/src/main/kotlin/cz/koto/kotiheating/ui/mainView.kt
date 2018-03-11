@@ -20,7 +20,9 @@ import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
+import cz.koto.kotiheating.ktools.inject
 import cz.koto.kotiheating.ktools.vmb
+import cz.koto.kotiheating.rest.HeatingApi
 import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		MainViewModel()
 	}
 	private var profileMenu: MenuItem? = null
+
+	val heatingApi by inject<HeatingApi>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -186,11 +190,20 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			val account = completedTask.getResult(ApiException::class.java)
 			// Signed in successfully, show authenticated UI.
 			logk(">>>idToken=${account.idToken}")
-			vmb.viewModel.googleSignInAccount = account
-			updateProfileMenuIcon()
+
+			if (heatingApi.authorizeGoogleUser(account.idToken)) {
+				vmb.viewModel.googleSignInAccount = account
+				updateProfileMenuIcon()
+			} else {
+				//TODO display error to the user
+				vmb.viewModel.googleSignInAccount = null
+				updateProfileMenuIcon()
+			}
+
 		} catch (e: ApiException) {
 			// The ApiException status code indicates the detailed failure reason.
 			// Please refer to the GoogleSignInStatusCodes class reference for more information.
+			//TODO display error to the user
 			logk("exception=$e")
 			vmb.viewModel.googleSignInAccount = null
 			updateProfileMenuIcon()

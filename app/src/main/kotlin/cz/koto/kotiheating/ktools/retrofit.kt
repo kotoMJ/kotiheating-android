@@ -5,14 +5,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.CallAdapter
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.lang.reflect.ParameterizedType
@@ -67,6 +64,7 @@ internal fun getRetrofit(context: Context, url: String, logLevel: HttpLoggingInt
 		.client(client)
 		.baseUrl(url)
 		.addCallAdapterFactory(LiveDataCallAdapterFactory())
+			.addCallAdapterFactory(CoroutineCallAdapterFactory())
 		.addConverterFactory(GsonConverterFactory.create(gson))
 		.build()
 }

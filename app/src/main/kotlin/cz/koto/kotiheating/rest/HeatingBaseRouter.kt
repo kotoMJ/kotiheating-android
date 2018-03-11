@@ -1,11 +1,15 @@
 package cz.koto.kotiheating.rest
 
+import cz.koto.kotiheating.entity.HeatingAuthResult
 import cz.koto.kotiheating.entity.HeatingStatusResult
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 interface HeatingBaseRouter {
 
@@ -18,5 +22,9 @@ interface HeatingBaseRouter {
 	@GET("/kotinode/heating/status")
 	fun getHeatingStatusDeferred(): Deferred<Response<List<HeatingStatusResult>>>
 
+
+	@FormUrlEncoded
+	@POST("/kotinode/auth/google")
+	fun authorizeGoogleUser(@Field("idToken") idToken: String): Deferred<HeatingAuthResult>
 
 }
