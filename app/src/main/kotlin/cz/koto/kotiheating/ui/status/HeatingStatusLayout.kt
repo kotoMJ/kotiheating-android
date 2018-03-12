@@ -33,8 +33,8 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
-	lateinit var statusServerItemList: DiffObservableListLiveData<StatusItem>
-	lateinit var statusRequestItemList: DiffObservableListLiveData<StatusItem>
+	lateinit var statusDeviceItemList: DiffObservableListLiveData<StatusItem>
+	lateinit var statusRequestLocalItemList: DiffObservableListLiveData<StatusItem>
 
 	lateinit var listToDisplay: DiffObservableListLiveData<StatusItem>
 
@@ -207,9 +207,9 @@ class HeatingStatusLayout : FrameLayout {
 				= updateStatusRadioVisibility(invokedByValueChange)
 
 		if (statusDeviceProgressRadio.isChecked || statusDeviceSyncedRadio.isChecked) {
-			listToDisplay = statusServerItemList
+			listToDisplay = statusDeviceItemList
 		} else if (statusRequestRadio.isChecked) {
-			listToDisplay = statusRequestItemList
+			listToDisplay = statusRequestLocalItemList
 		} else {
 			throw IllegalStateException("Unexpected state of status radio group!")
 		}
@@ -220,7 +220,7 @@ class HeatingStatusLayout : FrameLayout {
 		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
 		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
 
-		if (compareLists(statusRequestItemList.diffList.toList(), statusServerItemList.diffList.toList()) == 0) {
+		if (compareLists(statusRequestLocalItemList.diffList.toList(), statusDeviceItemList.diffList.toList()) == 0) {
 			statusDeviceProgressRadio.visibility = View.GONE
 			statusRequestRadio.visibility = View.GONE
 			statusDeviceSyncedRadio.visibility = View.VISIBLE

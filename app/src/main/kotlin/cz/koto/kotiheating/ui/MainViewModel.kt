@@ -25,8 +25,9 @@ class MainViewModel : BaseViewModel() {
 			.bindExtra(BR.viewModel, this)
 
 
-	var statusServerList: DiffObservableListLiveData<StatusItem>
-	var statusRequestList: DiffObservableListLiveData<StatusItem>
+	var statusDeviceList: DiffObservableListLiveData<StatusItem>
+	var statusRequestRemoteList: DiffObservableListLiveData<StatusItem>
+	var statusRequestLocalList: DiffObservableListLiveData<StatusItem>
 
 	var googleSignInAccount: GoogleSignInAccount? = null
 		@Bindable get
@@ -53,12 +54,17 @@ class MainViewModel : BaseViewModel() {
 	var userKey by application.sharedPrefs().string(USER_KEY)
 
 	init {
-		statusServerList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
+		statusDeviceList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
 			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
 			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
 		})
 
-		statusRequestList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
+		statusRequestRemoteList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
+			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
+			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
+		})
+
+		statusRequestLocalList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {
 			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
 			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
 		})

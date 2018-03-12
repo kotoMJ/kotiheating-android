@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 		val swipeLeftHandler = object : SwipeToLeftCallback(this, vmb.viewModel) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateItem(viewHolder, increase = false)
+				updateLocalItem(viewHolder, increase = true)
 			}
 		}
 		val itemTouchLeftHelper = ItemTouchHelper(swipeLeftHandler)
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 		val swipeRightHandler = object : SwipeToRightCallback(this, vmb.viewModel) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateItem(viewHolder, increase = true)
+				updateLocalItem(viewHolder, increase = false)
 			}
 		}
 		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
@@ -115,10 +115,10 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		}
 	}
 
-	private fun updateItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean) {
+	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean) {
 		val position = viewHolder.layoutPosition
 
-		val updatedItem = vmb.binding.viewModel?.statusRequestList?.diffList?.get(position)
+		val updatedItem = vmb.binding.viewModel?.statusRequestLocalList?.diffList?.get(position)
 
 		updatedItem?.apply {
 			if (increase) {
@@ -128,13 +128,13 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			}
 		}
 
-		val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusRequestList?.diffList?.toList())
+		val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusRequestLocalList?.diffList?.toList())
 
 		updatedItem?.let {
 			newList.set(position, it)
 		}
 
-		vmb.binding.viewModel?.statusRequestList?.diffList?.update(newList)
+		vmb.binding.viewModel?.statusRequestLocalList?.diffList?.update(newList)
 
 		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 		vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
