@@ -1,17 +1,25 @@
 package cz.koto.kotiheating.ui
 
+import android.app.Application
 import android.databinding.Bindable
 import android.databinding.ObservableField
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
+import cz.koto.kotiheating.entity.HEATING_KEY
+import cz.koto.kotiheating.entity.USER_KEY
 import cz.koto.kotiheating.ktools.DiffObservableListLiveData
+import cz.koto.kotiheating.ktools.inject
+import cz.koto.kotiheating.ktools.sharedPrefs
+import cz.koto.kotiheating.ktools.string
 import cz.koto.kotiheating.ui.status.MockListLiveData
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
 class MainViewModel : BaseViewModel() {
+
+	private val application by inject<Application>()
 
 	val itemBinding = ItemBinding.of<StatusItem>(BR.item, R.layout.item_heating)
 			.bindExtra(BR.viewModel, this)
@@ -41,6 +49,8 @@ class MainViewModel : BaseViewModel() {
 
 	lateinit var googleSignInClient: GoogleSignInClient
 
+	var heatingKey by application.sharedPrefs().string(HEATING_KEY)
+	var userKey by application.sharedPrefs().string(USER_KEY)
 
 	init {
 		statusServerList = DiffObservableListLiveData(MockListLiveData(), object : DiffObservableList.Callback<StatusItem> {

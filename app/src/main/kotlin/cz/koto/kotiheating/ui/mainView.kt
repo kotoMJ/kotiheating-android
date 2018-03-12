@@ -18,6 +18,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import common.log.logk
 import cz.koto.kotiheating.R
+import cz.koto.kotiheating.common.SecureWrapper
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.koto.kotiheating.ktools.inject
@@ -173,8 +174,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 	override fun onSignOut() {
 		vmb.viewModel.googleSignInClient.signOut()
-		vmb.viewModel.googleSignInAccount = null
-		updateProfileMenuIcon()
+		cleanUpGoogleUser()
 	}
 
 	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -195,10 +195,17 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			vmb.viewModel.googleSignInAccountError.set("")
 			launch(UI) {
 				try {
-					val res = heatingApi.authorizeGoogleUser(account.idToken)
-					vmb.viewModel.googleSignInAccount = account
-					logk("authResult=[$res]")
-					updateProfileMenuIcon()
+					val heatingAuth = heatingApi.authorizeGoogleUser(account.idToken)
+					heatingAuth?.let {
+						vmb.viewModel.heatingKey = SecureWrapper.instance.encrypt(application, it.heatingKey)
+						vmb.viewModel.userKey = SecureWrapper.instance.encrypt(application, it.userKey)
+						vmb.viewModel.googleSignInAccount = account
+						updateProfileMenuIcon()
+						return@launch
+					}
+					cleanUpGoogleUser()
+					vmb.viewModel.googleSignInAccountError.set(getString(R.string.auth_unable_encrypt))
+
 				} catch (e: Throwable) {
 					logk("e=$e")
 					val message = when (e) {
@@ -206,9 +213,8 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 						is HttpException -> getString(R.string.auth_http_exception)
 						else -> getString(R.string.auth_else)
 					}
-					vmb.viewModel.googleSignInAccount = null
+					cleanUpGoogleUser()
 					vmb.viewModel.googleSignInAccountError.set(message)
-					updateProfileMenuIcon()
 				}
 			}
 
@@ -216,12 +222,19 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			// The ApiException status code indicates the detailed failure reason.
 			// Please refer to the GoogleSignInStatusCodes class reference for more information.
 			logk("exception=$e")
-			vmb.viewModel.googleSignInAccount = null
+			cleanUpGoogleUser()
 			vmb.viewModel.googleSignInAccountError.set(getString(R.string.auth_else))
-			updateProfileMenuIcon()
 		}
 
 	}
+
+	private fun cleanUpGoogleUser() {
+		vmb.viewModel.googleSignInAccount = null
+		vmb.viewModel.heatingKey = ""
+		vmb.viewModel.userKey = ""
+		updateProfileMenuIcon()
+	}
+
 
 	private fun updateProfileMenuIcon() {
 		if (vmb.viewModel.googleSignInAccount == null) {
