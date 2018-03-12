@@ -43,6 +43,10 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		MainViewModel()
 	}
 	private var profileMenu: MenuItem? = null
+	private var revertChangesMenu: MenuItem? = null
+	private var setToFreezeMenu: MenuItem? = null
+	private var setToNightMenu: MenuItem? = null
+	private var setToDayMenu: MenuItem? = null
 
 	val heatingApi by inject<HeatingApi>()
 
@@ -149,14 +153,39 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.menu_main, menu)
 		profileMenu = menu.findItem(R.id.action_profile)
+		revertChangesMenu = menu.findItem(R.id.action_clear_all)
+		setToFreezeMenu = menu.findItem(R.id.action_anti_freeze)
+		setToNightMenu = menu.findItem(R.id.action_night_temp)
+		setToDayMenu = menu.findItem(R.id.action_daily_temp)
 		updateProfileMenuIcon()
 		return super.onCreateOptionsMenu(menu)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-		if (item?.itemId == R.id.action_profile) {
-			profileDialog.show()
-			return true;
+
+		when (item?.itemId) {
+			R.id.action_profile -> {
+				profileDialog.show()
+				return true
+			}
+			R.id.action_clear_all -> {
+				vmb.viewModel.revertLocalChanges()
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+				return true
+			}
+			R.id.action_anti_freeze -> {
+				vmb.viewModel.setLocalTemperatureTo(5f)
+				return true
+			}
+			R.id.action_night_temp -> {
+				vmb.viewModel.setLocalTemperatureTo(15f)
+				return true
+			}
+			R.id.action_daily_temp -> {
+				vmb.viewModel.setLocalTemperatureTo(23f)
+				return true
+			}
 		}
 
 		return super.onOptionsItemSelected(item);

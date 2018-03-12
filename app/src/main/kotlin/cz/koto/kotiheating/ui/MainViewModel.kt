@@ -70,6 +70,16 @@ class MainViewModel : BaseViewModel() {
 		})
 	}
 
+	fun revertLocalChanges() {
+		//TODO
+//		val originalList: ArrayList<StatusItem> = ArrayList(statusRequestRemoteList.diffList.toList())
+//		statusRequestLocalList.diffList.update(originalList)
+	}
+
+	fun setLocalTemperatureTo(temperature: Float) {
+		//TODO
+	}
+
 
 }
 

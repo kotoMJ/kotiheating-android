@@ -9,4 +9,41 @@
 		android:icon="@drawable/ic_person_outline"
 		app:showAsAction="ifRoom" />
 
+	<item
+		android:id="@+id/action_more"
+		android:title="Mass changes"
+		android:orderInCategory="301"
+		android:icon="@drawable/ic_more_vertical"
+		app:showAsAction="always">
+
+		<menu>
+
+			<item
+				android:id="@+id/action_clear_all"
+				android:icon="@drawable/ic_clear_all"
+				android:title="revert changes"
+				app:showAsAction="ifRoom" />
+
+			<item
+				android:id="@+id/action_anti_freeze"
+				android:icon="@drawable/ic_anti_freeze"
+				android:title="anti freeze"
+				app:showAsAction="ifRoom" />
+
+			<item
+				android:id="@+id/action_night_temp"
+				android:icon="@drawable/ic_night_temperature"
+				android:title="night temperature"
+				app:showAsAction="ifRoom" />
+
+			<item
+				android:id="@+id/action_daily_temp"
+				android:icon="@drawable/ic_daily_temperature"
+				android:title="day temperature"
+				app:showAsAction="ifRoom" />
+
+		</menu>
+
+	</item>
+
 </menu>
