@@ -176,14 +176,20 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			}
 			R.id.action_anti_freeze -> {
 				vmb.viewModel.setLocalTemperatureTo(5f)
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 			R.id.action_night_temp -> {
 				vmb.viewModel.setLocalTemperatureTo(15f)
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 			R.id.action_daily_temp -> {
 				vmb.viewModel.setLocalTemperatureTo(23f)
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 		}

@@ -71,13 +71,19 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun revertLocalChanges() {
-		//TODO
-//		val originalList: ArrayList<StatusItem> = ArrayList(statusRequestRemoteList.diffList.toList())
-//		statusRequestLocalList.diffList.update(originalList)
+		statusRequestLocalList.diffList.forEachIndexed { index, item ->
+			item.apply {
+				item.temperature = statusDeviceList.diffList[index].temperature
+			}
+		}
 	}
 
-	fun setLocalTemperatureTo(temperature: Float) {
-		//TODO
+	fun setLocalTemperatureTo(temp: Float) {
+		statusRequestLocalList.diffList.forEachIndexed { _, item ->
+			item.apply {
+				item.temperature = temp
+			}
+		}
 	}
 
 
