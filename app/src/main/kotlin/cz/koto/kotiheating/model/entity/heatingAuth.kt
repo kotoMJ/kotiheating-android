@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.entity
+package cz.koto.kotiheating.model.entity
 
 import com.google.gson.annotations.SerializedName
 

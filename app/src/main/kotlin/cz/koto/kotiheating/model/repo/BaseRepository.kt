@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.repo
+package cz.koto.kotiheating.model.repo
 
 import android.databinding.Observable
 import android.databinding.PropertyChangeRegistry

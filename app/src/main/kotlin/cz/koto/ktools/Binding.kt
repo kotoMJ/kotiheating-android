@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import cz.koto.kotiheating.glide.GlideApp
+import cz.koto.kotiheating.ui.glide.GlideApp
 
 /**
  * Conversion for Visibility - we can pass boolean as parameter in visible property

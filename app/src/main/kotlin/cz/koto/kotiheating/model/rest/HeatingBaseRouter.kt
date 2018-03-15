@@ -1,7 +1,7 @@
-package cz.koto.kotiheating.rest
+package cz.koto.kotiheating.model.rest
 
-import cz.koto.kotiheating.entity.HeatingAuthResult
-import cz.koto.kotiheating.entity.HeatingStatusResult
+import cz.koto.kotiheating.model.entity.HeatingAuthResult
+import cz.koto.kotiheating.model.entity.HeatingStatusResult
 import io.reactivex.Single
 import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Call

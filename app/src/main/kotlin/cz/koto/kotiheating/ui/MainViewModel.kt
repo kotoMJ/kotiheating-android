@@ -3,7 +3,7 @@ package cz.koto.kotiheating.ui
 import android.content.Intent
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.repo.UserRepository
+import cz.koto.kotiheating.model.repo.UserRepository
 import cz.koto.kotiheating.ui.status.MockListLiveData
 import cz.koto.ktools.DiffObservableListLiveData
 import cz.koto.ktools.inject

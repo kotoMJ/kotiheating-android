@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.rest
+package cz.koto.kotiheating.model.rest
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

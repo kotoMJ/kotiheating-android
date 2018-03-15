@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.repo
+package cz.koto.kotiheating.model.repo
 
 import android.app.Application
 import android.content.Intent
@@ -13,9 +13,9 @@ import common.log.logk
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.SecureWrapper
-import cz.koto.kotiheating.entity.HEATING_KEY
-import cz.koto.kotiheating.entity.USER_KEY
-import cz.koto.kotiheating.rest.HeatingApi
+import cz.koto.kotiheating.model.entity.HEATING_KEY
+import cz.koto.kotiheating.model.entity.USER_KEY
+import cz.koto.kotiheating.model.rest.HeatingApi
 import cz.koto.ktools.inject
 import cz.koto.ktools.sharedPrefs
 import cz.koto.ktools.string

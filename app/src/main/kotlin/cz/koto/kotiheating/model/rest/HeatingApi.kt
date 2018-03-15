@@ -1,9 +1,9 @@
-package cz.koto.kotiheating.rest
+package cz.koto.kotiheating.model.rest
 
 import android.app.Application
 import com.google.gson.Gson
 import cz.koto.kotiheating.BuildConfig
-import cz.koto.kotiheating.entity.HeatingAuthResult
+import cz.koto.kotiheating.model.entity.HeatingAuthResult
 import cz.koto.ktools.getRetrofit
 import cz.koto.ktools.inject
 import okhttp3.logging.HttpLoggingInterceptor
