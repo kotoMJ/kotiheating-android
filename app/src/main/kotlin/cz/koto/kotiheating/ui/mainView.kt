@@ -12,25 +12,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewTreeObserver
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import common.log.logk
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.common.SecureWrapper
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
-import cz.koto.kotiheating.ktools.inject
 import cz.koto.kotiheating.ktools.vmb
-import cz.koto.kotiheating.rest.HeatingApi
 import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import retrofit2.HttpException
-import java.io.IOException
 
 
 class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListener {
@@ -38,6 +26,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 	companion object {
 		private const val ACTION_SIGN_IN_GOOGLE = 1
 	}
+
 	private val profileDialog: AlertDialog by lazy {
 		createProfileDialog(this, vmb.binding.viewModel!!, vmb.binding.view!!, this)
 	}
@@ -51,7 +40,6 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 	private var setToNightMenu: MenuItem? = null
 	private var setToDayMenu: MenuItem? = null
 
-	val heatingApi by inject<HeatingApi>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -90,8 +78,6 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
 		itemTouchRightHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
 
-		checkGoogleAccounts()
-
 	}
 
 	override fun onPostResume() {
@@ -99,28 +85,6 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		reloadStatus()
 	}
 
-	private fun checkGoogleAccounts() {
-		// Configure sign-in to request the user's ID, email address, and basic
-		// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-		val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-				.requestIdToken(application.getString(R.string.init_client_id))
-				.requestProfile()
-				.requestEmail()
-				.build()
-
-		// Build a GoogleSignInClient with the options specified by gso.
-		vmb.viewModel.googleSignInClient = GoogleSignIn.getClient(this, gso);
-
-
-		// Check for existing Google Sign In account, if the user is already signed in
-		// the GoogleSignInAccount will be non-null.
-		val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(this)
-
-		if (account != null) {
-			vmb.viewModel.googleSignInAccount = account
-			updateProfileMenuIcon()
-		}
-	}
 
 	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean) {
 		val position = viewHolder.layoutPosition
@@ -206,13 +170,11 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 
 	override fun onGoogleSignIn() {
-		val signInIntent = vmb.viewModel.googleSignInClient.signInIntent
-		startActivityForResult(signInIntent, ACTION_SIGN_IN_GOOGLE)
+		startActivityForResult(vmb.viewModel.getSignInGoogleIntent(), ACTION_SIGN_IN_GOOGLE)
 	}
 
 	override fun onSignOut() {
-		vmb.viewModel.googleSignInClient.signOut()
-		cleanUpGoogleUser()
+		vmb.viewModel.signOutGoogleUser { updateProfileMenuIcon() }
 	}
 
 	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -222,63 +184,16 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		if (requestCode == ACTION_SIGN_IN_GOOGLE) {
 			// The Task returned from this call is always completed, no need to attach
 			// a listener.
-			val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-			handleSignInResult(task)
+			vmb.viewModel.handleSignInGoogleResult(GoogleSignIn.getSignedInAccountFromIntent(data), { updateProfileMenuIcon() })
 		}
-	}
-
-	private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-		try {
-			val account = completedTask.getResult(ApiException::class.java)
-			vmb.viewModel.googleSignInAccountError.set("")
-			launch(UI) {
-				try {
-					val heatingAuth = heatingApi.authorizeGoogleUser(account.idToken)
-					heatingAuth?.let {
-						vmb.viewModel.heatingKey = SecureWrapper.instance.encrypt(application, it.heatingKey)
-						vmb.viewModel.userKey = SecureWrapper.instance.encrypt(application, it.userKey)
-						vmb.viewModel.googleSignInAccount = account
-						updateProfileMenuIcon()
-						return@launch
-					}
-					cleanUpGoogleUser()
-					vmb.viewModel.googleSignInAccountError.set(getString(R.string.auth_unable_encrypt))
-
-				} catch (e: Throwable) {
-					logk("e=$e")
-					val message = when (e) {
-						is IOException -> getString(R.string.auth_io_exception)
-						is HttpException -> getString(R.string.auth_http_exception)
-						else -> getString(R.string.auth_else)
-					}
-					cleanUpGoogleUser()
-					vmb.viewModel.googleSignInAccountError.set(message)
-				}
-			}
-
-		} catch (e: ApiException) {
-			// The ApiException status code indicates the detailed failure reason.
-			// Please refer to the GoogleSignInStatusCodes class reference for more information.
-			logk("exception=$e")
-			cleanUpGoogleUser()
-			vmb.viewModel.googleSignInAccountError.set(getString(R.string.auth_else))
-		}
-
-	}
-
-	private fun cleanUpGoogleUser() {
-		vmb.viewModel.googleSignInAccount = null
-		vmb.viewModel.heatingKey = ""
-		vmb.viewModel.userKey = ""
-		updateProfileMenuIcon()
 	}
 
 
 	private fun updateProfileMenuIcon() {
-		if (vmb.viewModel.googleSignInAccount == null) {
-			profileMenu?.icon = ContextCompat.getDrawable(this, R.drawable.ic_person_outline)
-		} else {
+		if (vmb.viewModel.isGoogleUserSignedIn()) {
 			profileMenu?.icon = ContextCompat.getDrawable(this, R.drawable.ic_person_full)
+		} else {
+			profileMenu?.icon = ContextCompat.getDrawable(this, R.drawable.ic_person_outline)
 		}
 	}
 }
