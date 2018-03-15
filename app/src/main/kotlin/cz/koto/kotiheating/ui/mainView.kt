@@ -35,6 +35,9 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListener {
 
+	companion object {
+		private const val ACTION_SIGN_IN_GOOGLE = 1
+	}
 	private val profileDialog: AlertDialog by lazy {
 		createProfileDialog(this, vmb.binding.viewModel!!, vmb.binding.view!!, this)
 	}
@@ -204,7 +207,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 	override fun onGoogleSignIn() {
 		val signInIntent = vmb.viewModel.googleSignInClient.signInIntent
-		startActivityForResult(signInIntent, 33)
+		startActivityForResult(signInIntent, ACTION_SIGN_IN_GOOGLE)
 	}
 
 	override fun onSignOut() {
@@ -216,7 +219,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		super.onActivityResult(requestCode, resultCode, data)
 
 		// Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-		if (requestCode == 33) {
+		if (requestCode == ACTION_SIGN_IN_GOOGLE) {
 			// The Task returned from this call is always completed, no need to attach
 			// a listener.
 			val task = GoogleSignIn.getSignedInAccountFromIntent(data)
