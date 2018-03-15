@@ -79,9 +79,5 @@ class MainViewModel : BaseViewModel() {
 		return userRepository.googleSignInAccount != null
 	}
 
-	fun isGoogleUserLoggedOut(): Boolean {
-		return userRepository.googleSignInAccount == null
-	}
-
 }
 
