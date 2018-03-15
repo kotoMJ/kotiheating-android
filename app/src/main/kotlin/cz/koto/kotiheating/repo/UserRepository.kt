@@ -19,7 +19,6 @@ import cz.koto.kotiheating.ktools.inject
 import cz.koto.kotiheating.ktools.sharedPrefs
 import cz.koto.kotiheating.ktools.string
 import cz.koto.kotiheating.rest.HeatingApi
-import cz.koto.kotiheating.ui.BaseRepository
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import retrofit2.HttpException
