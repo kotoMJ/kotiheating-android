@@ -1,11 +1,6 @@
-package cz.koto.kotiheating.ktools
+package cz.koto.ktools
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.Transformations
+import android.arch.lifecycle.*
 import android.util.Log
 
 /**

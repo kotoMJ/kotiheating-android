@@ -1,8 +1,8 @@
-package cz.koto.kotiheating.ktools
+package cz.koto.ktools
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.util.Date
+import java.util.*
 
 // Source: @link:https://medium.com/@BladeCoder/reducing-parcelable-boilerplate-code-using-kotlin-741c3124a49a
 

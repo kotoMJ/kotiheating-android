@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.ktools
+package cz.koto.ktools
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
@@ -10,11 +10,11 @@ import retrofit2.Response
  * Resource wrapper adding status and error to its value
  */
 data class Resource<T> constructor(
-	val status: Status,
-	val data: T? = null,
-	val message: String? = null,
-	val rawResponse: Response<T>? = null,
-	val throwable: Throwable? = null
+		val status: Status,
+		val data: T? = null,
+		val message: String? = null,
+		val rawResponse: Response<T>? = null,
+		val throwable: Throwable? = null
 ) {
 	enum class Status { SUCCESS, ERROR, FAILURE, NO_CONNECTION, LOADING }
 	companion object {
@@ -90,7 +90,8 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		savedSources.forEach { result.removeSource(it) }
 		savedSources.clear()
 
-		result.value = result.value?.copy(status = result.value?.status ?: Resource.Status.LOADING) ?: Resource.loading()
+		result.value = result.value?.copy(status = result.value?.status
+				?: Resource.Status.LOADING) ?: Resource.loading()
 
 		result.addSource(networkCallLiveData, { networkResource ->
 			result.setValue(networkResource)
@@ -104,7 +105,8 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		savedSources.forEach { result.removeSource(it) }
 		savedSources.clear()
 
-		result.value = result.value?.copy(status = result.value?.status ?: Resource.Status.LOADING) ?: Resource.loading()
+		result.value = result.value?.copy(status = result.value?.status
+				?: Resource.Status.LOADING) ?: Resource.loading()
 
 		val dbSource = callback!!.loadFromDb()
 		savedSources.add(dbSource)

@@ -1,21 +1,15 @@
-package cz.koto.kotiheating.ktools
+package cz.koto.ktools
 
 import android.app.Activity
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.OnLifecycleEvent
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import android.arch.lifecycle.*
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import cz.koto.kotiheating.BR
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
-import cz.koto.kotiheating.BR
 
 // ViewModelBinding extension functions for Fragment and FragmentActivity
 // Note: these functions are meant to be used as delegates
@@ -50,11 +44,11 @@ inline fun <reified VM : ViewModel, B : ViewDataBinding> Fragment.vmb(@LayoutRes
  * Note: Do not use this constructor directly. Use extension functions above instead.
  */
 class ViewModelBinding<out VM : ViewModel, out B : ViewDataBinding> constructor(
-	private val lifecycleOwner: LifecycleOwner,
-	private val viewModelClass: Class<VM>,
-	@LayoutRes private val layoutResId: Int,
-	private var viewModelProvider: ViewModelProvider?,
-	val viewModelFactory: (() -> VM)?
+		private val lifecycleOwner: LifecycleOwner,
+		private val viewModelClass: Class<VM>,
+		@LayoutRes private val layoutResId: Int,
+		private var viewModelProvider: ViewModelProvider?,
+		val viewModelFactory: (() -> VM)?
 ) {
 	init {
 		if (!(lifecycleOwner is FragmentActivity || lifecycleOwner is Fragment))

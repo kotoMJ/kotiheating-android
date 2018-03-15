@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.ktools
+package cz.koto.ktools
 
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
@@ -45,11 +45,11 @@ class PermissionManager(val activity: FragmentActivity) {
 }
 
 open class PermissionRequest(
-	val permissions: List<String>,
-	val grantedCallback: (grantedPermissions: List<String>) -> Unit = {},
-	val deniedCallback: (deniedPermissions: List<String>) -> Unit = {})
+		val permissions: List<String>,
+		val grantedCallback: (grantedPermissions: List<String>) -> Unit = {},
+		val deniedCallback: (deniedPermissions: List<String>) -> Unit = {})
 
 class SinglePermissionRequest(
-	permission: String,
-	grantedCallback: (grantedPermission: String) -> Unit = {},
-	deniedCallback: (deniedPermission: String) -> Unit = {}) : PermissionRequest(listOf(permission), { grantedCallback(it[0]) }, { deniedCallback(it[0]) })
+		permission: String,
+		grantedCallback: (grantedPermission: String) -> Unit = {},
+		deniedCallback: (deniedPermission: String) -> Unit = {}) : PermissionRequest(listOf(permission), { grantedCallback(it[0]) }, { deniedCallback(it[0]) })

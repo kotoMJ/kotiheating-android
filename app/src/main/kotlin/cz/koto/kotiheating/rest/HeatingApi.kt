@@ -4,8 +4,8 @@ import android.app.Application
 import com.google.gson.Gson
 import cz.koto.kotiheating.BuildConfig
 import cz.koto.kotiheating.entity.HeatingAuthResult
-import cz.koto.kotiheating.ktools.getRetrofit
-import cz.koto.kotiheating.ktools.inject
+import cz.koto.ktools.getRetrofit
+import cz.koto.ktools.inject
 import okhttp3.logging.HttpLoggingInterceptor
 
 class HeatingApi {

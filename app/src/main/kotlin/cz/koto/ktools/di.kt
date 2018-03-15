@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.ktools
+package cz.koto.ktools
 
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -16,7 +16,8 @@ inline fun <reified T : Any> inject(scope: String = DI_SCOPE_GLOBAL) = object : 
 	var value: T? = null
 	override fun getValue(thisRef: Any?, property: KProperty<*>): T {
 		if (value != null) return value!!
-		val found = DIStorage.get(scope, T::class.java.name) ?: throw IllegalStateException("Dependency for property ${property.name}: ${T::class.java.name} not provided.")
+		val found = DIStorage.get(scope, T::class.java.name)
+				?: throw IllegalStateException("Dependency for property ${property.name}: ${T::class.java.name} not provided.")
 		return when (found) {
 			is SingletonDIProvider -> found.instance as T
 			else -> found.provider.invoke() as T

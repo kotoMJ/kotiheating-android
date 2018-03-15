@@ -1,8 +1,8 @@
 package cz.koto.kotiheating.ui.status
 
 import android.arch.lifecycle.LiveData
-import cz.koto.kotiheating.ktools.Resource
 import cz.koto.kotiheating.ui.StatusItem
+import cz.koto.ktools.Resource
 
 class MockListLiveData : LiveData<Resource<List<StatusItem>>>() {
 

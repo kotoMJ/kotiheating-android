@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.ktools
+package cz.koto.ktools
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
@@ -32,7 +32,7 @@ fun <T> setAdapterLiveData(recyclerView: RecyclerView, liveDataItemBinding: Item
 	val oldAdapter = recyclerView.adapter as BindingRecyclerViewAdapter<T>?
 	val adapter: BindingRecyclerViewAdapter<T>
 	adapter = presetAdapter ?: (oldAdapter
-		?: BindingRecyclerViewAdapter())
+			?: BindingRecyclerViewAdapter())
 	if (oldAdapter !== adapter) {
 		adapter.itemBinding = liveDataItemBinding
 		adapter.setItems(liveDataItems.diffList)

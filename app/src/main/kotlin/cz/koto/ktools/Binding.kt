@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.ktools
+package cz.koto.ktools
 
 import android.databinding.BindingAdapter
 import android.databinding.BindingConversion

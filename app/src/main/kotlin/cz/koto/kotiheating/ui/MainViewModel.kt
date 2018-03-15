@@ -1,14 +1,12 @@
 package cz.koto.kotiheating.ui
 
 import android.content.Intent
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.tasks.Task
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.ktools.DiffObservableListLiveData
-import cz.koto.kotiheating.ktools.inject
 import cz.koto.kotiheating.repo.UserRepository
 import cz.koto.kotiheating.ui.status.MockListLiveData
+import cz.koto.ktools.DiffObservableListLiveData
+import cz.koto.ktools.inject
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
@@ -66,8 +64,8 @@ class MainViewModel : BaseViewModel() {
 		return userRepository.googleSignInClient.signInIntent
 	}
 
-	fun handleSignInGoogleResult(completedTask: Task<GoogleSignInAccount>, credentialsHasChanged: () -> Unit) {
-		userRepository.handleSignInResult(completedTask, credentialsHasChanged)
+	fun handleSignInGoogleResult(signInGoogleResultIntent: Intent, credentialsHasChanged: () -> Unit) {
+		userRepository.handleSignInResult(signInGoogleResultIntent, credentialsHasChanged)
 	}
 
 

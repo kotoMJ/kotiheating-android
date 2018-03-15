@@ -11,14 +11,13 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewTreeObserver
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
-import cz.koto.kotiheating.ktools.LifecycleAwareBindingRecyclerViewAdapter
-import cz.koto.kotiheating.ktools.vmb
 import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
+import cz.koto.ktools.LifecycleAwareBindingRecyclerViewAdapter
+import cz.koto.ktools.vmb
 
 
 class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListener {
@@ -182,9 +181,8 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 		// Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
 		if (requestCode == ACTION_SIGN_IN_GOOGLE) {
-			// The Task returned from this call is always completed, no need to attach
-			// a listener.
-			vmb.viewModel.handleSignInGoogleResult(GoogleSignIn.getSignedInAccountFromIntent(data), { updateProfileMenuIcon() })
+			// The Task returned from this call is always completed, no need to attach a listener.
+			vmb.viewModel.handleSignInGoogleResult(data, { updateProfileMenuIcon() })
 		}
 	}
 

@@ -1,6 +1,7 @@
 package cz.koto.kotiheating.repo
 
 import android.app.Application
+import android.content.Intent
 import android.databinding.Bindable
 import android.databinding.ObservableField
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -8,17 +9,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import common.log.logk
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.SecureWrapper
 import cz.koto.kotiheating.entity.HEATING_KEY
 import cz.koto.kotiheating.entity.USER_KEY
-import cz.koto.kotiheating.ktools.inject
-import cz.koto.kotiheating.ktools.sharedPrefs
-import cz.koto.kotiheating.ktools.string
 import cz.koto.kotiheating.rest.HeatingApi
+import cz.koto.ktools.inject
+import cz.koto.ktools.sharedPrefs
+import cz.koto.ktools.string
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import retrofit2.HttpException
@@ -51,8 +51,9 @@ class UserRepository : BaseRepository() {
 
 	var googleSignInAccountError: ObservableField<String> = ObservableField()
 
-	fun handleSignInResult(completedTask: Task<GoogleSignInAccount>, credentialsHasChanged: () -> Unit/*updateProfileMenuIcon()*/) {
+	fun handleSignInResult(signInGoogleResultIntent: Intent, credentialsHasChanged: () -> Unit/*updateProfileMenuIcon()*/) {
 		try {
+			val completedTask = GoogleSignIn.getSignedInAccountFromIntent(signInGoogleResultIntent)
 			val account = completedTask.getResult(ApiException::class.java)
 			googleSignInAccountError.set("")
 			launch(UI) {

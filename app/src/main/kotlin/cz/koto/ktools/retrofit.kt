@@ -1,4 +1,4 @@
-package cz.koto.kotiheating.ktools
+package cz.koto.ktools
 
 import android.arch.lifecycle.LiveData
 import android.content.Context
@@ -57,16 +57,17 @@ internal fun getRetrofit(context: Context, url: String, logLevel: HttpLoggingInt
 		level = logLevel
 	}
 
-	val client = (clientBuilderBase ?: OkHttpClient.Builder()).addInterceptor(loggingInterceptor).addInterceptor(ConnectivityInterceptor(context)).build()
+	val client = (clientBuilderBase
+			?: OkHttpClient.Builder()).addInterceptor(loggingInterceptor).addInterceptor(ConnectivityInterceptor(context)).build()
 
 
 	return Retrofit.Builder()
-		.client(client)
-		.baseUrl(url)
-		.addCallAdapterFactory(LiveDataCallAdapterFactory())
+			.client(client)
+			.baseUrl(url)
+			.addCallAdapterFactory(LiveDataCallAdapterFactory())
 			.addCallAdapterFactory(CoroutineCallAdapterFactory())
-		.addConverterFactory(GsonConverterFactory.create(gson))
-		.build()
+			.addConverterFactory(GsonConverterFactory.create(gson))
+			.build()
 }
 // -- internal --
 
