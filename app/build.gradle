@@ -158,8 +158,10 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$android_support_version"
     implementation "com.android.support:gridlayout-v7:$android_support_version"
 
-	implementation "android.arch.lifecycle:extensions:$rootProject.arch_lifecycle_version"
-    annotationProcessor "android.arch.lifecycle:compiler:$rootProject.arch_lifecycle_version"
+    // Android Arch
+    implementation "android.arch.lifecycle:extensions:$arch_lifecycle_version"
+    implementation "android.arch.persistence.room:runtime:$arch_room_version"
+    kapt "android.arch.persistence.room:compiler:$arch_room_version"
 
     implementation 'com.google.android.gms:play-services-auth:11.8.0'
 

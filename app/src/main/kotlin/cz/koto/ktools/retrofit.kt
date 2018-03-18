@@ -52,17 +52,24 @@ class LiveDataCallAdapterFactory : CallAdapter.Factory() {
 }
 
 // get basic Retrofit setupCached with logger
-internal fun getRetrofit(context: Context, url: String, logLevel: HttpLoggingInterceptor.Level, clientBuilderBase: OkHttpClient.Builder? = null, gson: Gson = GsonBuilder().create()): Retrofit {
+internal fun getRetrofit(context: Context, url: String,
+						 logLevel: HttpLoggingInterceptor.Level,
+						 clientBuilderBase: OkHttpClient.Builder? = null,
+						 gson: Gson = GsonBuilder().create(),
+						 vararg customInterceptors: Interceptor): Retrofit {
 	val loggingInterceptor = HttpLoggingInterceptor().apply {
 		level = logLevel
 	}
 
-	val client = (clientBuilderBase
-			?: OkHttpClient.Builder()).addInterceptor(loggingInterceptor).addInterceptor(ConnectivityInterceptor(context)).build()
+	val clientBuilder = (clientBuilderBase
+			?: OkHttpClient.Builder()).addInterceptor(loggingInterceptor).addInterceptor(ConnectivityInterceptor(context))
 
+	for (intercept in customInterceptors) {
+		clientBuilder.addInterceptor(intercept)
+	}
 
 	return Retrofit.Builder()
-			.client(client)
+			.client(clientBuilder.build())
 			.baseUrl(url)
 			.addCallAdapterFactory(LiveDataCallAdapterFactory())
 			.addCallAdapterFactory(CoroutineCallAdapterFactory())

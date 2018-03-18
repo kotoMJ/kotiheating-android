@@ -15,7 +15,7 @@ import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.SecureWrapper
 import cz.koto.kotiheating.model.entity.HEATING_KEY
 import cz.koto.kotiheating.model.entity.USER_KEY
-import cz.koto.kotiheating.model.rest.HeatingApi
+import cz.koto.kotiheating.model.rest.HeatingUserApi
 import cz.koto.ktools.inject
 import cz.koto.ktools.sharedPrefs
 import cz.koto.ktools.string
@@ -27,7 +27,7 @@ import java.io.IOException
 class UserRepository : BaseRepository() {
 
 	private val application by inject<Application>()
-	val heatingApi by inject<HeatingApi>()
+	val heatingApi by inject<HeatingUserApi>()
 
 	var heatingKey by application.sharedPrefs().string(HEATING_KEY)
 	var userKey by application.sharedPrefs().string(USER_KEY)
