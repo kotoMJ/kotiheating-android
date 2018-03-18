@@ -2,6 +2,7 @@ package cz.koto.kotiheating.model.rest
 
 import android.arch.lifecycle.LiveData
 import cz.koto.kotiheating.model.entity.HeatingAuthResult
+import cz.koto.kotiheating.model.entity.HeatingSchedule
 import cz.koto.kotiheating.model.entity.HeatingStatusResult
 import cz.koto.ktools.Resource
 import kotlinx.coroutines.experimental.Deferred
@@ -14,6 +15,9 @@ interface HeatingRouter {
 
 	@GET("kotinode/heating/status")
 	fun getHeatingStatusLive(): LiveData<Resource<HeatingStatusResult>>
+
+	@GET("}kotinode/heating/schedule")
+	fun getHeatingScheduleLive(): LiveData<Resource<HeatingSchedule>>
 
 
 	@FormUrlEncoded

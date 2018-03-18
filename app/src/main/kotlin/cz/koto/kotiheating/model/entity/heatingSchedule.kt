@@ -11,7 +11,7 @@ enum class ScheduleType {
 
 @Entity(tableName = "heatingSchedule", primaryKeys = ["deviceId", "scheduleType"])
 data class HeatingSchedule(
-		val scheduleType: ScheduleType,
+		var scheduleType: ScheduleType,
 		@SerializedName("timetable") val timetable: List<Array<Float>>,
 		@SerializedName("deviceId") val deviceId: String
 )
