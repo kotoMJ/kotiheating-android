@@ -2,6 +2,7 @@ package cz.koto.kotiheating.app
 
 import android.app.Application
 import com.google.gson.Gson
+import cz.koto.kotiheating.model.repo.HeatingRepository
 import cz.koto.kotiheating.model.repo.UserRepository
 import cz.koto.kotiheating.model.rest.HeaderRequestInterceptor
 import cz.koto.kotiheating.model.rest.HeatingUserApi
@@ -14,9 +15,8 @@ object DIModule {
 		provideSingleton { Gson() }
 		provideSingleton { HeatingUserApi() }
 		provideSingleton { UserRepository() }
-		provideSingleton {
-			HeaderRequestInterceptor()
-		}
+		provideSingleton { HeatingRepository() }
+		provideSingleton { HeaderRequestInterceptor() }
 	}
 }
 

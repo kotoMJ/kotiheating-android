@@ -1,8 +1,21 @@
 package cz.koto.kotiheating.model.repo
 
+import cz.koto.kotiheating.model.entity.MockHeatingScheduleLiveData
+import cz.koto.kotiheating.model.entity.MockHeatingStatusLiveData
 import cz.koto.kotiheating.model.entity.ScheduleType
 
 class HeatingRepository {
-	fun getStatus(deviceId: String) = HeatingStatusLiveData().apply { refresh(deviceId) }
-	fun getSchedule(deviceId: String, scheduleType: ScheduleType) = HeatingScheduleLiveData().apply { refresh(deviceId, scheduleType) }
+
+	fun getStatus(deviceId: String?) = if (deviceId == null) {
+		MockHeatingStatusLiveData()
+	} else {
+		HeatingStatusLiveData().apply { refresh(deviceId) }
+	}
+
+
+	fun getSchedule(deviceId: String?, scheduleType: ScheduleType) = if (deviceId == null) {
+		MockHeatingScheduleLiveData(scheduleType)
+	} else {
+		HeatingScheduleLiveData().apply { refresh(deviceId, scheduleType) }
+	}
 }

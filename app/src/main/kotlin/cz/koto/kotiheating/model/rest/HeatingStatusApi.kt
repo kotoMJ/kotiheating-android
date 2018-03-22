@@ -25,7 +25,7 @@ class HeatingStatusApi {
 					customInterceptors = *arrayOf(headerRequestInterceptor)).create(HeatingRouter::class.java)
 		}
 
-	fun getHeatingStatus(): LiveData<Resource<HeatingDeviceStatus>> {
-		return api.getHeatingStatusLive().mapResource { it?.heatingDeviceStatus }
+	fun getHeatingStatus(heatingId: Int): LiveData<Resource<HeatingDeviceStatus>> {
+		return api.getHeatingStatusLive(heatingId).mapResource { it?.heatingDeviceStatus }
 	}
 }

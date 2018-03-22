@@ -5,9 +5,11 @@ import android.arch.lifecycle.LiveData
 import com.google.gson.Gson
 import cz.koto.kotiheating.BuildConfig
 import cz.koto.kotiheating.model.entity.HeatingSchedule
+import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.ktools.Resource
 import cz.koto.ktools.getRetrofit
 import cz.koto.ktools.inject
+import cz.koto.ktools.mapResource
 import okhttp3.logging.HttpLoggingInterceptor
 
 class HeatingScheduleApi {
@@ -24,7 +26,13 @@ class HeatingScheduleApi {
 					customInterceptors = *arrayOf(headerRequestInterceptor)).create(HeatingRouter::class.java)
 		}
 
-	fun getHeatingSchedule(): LiveData<Resource<HeatingSchedule>> {
-		return api.getHeatingScheduleLive()
+	fun getHeatingSchedule(scheduleType: ScheduleType, deviceId: String): LiveData<Resource<HeatingSchedule>> {
+		when (scheduleType) {
+			ScheduleType.REQUEST_REMOTE,
+			ScheduleType.DEVICE -> return api.getHeatingScheduleLive(deviceId, scheduleType).mapResource { it?.heatingSchedule }
+			else -> return //LiveData()
+		}
+
 	}
+}
 }

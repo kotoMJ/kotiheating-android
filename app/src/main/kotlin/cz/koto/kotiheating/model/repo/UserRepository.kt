@@ -14,11 +14,13 @@ import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.SecureWrapper
 import cz.koto.kotiheating.model.entity.HEATING_KEY
+import cz.koto.kotiheating.model.entity.HEATING_SET
 import cz.koto.kotiheating.model.entity.USER_KEY
 import cz.koto.kotiheating.model.rest.HeatingUserApi
 import cz.koto.ktools.inject
 import cz.koto.ktools.sharedPrefs
 import cz.koto.ktools.string
+import cz.koto.ktools.stringSet
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import retrofit2.HttpException
@@ -29,8 +31,35 @@ class UserRepository : BaseRepository() {
 	private val application by inject<Application>()
 	val heatingApi by inject<HeatingUserApi>()
 
-	var heatingKey by application.sharedPrefs().string(HEATING_KEY)
-	var userKey by application.sharedPrefs().string(USER_KEY)
+	private var heatingKeyPref by application.sharedPrefs().string(key = HEATING_KEY)
+	private var heatingSetPref by application.sharedPrefs().stringSet(key = HEATING_SET)
+	private var userKeyPref by application.sharedPrefs().string(key = USER_KEY)
+
+	var heatingKey: String = ""
+		get() {
+			return if (field.isBlank()) {
+				field = SecureWrapper.instance.decrypt(application, heatingKeyPref ?: "")
+				field
+			} else field
+		}
+
+
+	var heatingSet: Set<String> = setOf()
+		get() {
+			return if (field.isEmpty()) {
+				field = SecureWrapper.instance.decrypt(application, heatingSetPref ?: emptySet())
+				field
+			} else field
+		}
+
+	var userKey: String = ""
+		get() {
+			return if (field.isBlank()) {
+				field = SecureWrapper.instance.decrypt(application, userKeyPref ?: "")
+				field
+			} else field
+		}
+
 
 	var googleSignInAccount: GoogleSignInAccount? = null
 		@Bindable get
@@ -61,7 +90,9 @@ class UserRepository : BaseRepository() {
 					val heatingAuth = heatingApi.authorizeGoogleUser(account.idToken)
 					heatingAuth?.let {
 						heatingKey = SecureWrapper.instance.encrypt(application, it.heatingKey)
+						heatingSet = SecureWrapper.instance.encrypt(application, it.heatingSet)
 						userKey = SecureWrapper.instance.encrypt(application, it.userKey)
+
 						googleSignInAccount = account
 						credentialsHasChanged.invoke()
 						return@launch
@@ -93,7 +124,11 @@ class UserRepository : BaseRepository() {
 
 	private fun cleanUpGoogleUser(credsentialsHasChanged: () -> Unit) {
 		googleSignInAccount = null
+		heatingKeyPref = ""
 		heatingKey = ""
+		heatingSetPref = emptySet()
+		heatingSet = emptySet()
+		userKeyPref = ""
 		userKey = ""
 		credsentialsHasChanged.invoke()
 	}

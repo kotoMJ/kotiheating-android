@@ -1,8 +1,56 @@
-package cz.koto.kotiheating.ui.status
+package cz.koto.kotiheating.model.entity
 
 import android.arch.lifecycle.LiveData
 import cz.koto.kotiheating.ui.StatusItem
 import cz.koto.ktools.Resource
+import java.util.*
+
+
+fun getMockTimeTable(): List<Float> = listOf(
+		15f,
+		15f,
+		15f,
+		15f,
+		15f,
+		15f,
+		15f,
+		15f,
+		15f,
+		15f,
+		15f,
+		16f,
+
+		17f,
+		18f,
+		19f,
+		20f,
+		21f,
+		22f,
+		23f,
+		23f,
+		23f,
+		22f,
+		15f,
+		15f)
+
+class MockHeatingStatusLiveData : LiveData<Resource<HeatingDeviceStatus>>() {
+
+	init {
+		value = Resource(Resource.Status.SUCCESS,
+				HeatingDeviceStatus(Date(), 22f, 2, "MO", 11, 8,
+						getMockTimeTable(), "0"))
+	}
+}
+
+class MockHeatingScheduleLiveData(scheduleType: ScheduleType) : LiveData<Resource<HeatingSchedule>>() {
+
+	init {
+		value = Resource(Resource.Status.SUCCESS,
+				HeatingSchedule(scheduleType,
+						getMockTimeTable(), "0"))
+	}
+
+}
 
 class MockListLiveData : LiveData<Resource<List<StatusItem>>>() {
 

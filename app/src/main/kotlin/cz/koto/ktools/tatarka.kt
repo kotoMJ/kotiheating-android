@@ -9,6 +9,8 @@ import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import cz.koto.kotiheating.model.entity.HeatingSchedule
+import cz.koto.kotiheating.ui.StatusItem
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
@@ -22,6 +24,22 @@ class DiffObservableListLiveData<T>(liveData: LiveData<Resource<List<T>>>, callb
 		addSource(liveData, {
 			value = it
 			it?.data?.let { diffList.update(it) }
+		})
+	}
+}
+
+class DiffObservableLiveHeatingSchedule(liveData: LiveData<Resource<HeatingSchedule>>, callback: DiffObservableList.Callback<StatusItem>) : MediatorLiveData<Resource<List<StatusItem>>>() {
+	val diffList = callback
+
+	init {
+		addSource(liveData, {
+			if (it?.data?.timetable?.isNotEmpty() == true) {
+				value = Resource(Resource.Status.SUCCESS, it.data.timetable.mapIndexed { index, floats ->
+					StatusItem(floats[index], index)
+				})
+			} else {
+				value = Resource(Resource.Status.FAILURE, emptyList())
+			}
 		})
 	}
 }
