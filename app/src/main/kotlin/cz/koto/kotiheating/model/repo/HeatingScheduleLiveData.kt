@@ -20,7 +20,7 @@ class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 				cache.putSchedule(item)
 			}
 
-			override fun shouldFetch(dataFromCache: HeatingSchedule?) = true
+			override fun shouldFetch(dataFromCache: HeatingSchedule?) = (scheduleType != ScheduleType.REQUEST_LOCAL)
 
 			override fun loadFromDb() = cache.getSchedule(deviceId, scheduleType)
 

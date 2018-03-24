@@ -29,14 +29,21 @@ class DiffObservableListLiveData<T>(liveData: LiveData<Resource<List<T>>>, callb
 }
 
 class DiffObservableLiveHeatingSchedule(liveData: LiveData<Resource<HeatingSchedule>>, callback: DiffObservableList.Callback<StatusItem>) : MediatorLiveData<Resource<List<StatusItem>>>() {
-	val diffList = callback
+	val diffList = DiffObservableList<StatusItem>(callback)
 
 	init {
 		addSource(liveData, {
 			if (it?.data?.timetable?.isNotEmpty() == true) {
-				value = Resource(Resource.Status.SUCCESS, it.data.timetable.mapIndexed { index, floats ->
-					StatusItem(floats[index], index)
+
+				value = Resource(Resource.Status.SUCCESS, it.data.timetable.mapIndexed { index, float ->
+					StatusItem(float, index)
 				})
+
+				it?.data?.let {
+					diffList.update(it.timetable.mapIndexed { index, float ->
+						StatusItem(float, index)
+					})
+				}
 			} else {
 				value = Resource(Resource.Status.FAILURE, emptyList())
 			}
@@ -44,11 +51,25 @@ class DiffObservableLiveHeatingSchedule(liveData: LiveData<Resource<HeatingSched
 	}
 }
 
+//@Suppress("UNCHECKED_CAST")
+//@BindingAdapter(value = ["liveDataItemBinding", "liveDataItems", "liveDataAdapter"], requireAll = false)
+//fun <T> setAdapterLiveData(recyclerView: RecyclerView, liveDataItemBinding: ItemBinding<T>, liveDataItems: DiffObservableListLiveData<T>, presetAdapter: BindingRecyclerViewAdapter<T>?) {
+//	val oldAdapter = recyclerView.adapter as BindingRecyclerViewAdapter<T>?
+//	val adapter: BindingRecyclerViewAdapter<T>
+//	adapter = presetAdapter ?: (oldAdapter
+//			?: BindingRecyclerViewAdapter())
+//	if (oldAdapter !== adapter) {
+//		adapter.itemBinding = liveDataItemBinding
+//		adapter.setItems(liveDataItems.diffList)
+//		recyclerView.adapter = adapter
+//	}
+//}
+
 @Suppress("UNCHECKED_CAST")
 @BindingAdapter(value = ["liveDataItemBinding", "liveDataItems", "liveDataAdapter"], requireAll = false)
-fun <T> setAdapterLiveData(recyclerView: RecyclerView, liveDataItemBinding: ItemBinding<T>, liveDataItems: DiffObservableListLiveData<T>, presetAdapter: BindingRecyclerViewAdapter<T>?) {
-	val oldAdapter = recyclerView.adapter as BindingRecyclerViewAdapter<T>?
-	val adapter: BindingRecyclerViewAdapter<T>
+fun <T> setAdapterLiveData(recyclerView: RecyclerView, liveDataItemBinding: ItemBinding<StatusItem>, liveDataItems: DiffObservableLiveHeatingSchedule, presetAdapter: BindingRecyclerViewAdapter<StatusItem>?) {
+	val oldAdapter = recyclerView.adapter as BindingRecyclerViewAdapter<StatusItem>?
+	val adapter: BindingRecyclerViewAdapter<StatusItem>
 	adapter = presetAdapter ?: (oldAdapter
 			?: BindingRecyclerViewAdapter())
 	if (oldAdapter !== adapter) {

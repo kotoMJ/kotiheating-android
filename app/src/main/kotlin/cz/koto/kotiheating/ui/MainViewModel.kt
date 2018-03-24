@@ -47,19 +47,19 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun revertLocalChanges() {
-		statusRequestLocalList.diffList.forEachIndexed { index, item ->
-			item.apply {
-				item.temperature = statusDeviceList.diffList[index].temperature
-			}
-		}
+//		statusRequestLocalList.diffList.forEachIndexed { index, item ->
+//			item.apply {
+//				item.temperature = statusDeviceList.diffList[index].temperature
+//			}
+//		}
 	}
 
 	fun setLocalTemperatureTo(temp: Float) {
-		statusRequestLocalList.diffList.forEachIndexed { _, item ->
-			item.apply {
-				item.temperature = temp
-			}
-		}
+//		statusRequestLocalList.diffList.forEachIndexed { _, item ->
+//			item.apply {
+//				item.temperature = temp
+//			}
+//		}
 	}
 
 	fun getSignInGoogleIntent(): Intent {

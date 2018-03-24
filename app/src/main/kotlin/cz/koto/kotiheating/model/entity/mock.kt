@@ -33,21 +33,19 @@ fun getMockTimeTable(): List<Float> = listOf(
 		15f,
 		15f)
 
-class MockHeatingStatusLiveData : LiveData<Resource<HeatingDeviceStatus>>() {
+class MockHeatingStatusLiveData(deviceId: String) : LiveData<Resource<HeatingDeviceStatus>>() {
 
 	init {
 		value = Resource(Resource.Status.SUCCESS,
 				HeatingDeviceStatus(Date(), 22f, 2, "MO", 11, 8,
-						getMockTimeTable(), "0"))
+						getMockTimeTable(), deviceId))
 	}
 }
 
-class MockHeatingScheduleLiveData(scheduleType: ScheduleType) : LiveData<Resource<HeatingSchedule>>() {
+class MockHeatingScheduleLiveData(scheduleType: ScheduleType, deviceId: String) : LiveData<Resource<HeatingSchedule>>() {
 
 	init {
-		value = Resource(Resource.Status.SUCCESS,
-				HeatingSchedule(scheduleType,
-						getMockTimeTable(), "0"))
+		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(scheduleType, deviceId, getMockTimeTable()))
 	}
 
 }

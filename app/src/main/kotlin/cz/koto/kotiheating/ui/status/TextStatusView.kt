@@ -10,8 +10,7 @@ import android.view.View
 import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.getCurrentHour
-import cz.koto.kotiheating.ui.StatusItem
-import cz.koto.ktools.DiffObservableListLiveData
+import cz.koto.ktools.DiffObservableLiveHeatingSchedule
 
 
 internal class TextStatusView : View {
@@ -24,13 +23,13 @@ internal class TextStatusView : View {
 
 	private var initialized: Boolean = false
 	private var drawAction: DrawAction = DrawAction.NONE
-	private lateinit var statusList: DiffObservableListLiveData<StatusItem>
+	private lateinit var statusList: DiffObservableLiveHeatingSchedule
 
 	constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
 
 	constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
-	fun init(attrs: TypedArray, statusItemMap: DiffObservableListLiveData<StatusItem>) {
+	fun init(attrs: TypedArray, statusItemMap: DiffObservableLiveHeatingSchedule) {
 		this.statusList = statusItemMap
 		readAttributesAndSetupFields(attrs)
 		initialized = true
