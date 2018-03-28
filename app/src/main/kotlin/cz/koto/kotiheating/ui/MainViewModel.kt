@@ -1,8 +1,10 @@
 package cz.koto.kotiheating.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
+import cz.koto.kotiheating.model.entity.HeatingSchedule
 import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.kotiheating.model.repo.HeatingRepository
 import cz.koto.kotiheating.model.repo.UserRepository
@@ -21,9 +23,9 @@ class MainViewModel : BaseViewModel() {
 			.bindExtra(BR.viewModel, this)
 
 
-	var statusDeviceList: DiffObservableLiveHeatingSchedule
-	var statusRequestRemoteList: DiffObservableLiveHeatingSchedule
-	var statusRequestLocalList: DiffObservableLiveHeatingSchedule
+	var statusDeviceList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+	var statusRequestRemoteList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+	var statusRequestLocalList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
 
 
 	init {
@@ -47,21 +49,24 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun revertLocalChanges() {
-//		statusRequestLocalList.diffList.forEachIndexed { index, item ->
-//			item.apply {
-//				item.temperature = statusDeviceList.diffList[index].temperature
-//			}
-//		}
+		statusRequestLocalList.diffList.forEachIndexed { index, item ->
+			item.apply {
+				item.temperature = statusDeviceList.diffList[index].temperature
+			}
+		}
 	}
 
 	fun setLocalTemperatureTo(temp: Float) {
-//		statusRequestLocalList.diffList.forEachIndexed { _, item ->
-//			item.apply {
-//				item.temperature = temp
-//			}
-//		}
+		statusRequestLocalList.diffList.forEachIndexed { _, item ->
+			item.apply {
+				item.temperature = temp
+			}
+		}
 	}
 
+
+	//TODO solve it!
+	@SuppressLint("RestrictedApi")
 	fun getSignInGoogleIntent(): Intent {
 		return userRepository.googleSignInClient.signInIntent
 	}

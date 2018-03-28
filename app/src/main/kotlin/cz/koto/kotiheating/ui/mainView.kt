@@ -11,6 +11,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewTreeObserver
+import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ui.profile.createProfileDialog
@@ -103,10 +104,12 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		updatedItem?.let {
 			newList.set(position, it)
 		}
-
 		vmb.binding.viewModel?.statusRequestLocalList?.diffList?.update(newList)
+		vmb.binding.viewModel?.statusRequestLocalList?.value = vmb.binding.viewModel?.statusRequestLocalList?.value
 
-		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+		logk(">>>ACTIVITY.updateLocalItem() statusRequestLocalList.hour0=${vmb.binding.viewModel?.statusRequestLocalList?.diffList?.filter { it.hour == 0 }}")
+
+		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//TODO probably not needed
 		vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 	}
 

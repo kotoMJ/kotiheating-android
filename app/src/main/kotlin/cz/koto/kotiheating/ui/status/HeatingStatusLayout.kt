@@ -7,8 +7,11 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RadioButton
+import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.compareLists
+import cz.koto.kotiheating.model.entity.HeatingSchedule
+import cz.koto.kotiheating.ui.StatusItem
 import cz.koto.ktools.DiffObservableLiveHeatingSchedule
 
 
@@ -32,10 +35,12 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
-	lateinit var statusDeviceItemList: DiffObservableLiveHeatingSchedule
-	lateinit var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule
 
-	lateinit var listToDisplay: DiffObservableLiveHeatingSchedule
+	lateinit var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+
+	lateinit var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+
+	lateinit var listToDisplay: List<StatusItem>
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
@@ -188,12 +193,12 @@ class HeatingStatusLayout : FrameLayout {
 
 		circleViewPm = findViewById(R.id.circlePm)
 		var radius = maxRadius - (circleSeparation * 0)
-		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.value?.data?.filter { it.hour > 11 }
+		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.filter { it.hour > 11 }
 				?: emptyList(), circleNumberUnit)
 
 		circleViewAm = findViewById(R.id.circleAm)
 		radius = maxRadius - (circleSeparation * 1)
-		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.value?.data?.filter { it.hour <= 11 }
+		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.filter { it.hour <= 11 }
 				?: emptyList(), circleNumberUnit)
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
@@ -206,9 +211,10 @@ class HeatingStatusLayout : FrameLayout {
 				= updateStatusRadioVisibility(invokedByValueChange)
 
 		if (statusDeviceProgressRadio.isChecked || statusDeviceSyncedRadio.isChecked) {
-			listToDisplay = statusDeviceItemList
+			listToDisplay = statusDeviceItemList.diffList
 		} else if (statusRequestRadio.isChecked) {
-			listToDisplay = statusRequestLocalItemList
+			listToDisplay = statusRequestLocalItemList.diffList
+			logk(">>>STATUS LAYOUT statusRequestLocalItemList.hour0=${statusRequestLocalItemList.diffList.filter { it.hour == 0 }}")
 		} else {
 			throw IllegalStateException("Unexpected state of status radio group!")
 		}
@@ -219,7 +225,7 @@ class HeatingStatusLayout : FrameLayout {
 		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
 		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
 
-		if (compareLists(statusRequestLocalItemList.diffList.toList(), statusDeviceItemList.diffList.toList()) == 0) {
+		if (compareLists(statusRequestLocalItemList.diffList, statusDeviceItemList.diffList) == 0) {
 			statusDeviceProgressRadio.visibility = View.GONE
 			statusRequestRadio.visibility = View.GONE
 			statusDeviceSyncedRadio.visibility = View.VISIBLE

@@ -16,6 +16,6 @@ data class HeatingDeviceStatus(
 		@SerializedName("day") val deviceDay: String,
 		@SerializedName("minute") val deviceMinute: Int,
 		@SerializedName("hour") val deviceHour: Int,
-		@SerializedName("timetable") val timetable: List<Float>,
+		@SerializedName("timetable") val timetable: List<List<Float>>,
 		@SerializedName("deviceId") val deviceId: String
 )

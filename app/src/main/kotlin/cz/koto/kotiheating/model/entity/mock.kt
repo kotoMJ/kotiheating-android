@@ -6,7 +6,7 @@ import cz.koto.ktools.Resource
 import java.util.*
 
 
-fun getMockTimeTable(): List<Float> = listOf(
+fun getMockTimeTableMonday(): List<Float> = listOf(
 		15f,
 		15f,
 		15f,
@@ -33,19 +33,57 @@ fun getMockTimeTable(): List<Float> = listOf(
 		15f,
 		15f)
 
+fun getMockTimeTableDay(): List<Float> = listOf(
+		05f,
+		05f,
+		05f,
+		05f,
+		05f,
+		05f,
+		05f,
+		05f,
+		05f,
+		05f,
+		05f,
+		05f,
+
+		10f,
+		10f,
+		10f,
+		10f,
+		10f,
+		10f,
+		10f,
+		10f,
+		10f,
+		10f,
+		10f,
+		10f)
+
+fun getMockTimeTableWeek(): List<List<Float>> = listOf(
+		getMockTimeTableDay(),
+		getMockTimeTableMonday(),
+		getMockTimeTableDay(),
+		getMockTimeTableDay(),
+		getMockTimeTableDay(),
+		getMockTimeTableDay(),
+		getMockTimeTableDay(),
+		getMockTimeTableDay()
+)
+
 class MockHeatingStatusLiveData(deviceId: String) : LiveData<Resource<HeatingDeviceStatus>>() {
 
 	init {
 		value = Resource(Resource.Status.SUCCESS,
 				HeatingDeviceStatus(Date(), 22f, 2, "MO", 11, 8,
-						getMockTimeTable(), deviceId))
+						getMockTimeTableWeek(), deviceId))
 	}
 }
 
 class MockHeatingScheduleLiveData(scheduleType: ScheduleType, deviceId: String) : LiveData<Resource<HeatingSchedule>>() {
 
 	init {
-		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(scheduleType, deviceId, getMockTimeTable()))
+		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(scheduleType, deviceId, getMockTimeTableWeek()))
 	}
 
 }

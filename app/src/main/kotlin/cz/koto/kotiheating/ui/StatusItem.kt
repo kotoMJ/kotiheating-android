@@ -13,4 +13,9 @@ class StatusItem(var temperature: Float, val hour: Int) : Comparable<StatusItem>
 		}
 	}
 
+	override fun toString(): String {
+		return "StatusItem(temperature=$temperature, hour=$hour)"
+	}
+
+
 }

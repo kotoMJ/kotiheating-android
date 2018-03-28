@@ -17,5 +17,5 @@ data class HeatingScheduleResult(
 data class HeatingSchedule(
 		@SerializedName("typeId") var scheduleType: ScheduleType,
 		@SerializedName("deviceId") val deviceId: String,
-		@SerializedName("timetable") val timetable: List<Float>
+		@SerializedName("timetable") val timetable: List<List<Float>>
 )
