@@ -40,18 +40,26 @@ class DiffObservableListLiveData<T>(liveData: LiveData<Resource<List<T>>>, callb
 }
 
 class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<Resource<T>>, callback: DiffObservableList.Callback<StatusItem>) : MediatorLiveData<Resource<T>>() {
-	val diffList = DiffObservableList<StatusItem>(callback)
+
+	val diffListMap = hashMapOf<Int, DiffObservableList<StatusItem>>()
 
 	init {
+
+		for (day in 0..6) {
+			diffListMap[day] = DiffObservableList<StatusItem>(callback)
+		}
 		addSource(liveData, {
 
 			if (it?.data?.timetable?.isNotEmpty() == true) {
 				value = it
 
 				it.data.let {
-					diffList.update(it.timetable[1/*TODO fix proper day*/].mapIndexed { index, float ->
-						StatusItem(float, index)
-					})
+					it.timetable.forEachIndexed { day, dayList ->
+						diffListMap.get(day)?.update(it.timetable[day].mapIndexed { index, float ->
+							StatusItem(float, index)
+						})
+					}
+
 				}
 			} else {
 				value = Resource(Resource.Status.FAILURE, null)
@@ -75,15 +83,19 @@ class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<
 //}
 
 @Suppress("UNCHECKED_CAST")
-@BindingAdapter(value = ["liveDataItemBinding", "liveDataItems", "liveDataAdapter"], requireAll = false)
-fun <T> setAdapterLiveData(recyclerView: RecyclerView, liveDataItemBinding: ItemBinding<StatusItem>, liveDataItems: DiffObservableLiveHeatingSchedule<HeatingSchedule>, presetAdapter: BindingRecyclerViewAdapter<StatusItem>?) {
+@BindingAdapter(value = ["liveDataItemBinding", "liveDataItems", "liveDataAdapter", "currentDay"], requireAll = false)
+fun <T> setAdapterLiveData(recyclerView: RecyclerView,
+						   liveDataItemBinding: ItemBinding<StatusItem>,
+						   liveDataItems: DiffObservableLiveHeatingSchedule<HeatingSchedule>,
+						   presetAdapter: BindingRecyclerViewAdapter<StatusItem>?,
+						   currentDay: Int) {
 	val oldAdapter = recyclerView.adapter as BindingRecyclerViewAdapter<StatusItem>?
 	val adapter: BindingRecyclerViewAdapter<StatusItem>
 	adapter = presetAdapter ?: (oldAdapter
 			?: BindingRecyclerViewAdapter())
 	if (oldAdapter !== adapter) {
 		adapter.itemBinding = liveDataItemBinding
-		adapter.setItems(liveDataItems.diffList)
+		adapter.setItems(liveDataItems.diffListMap[currentDay])
 		recyclerView.adapter = adapter
 	}
 }

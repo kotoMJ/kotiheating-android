@@ -3,11 +3,11 @@ package cz.koto.kotiheating.ui.status
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
+import android.databinding.ObservableInt
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RadioButton
-import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -39,6 +39,8 @@ class HeatingStatusLayout : FrameLayout {
 	lateinit var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
 
 	lateinit var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+
+	lateinit var currentDay: ObservableInt
 
 	lateinit var listToDisplay: List<StatusItem>
 
@@ -211,10 +213,13 @@ class HeatingStatusLayout : FrameLayout {
 				= updateStatusRadioVisibility(invokedByValueChange)
 
 		if (statusDeviceProgressRadio.isChecked || statusDeviceSyncedRadio.isChecked) {
-			listToDisplay = statusDeviceItemList.diffList
+			statusDeviceItemList.diffListMap[currentDay.get()]?.let {
+				listToDisplay = it
+			}
 		} else if (statusRequestRadio.isChecked) {
-			listToDisplay = statusRequestLocalItemList.diffList
-			logk(">>>STATUS LAYOUT statusRequestLocalItemList.hour0=${statusRequestLocalItemList.diffList.filter { it.hour == 0 }}")
+			statusRequestLocalItemList.diffListMap[currentDay.get()]?.let {
+				listToDisplay = it
+			}
 		} else {
 			throw IllegalStateException("Unexpected state of status radio group!")
 		}
@@ -225,7 +230,8 @@ class HeatingStatusLayout : FrameLayout {
 		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
 		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
 
-		if (compareLists(statusRequestLocalItemList.diffList, statusDeviceItemList.diffList) == 0) {
+		if (compareLists(statusRequestLocalItemList.diffListMap[currentDay.get()] ?: emptyList(),
+						statusDeviceItemList.diffListMap[currentDay.get()] ?: emptyList()) == 0) {
 			statusDeviceProgressRadio.visibility = View.GONE
 			statusRequestRadio.visibility = View.GONE
 			statusDeviceSyncedRadio.visibility = View.VISIBLE

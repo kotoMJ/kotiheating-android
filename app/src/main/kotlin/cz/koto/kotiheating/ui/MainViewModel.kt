@@ -2,6 +2,7 @@ package cz.koto.kotiheating.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.databinding.ObservableInt
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -12,9 +13,11 @@ import cz.koto.ktools.DiffObservableLiveHeatingSchedule
 import cz.koto.ktools.inject
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
+import java.util.*
 
 class MainViewModel : BaseViewModel() {
 
+	var selectedDay = ObservableInt(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
 
 	val userRepository by inject<UserRepository>()
 	val heatingRepository by inject<HeatingRepository>()
@@ -48,16 +51,18 @@ class MainViewModel : BaseViewModel() {
 		})
 	}
 
-	fun revertLocalChanges() {
-		statusRequestLocalList.diffList.forEachIndexed { index, item ->
+	fun revertLocalChanges(day: Int) {
+		statusRequestLocalList.diffListMap[day]?.forEachIndexed { index, item ->
 			item.apply {
-				item.temperature = statusDeviceList.diffList[index].temperature
+				statusDeviceList.diffListMap[day]?.let { daySchedule ->
+					item.temperature = daySchedule[index].temperature
+				}
 			}
 		}
 	}
 
-	fun setLocalTemperatureTo(temp: Float) {
-		statusRequestLocalList.diffList.forEachIndexed { _, item ->
+	fun setLocalTemperatureTo(day: Int, temp: Float) {
+		statusRequestLocalList.diffListMap[day]?.forEachIndexed { _, item ->
 			item.apply {
 				item.temperature = temp
 			}

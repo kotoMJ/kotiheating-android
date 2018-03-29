@@ -11,7 +11,6 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewTreeObserver
-import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ui.profile.createProfileDialog
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 		val swipeLeftHandler = object : SwipeToLeftCallback(this, vmb.viewModel) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateLocalItem(viewHolder, increase = true)
+				updateLocalItem(viewHolder, increase = true, day = vmb.viewModel.selectedDay.get())
 			}
 		}
 		val itemTouchLeftHelper = ItemTouchHelper(swipeLeftHandler)
@@ -72,7 +71,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 
 		val swipeRightHandler = object : SwipeToRightCallback(this, vmb.viewModel) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateLocalItem(viewHolder, increase = false)
+				updateLocalItem(viewHolder, increase = false, day = vmb.viewModel.selectedDay.get())
 			}
 		}
 		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
@@ -86,31 +85,31 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 	}
 
 
-	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean) {
+	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {
 		val position = viewHolder.layoutPosition
 
-		val updatedItem = vmb.binding.viewModel?.statusRequestLocalList?.diffList?.get(position)
+		vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.let { dayList ->
+			val updatedItem = dayList[position]
 
-		updatedItem?.apply {
-			if (increase) {
-				temperature += 1
-			} else {
-				temperature -= 1
+			updatedItem?.apply {
+				if (increase) {
+					temperature += 1
+				} else {
+					temperature -= 1
+				}
 			}
+			val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.toList())
+
+			updatedItem?.let {
+				newList.set(position, it)
+			}
+			vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.update(newList)
+			vmb.binding.viewModel?.statusRequestLocalList?.value = vmb.binding.viewModel?.statusRequestLocalList?.value
+			vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//TODO probably not needed
+
+			vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 		}
 
-		val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusRequestLocalList?.diffList?.toList())
-
-		updatedItem?.let {
-			newList.set(position, it)
-		}
-		vmb.binding.viewModel?.statusRequestLocalList?.diffList?.update(newList)
-		vmb.binding.viewModel?.statusRequestLocalList?.value = vmb.binding.viewModel?.statusRequestLocalList?.value
-
-		logk(">>>ACTIVITY.updateLocalItem() statusRequestLocalList.hour0=${vmb.binding.viewModel?.statusRequestLocalList?.diffList?.filter { it.hour == 0 }}")
-
-		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//TODO probably not needed
-		vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 	}
 
 	override fun reloadStatus() {
@@ -138,25 +137,25 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 				return true
 			}
 			R.id.action_clear_all -> {
-				vmb.viewModel.revertLocalChanges()
+				vmb.viewModel.revertLocalChanges(day = vmb.viewModel.selectedDay.get())
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 			R.id.action_anti_freeze -> {
-				vmb.viewModel.setLocalTemperatureTo(5f)
+				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 5f)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 			R.id.action_night_temp -> {
-				vmb.viewModel.setLocalTemperatureTo(15f)
+				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 15f)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 			R.id.action_daily_temp -> {
-				vmb.viewModel.setLocalTemperatureTo(23f)
+				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 23f)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
