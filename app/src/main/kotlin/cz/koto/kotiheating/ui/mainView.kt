@@ -18,6 +18,7 @@ import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.koto.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.koto.ktools.vmb
+import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
 
 
 class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListener {
@@ -188,6 +189,14 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		}
 	}
 
+	override fun onDayNext() {
+		vmb.viewModel.selectedDay.set(if (vmb.viewModel.selectedDay.get() + 1 > 6) {
+			0
+		} else vmb.viewModel.selectedDay.get() + 1)
+		(vmb.binding.dailyScheduleRecycler.adapter as BindingRecyclerViewAdapter<StatusItem>).setItems(vmb.viewModel.statusRequestLocalList.diffListMap[vmb.viewModel.selectedDay.get()])
+		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+		vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+	}
 
 	private fun updateProfileMenuIcon() {
 		if (vmb.viewModel.isGoogleUserSignedIn()) {
@@ -199,6 +208,7 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 }
 
 interface MainView {
+	fun onDayNext()
 	fun reloadStatus()
 	fun onGoogleSignIn()
 	fun onSignOut()

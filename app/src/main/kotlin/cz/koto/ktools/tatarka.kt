@@ -4,6 +4,7 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.databinding.BindingAdapter
+import android.databinding.ObservableInt
 import android.databinding.ViewDataBinding
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
@@ -88,14 +89,14 @@ fun <T> setAdapterLiveData(recyclerView: RecyclerView,
 						   liveDataItemBinding: ItemBinding<StatusItem>,
 						   liveDataItems: DiffObservableLiveHeatingSchedule<HeatingSchedule>,
 						   presetAdapter: BindingRecyclerViewAdapter<StatusItem>?,
-						   currentDay: Int) {
+						   currentDay: ObservableInt) {
 	val oldAdapter = recyclerView.adapter as BindingRecyclerViewAdapter<StatusItem>?
 	val adapter: BindingRecyclerViewAdapter<StatusItem>
 	adapter = presetAdapter ?: (oldAdapter
 			?: BindingRecyclerViewAdapter())
 	if (oldAdapter !== adapter) {
 		adapter.itemBinding = liveDataItemBinding
-		adapter.setItems(liveDataItems.diffListMap[currentDay])
+		adapter.setItems(liveDataItems.diffListMap[currentDay.get()])
 		recyclerView.adapter = adapter
 	}
 }

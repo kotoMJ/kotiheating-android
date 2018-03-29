@@ -45,7 +45,7 @@
 						android:layout_height="wrap_content"
 						android:layout_gravity="center"
 						android:layout_margin="8dp"
-						android:onClick="@{()-> view.reloadStatus()}"
+						android:onClick="@{()-> view.onDayNext()}"
 						app:statusDeviceItemList="@{viewModel.statusDeviceList}"
 						app:statusRequestLocalItemList="@{viewModel.statusRequestLocalList}"
 						app:currentDay="@{viewModel.selectedDay}" />
@@ -66,6 +66,7 @@
 				app:liveDataItemBinding="@{viewModel.itemBinding}"
 				app:liveDataItems="@{viewModel.statusRequestLocalList}"
 				app:liveDataAdapter="@{view.lifecycleAwareAdapter}"
+				app:currentDay="@{viewModel.selectedDay}"
 				tools:listitem="@layout/item_heating"
 				app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 		</android.support.design.widget.CoordinatorLayout>
