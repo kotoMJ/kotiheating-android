@@ -1,5 +1,6 @@
 package cz.koto.kotiheating.model.repo
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Intent
 import android.databinding.Bindable
@@ -115,7 +116,14 @@ class UserRepository : BaseRepository() {
 		} catch (e: ApiException) {
 			// The ApiException status code indicates the detailed failure reason.
 			// Please refer to the GoogleSignInStatusCodes class reference for more information.
-			logk("exception=$e")
+			when (e.statusCode) {
+				12500 -> {
+					logk("Update Google Play services on device! exception=$e")
+				}
+				else -> {
+					logk("Unexpected exception=$e")
+				}
+			}
 			cleanUpGoogleUser({ credentialsHasChanged.invoke() })
 			googleSignInAccountError.set(application.getString(R.string.auth_else))
 		}
@@ -133,11 +141,15 @@ class UserRepository : BaseRepository() {
 		credsentialsHasChanged.invoke()
 	}
 
+	@SuppressLint("RestrictedApi")
+	//https://developers.google.com/android/guides/releases#march_20_2018_-_version_1200
 	fun signOutGoogleUser(credentialsHasChanged: () -> Unit) {
 		googleSignInClient.signOut()
 		cleanUpGoogleUser(credentialsHasChanged)
 	}
 
+	@SuppressLint("RestrictedApi")
+	//https://developers.google.com/android/guides/releases#march_20_2018_-_version_1200
 	fun checkGoogleAccounts() {
 		// Configure sign-in to request the user's ID, email address, and basic
 		// profile. ID and basic profile are included in DEFAULT_SIGN_IN.

@@ -94,7 +94,7 @@ android {
 
 
         release {
-            buildConfigField "boolean", "LOGS", "false"
+            buildConfigField "boolean", "LOGS", "true"
 
             signingConfig signingConfigs.release
             zipAlignEnabled true
