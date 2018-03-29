@@ -1,5 +1,6 @@
 package cz.koto.kotiheating.model.repo
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Intent
 import android.databinding.Bindable
@@ -14,11 +15,13 @@ import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.SecureWrapper
 import cz.koto.kotiheating.model.entity.HEATING_KEY
+import cz.koto.kotiheating.model.entity.HEATING_SET
 import cz.koto.kotiheating.model.entity.USER_KEY
 import cz.koto.kotiheating.model.rest.HeatingUserApi
 import cz.koto.ktools.inject
 import cz.koto.ktools.sharedPrefs
 import cz.koto.ktools.string
+import cz.koto.ktools.stringSet
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import retrofit2.HttpException
@@ -29,8 +32,35 @@ class UserRepository : BaseRepository() {
 	private val application by inject<Application>()
 	val heatingApi by inject<HeatingUserApi>()
 
-	var heatingKey by application.sharedPrefs().string(HEATING_KEY)
-	var userKey by application.sharedPrefs().string(USER_KEY)
+	private var heatingKeyPref by application.sharedPrefs().string(key = HEATING_KEY)
+	private var heatingSetPref by application.sharedPrefs().stringSet(key = HEATING_SET)
+	private var userKeyPref by application.sharedPrefs().string(key = USER_KEY)
+
+	var heatingKey: String = ""
+		get() {
+			return if (field.isBlank()) {
+				field = SecureWrapper.instance.decrypt(application, heatingKeyPref ?: "")
+				field
+			} else field
+		}
+
+
+	var heatingSet: Set<String> = setOf()
+		get() {
+			return if (field.isEmpty()) {
+				field = SecureWrapper.instance.decrypt(application, heatingSetPref ?: emptySet())
+				field
+			} else field
+		}
+
+	var userKey: String = ""
+		get() {
+			return if (field.isBlank()) {
+				field = SecureWrapper.instance.decrypt(application, userKeyPref ?: "")
+				field
+			} else field
+		}
+
 
 	var googleSignInAccount: GoogleSignInAccount? = null
 		@Bindable get
@@ -61,7 +91,9 @@ class UserRepository : BaseRepository() {
 					val heatingAuth = heatingApi.authorizeGoogleUser(account.idToken)
 					heatingAuth?.let {
 						heatingKey = SecureWrapper.instance.encrypt(application, it.heatingKey)
+						heatingSet = SecureWrapper.instance.encrypt(application, it.heatingSet)
 						userKey = SecureWrapper.instance.encrypt(application, it.userKey)
+
 						googleSignInAccount = account
 						credentialsHasChanged.invoke()
 						return@launch
@@ -84,7 +116,14 @@ class UserRepository : BaseRepository() {
 		} catch (e: ApiException) {
 			// The ApiException status code indicates the detailed failure reason.
 			// Please refer to the GoogleSignInStatusCodes class reference for more information.
-			logk("exception=$e")
+			when (e.statusCode) {
+				12500 -> {
+					logk("Update Google Play services on device! exception=$e")
+				}
+				else -> {
+					logk("Unexpected exception=$e")
+				}
+			}
 			cleanUpGoogleUser({ credentialsHasChanged.invoke() })
 			googleSignInAccountError.set(application.getString(R.string.auth_else))
 		}
@@ -93,16 +132,24 @@ class UserRepository : BaseRepository() {
 
 	private fun cleanUpGoogleUser(credsentialsHasChanged: () -> Unit) {
 		googleSignInAccount = null
+		heatingKeyPref = ""
 		heatingKey = ""
+		heatingSetPref = emptySet()
+		heatingSet = emptySet()
+		userKeyPref = ""
 		userKey = ""
 		credsentialsHasChanged.invoke()
 	}
 
+	@SuppressLint("RestrictedApi")
+	//https://developers.google.com/android/guides/releases#march_20_2018_-_version_1200
 	fun signOutGoogleUser(credentialsHasChanged: () -> Unit) {
 		googleSignInClient.signOut()
 		cleanUpGoogleUser(credentialsHasChanged)
 	}
 
+	@SuppressLint("RestrictedApi")
+	//https://developers.google.com/android/guides/releases#march_20_2018_-_version_1200
 	fun checkGoogleAccounts() {
 		// Configure sign-in to request the user's ID, email address, and basic
 		// profile. ID and basic profile are included in DEFAULT_SIGN_IN.

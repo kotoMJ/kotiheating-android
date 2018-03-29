@@ -9,9 +9,13 @@ enum class ScheduleType {
 	REQUEST_REMOTE
 }
 
+data class HeatingScheduleResult(
+		@SerializedName("result") val heatingSchedule: HeatingSchedule
+)
+
 @Entity(tableName = "heatingSchedule", primaryKeys = ["deviceId", "scheduleType"])
 data class HeatingSchedule(
-		var scheduleType: ScheduleType,
-		@SerializedName("timetable") val timetable: List<Array<Float>>,
-		@SerializedName("deviceId") val deviceId: String
+		@SerializedName("typeId") var scheduleType: ScheduleType,
+		@SerializedName("deviceId") val deviceId: String,
+		@SerializedName("timetable") val timetable: List<List<Float>>
 )

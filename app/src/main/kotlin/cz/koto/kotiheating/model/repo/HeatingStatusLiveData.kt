@@ -18,14 +18,14 @@ class HeatingStatusLiveData : ResourceLiveData<HeatingDeviceStatus>() {
 		setupCached(object : NetworkBoundResource.Callback<HeatingDeviceStatus> {
 			override fun saveCallResult(item: HeatingDeviceStatus) {
 				cache.putStatus(item)
-				cache.putSchedule(HeatingSchedule(ScheduleType.DEVICE, item.timetable, item.deviceId))
+				cache.putSchedule(HeatingSchedule(ScheduleType.DEVICE, item.deviceId, item.timetable))
 			}
 
 			override fun shouldFetch(dataFromCache: HeatingDeviceStatus?) = true
 
 			override fun loadFromDb() = cache.getStatus(deviceId)
 
-			override fun createNetworkCall() = statusApi.getHeatingStatus()
+			override fun createNetworkCall() = statusApi.getHeatingStatus(deviceId)
 		})
 	}
 }

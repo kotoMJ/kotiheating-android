@@ -94,7 +94,7 @@ android {
 
 
         release {
-            buildConfigField "boolean", "LOGS", "false"
+            buildConfigField "boolean", "LOGS", "true"
 
             signingConfig signingConfigs.release
             zipAlignEnabled true
@@ -163,7 +163,7 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$arch_room_version"
     kapt "android.arch.persistence.room:compiler:$arch_room_version"
 
-    implementation 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation "com.google.android.gms:play-services-auth:$play_services"
 
 	implementation "io.reactivex.rxjava2:rxjava:$rxjava_version"
 	implementation "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
