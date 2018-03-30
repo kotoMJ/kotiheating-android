@@ -10,7 +10,7 @@
 
 		<variable
 			name="view"
-			type="cz.koto.kotiheating.ui.MainView" />
+			type="cz.koto.kotiheating.ui.MainActivityView" />
 	</data>
 
 	<android.support.constraint.ConstraintLayout

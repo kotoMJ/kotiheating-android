@@ -4,24 +4,18 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewTreeObserver
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ui.profile.createProfileDialog
-import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
-import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
-import cz.koto.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.koto.ktools.vmb
-import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
 
 
-class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListener {
+class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnClickListener {
 
 	companion object {
 		private const val ACTION_SIGN_IN_GOOGLE = 1
@@ -53,71 +47,8 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			setHomeButtonEnabled(false)
 		}
 
-		vmb.binding.circleProgress.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-			override fun onGlobalLayout() {
-				if (vmb.binding.circleProgress.showLayout()) {
-					vmb.binding.circleProgress.viewTreeObserver.removeOnGlobalLayoutListener(this)
-				}
-			}
-		})
-
-		val swipeLeftHandler = object : SwipeToLeftCallback(this, vmb.viewModel) {
-			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateLocalItem(viewHolder, increase = true, day = vmb.viewModel.selectedDay.get())
-			}
-		}
-		val itemTouchLeftHelper = ItemTouchHelper(swipeLeftHandler)
-		itemTouchLeftHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
-
-
-		val swipeRightHandler = object : SwipeToRightCallback(this, vmb.viewModel) {
-			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateLocalItem(viewHolder, increase = false, day = vmb.viewModel.selectedDay.get())
-			}
-		}
-		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
-		itemTouchRightHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
-
+		setupViewpager()
 	}
-
-	override fun onPostResume() {
-		super.onPostResume()
-		reloadStatus()
-	}
-
-
-	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {
-		val position = viewHolder.layoutPosition
-
-		vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.let { dayList ->
-			val updatedItem = dayList[position]
-
-			updatedItem?.apply {
-				if (increase) {
-					temperature += 1
-				} else {
-					temperature -= 1
-				}
-			}
-			val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.toList())
-
-			updatedItem?.let {
-				newList.set(position, it)
-			}
-			vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.update(newList)
-			vmb.binding.viewModel?.statusRequestLocalList?.value = vmb.binding.viewModel?.statusRequestLocalList?.value
-			vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//TODO probably not needed
-
-			vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
-		}
-
-	}
-
-	override fun reloadStatus() {
-		vmb.binding.circleProgress.showLayout()
-	}
-
-	override val lifecycleAwareAdapter = LifecycleAwareBindingRecyclerViewAdapter<StatusItem>(this)
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {
 		menuInflater.inflate(R.menu.menu_main, menu)
@@ -139,26 +70,26 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 			}
 			R.id.action_clear_all -> {
 				vmb.viewModel.revertLocalChanges(day = vmb.viewModel.selectedDay.get())
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+//				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+//				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 			R.id.action_anti_freeze -> {
 				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 5f)
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+//				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+//				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 			R.id.action_night_temp -> {
 				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 15f)
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+//				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+//				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 			R.id.action_daily_temp -> {
 				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 23f)
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+//				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+//				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
 				return true
 			}
 		}
@@ -189,13 +120,27 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 		}
 	}
 
-	override fun onDayNext() {
-		vmb.viewModel.selectedDay.set(if (vmb.viewModel.selectedDay.get() + 1 > 6) {
-			0
-		} else vmb.viewModel.selectedDay.get() + 1)
-		(vmb.binding.dailyScheduleRecycler.adapter as BindingRecyclerViewAdapter<StatusItem>).setItems(vmb.viewModel.statusRequestLocalList.diffListMap[vmb.viewModel.selectedDay.get()])
-		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-		vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+//	override fun onDayNext() {
+//		vmb.viewModel.selectedDay.set(if (vmb.viewModel.selectedDay.get() + 1 > 6) {
+//			0
+//		} else vmb.viewModel.selectedDay.get() + 1)
+//		(vmb.binding.dailyScheduleRecycler.adapter as BindingRecyclerViewAdapter<StatusItem>).setItems(vmb.viewModel.statusRequestLocalList.diffListMap[vmb.viewModel.selectedDay.get()])
+//		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+//		vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+//	}
+
+
+	private fun setupViewpager() {
+		vmb.binding.mainPager.adapter = MainFragmentAdapter(supportFragmentManager)
+		vmb.binding.mainPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+			override fun onPageScrollStateChanged(state: Int) {}
+
+			override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+			override fun onPageSelected(position: Int) {
+				// if screen differs from last one
+			}
+		})
 	}
 
 	private fun updateProfileMenuIcon() {
@@ -207,12 +152,9 @@ class MainActivity : AppCompatActivity(), MainView, DialogInterface.OnClickListe
 	}
 }
 
-interface MainView {
-	fun onDayNext()
-	fun reloadStatus()
+interface MainActivityView {
 	fun onGoogleSignIn()
 	fun onSignOut()
-	val lifecycleAwareAdapter: LifecycleAwareBindingRecyclerViewAdapter<StatusItem> // TODO: Temp fix for tatarka - remove when tatarka adds support for lifecycle
 }
 
 
