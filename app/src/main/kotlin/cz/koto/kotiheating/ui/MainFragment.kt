@@ -1,5 +1,6 @@
 package cz.koto.kotiheating.ui
 
+import android.databinding.ObservableInt
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
@@ -7,6 +8,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.FragmentMainBinding
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
@@ -23,15 +25,15 @@ class MainFragment : Fragment(), MainFragmentView {
 
 	private val vmb by vmb<MainViewModel, FragmentMainBinding>(R.layout.fragment_main) { MainViewModel() }
 
-	var fragmentDay: Int? = null
+	val fragmentDay = ObservableInt(-1)
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		arguments?.getInt("day").let {
-			fragmentDay = it
+		arguments?.getInt("day")?.let {
+			fragmentDay.set(it)
 		}
-		if (fragmentDay == null) throw IllegalStateException("MainFragment cannot be initialized without day!")
+		if (fragmentDay.get() < 0) throw IllegalStateException("MainFragment cannot be initialized without day!")
 
 		vmb.binding.circleProgress.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 			override fun onGlobalLayout() {
@@ -41,18 +43,18 @@ class MainFragment : Fragment(), MainFragmentView {
 			}
 		})
 
-		val swipeLeftHandler = object : SwipeToLeftCallback(requireContext(), vmb.viewModel) {
+		val swipeLeftHandler = object : SwipeToLeftCallback(requireContext(), vmb.viewModel, fragmentDay.get()) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateLocalItem(viewHolder, increase = true, day = vmb.viewModel.selectedDay.get())
+				updateLocalItem(viewHolder, increase = true, day = fragmentDay.get())
 			}
 		}
 		val itemTouchLeftHelper = ItemTouchHelper(swipeLeftHandler)
 		itemTouchLeftHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
 
 
-		val swipeRightHandler = object : SwipeToRightCallback(requireContext(), vmb.viewModel) {
+		val swipeRightHandler = object : SwipeToRightCallback(requireContext(), vmb.viewModel, fragmentDay.get()) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-				updateLocalItem(viewHolder, increase = false, day = vmb.viewModel.selectedDay.get())
+				updateLocalItem(viewHolder, increase = false, day = fragmentDay.get())
 			}
 		}
 		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
@@ -64,7 +66,7 @@ class MainFragment : Fragment(), MainFragmentView {
 
 	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {
 		val position = viewHolder.layoutPosition
-
+		logk(">>>Update item for day=$day")
 		vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.let { dayList ->
 			val updatedItem = dayList[position]
 

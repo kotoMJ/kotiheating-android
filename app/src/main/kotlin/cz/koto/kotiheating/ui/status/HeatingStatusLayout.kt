@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RadioButton
+import android.widget.TextView
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -35,6 +36,7 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
+	private lateinit var dayTextView: TextView
 
 	lateinit var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
 
@@ -205,6 +207,10 @@ class HeatingStatusLayout : FrameLayout {
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
 		centralTextStatusView.init(attrs, listToDisplay)
+
+		dayTextView = findViewById(R.id.dayTextView)
+		dayTextView.text = currentDay.get().toString()
+
 	}
 
 	private fun setProperDataSource(invokedByValueChange: Boolean) {

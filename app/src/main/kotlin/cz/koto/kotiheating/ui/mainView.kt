@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ui.profile.createProfileDialog
@@ -138,7 +139,8 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
 			override fun onPageSelected(position: Int) {
-				// if screen differs from last one
+				logk(">>>day/position=$position")
+				vmb.viewModel.selectedDay.set(position)
 			}
 		})
 	}
