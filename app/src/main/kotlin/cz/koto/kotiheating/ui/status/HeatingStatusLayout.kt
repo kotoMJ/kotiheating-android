@@ -180,6 +180,7 @@ class HeatingStatusLayout : FrameLayout {
 		showLayout()
 	}
 
+	@Deprecated("Restrict call of this to minimum & invoke showLayout with every value change automatically")
 	fun showLayout(invokedByValueChange: Boolean = false): Boolean {
 		if (measuredWidth != 0) {
 			calculateLayout(measuredWidth * MAX_RADIUS_MULTIPLIER, invokedByValueChange)

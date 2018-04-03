@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	>
 
 	<data>
+		<import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
 
 		<variable
 			name="viewModel"
@@ -19,15 +21,68 @@
 		android:layout_height="match_parent"
 		android:orientation="vertical">
 
-		<include
-			android:id="@+id/include" layout="@layout/toolbar" />
 
-
-		<android.support.v4.view.ViewPager
-			android:id="@+id/main_pager"
+		<android.support.design.widget.CoordinatorLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+			android:layout_height="match_parent">
+
+			<android.support.design.widget.AppBarLayout
+				android:id="@+id/collapsing_appbar_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<android.support.design.widget.CollapsingToolbarLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:layout_scrollFlags="scroll|enterAlways"
+
+					app:contentScrim="?attr/colorPrimary">
+
+					<android.support.v4.view.ViewPager
+						android:id="@+id/main_pager"
+						android:layout_width="match_parent"
+						android:layout_height="200dp"
+						android:layout_marginTop="?attr/actionBarSize"
+						android:layout_alignParentBottom="true"
+						app:layout_collapseMode="none" />
+
+					<android.support.v7.widget.Toolbar
+						xmlns:android="http://schemas.android.com/apk/res/android"
+						xmlns:app="http://schemas.android.com/apk/res-auto"
+						xmlns:tools="http://schemas.android.com/tools"
+						android:id="@+id/toolbar"
+						android:layout_width="match_parent"
+						android:layout_height="?attr/actionBarSize"
+						app:theme="@style/ThemeOverlay.AppCompat.SecurityShow.ActionBar"
+						app:contentInsetStartWithNavigation="@dimen/global_spacing_8"
+						tools:showIn="@layout/activity_main"
+						app:layout_collapseMode="pin"
+						app:title="">
+					</android.support.v7.widget.Toolbar>
+
+				</android.support.design.widget.CollapsingToolbarLayout>
+			</android.support.design.widget.AppBarLayout>
+
+
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/dailyScheduleRecycler"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="8dp"
+				android:layout_marginTop="8dp"
+				android:layout_alignParentBottom="true"
+				android:padding="@dimen/global_spacing_8"
+				android:paddingBottom="@dimen/global_spacing_96"
+				android:clipToPadding="false"
+				app:layoutManager="@{LayoutManagers.linear()}"
+				app:liveDataItemBinding="@{viewModel.itemBinding}"
+				app:liveDataItems="@{viewModel.statusRequestLocalList}"
+				app:liveDataAdapter="@{view.lifecycleAwareAdapter}"
+				app:currentDay="@{viewModel.selectedDay}"
+				tools:listitem="@layout/item_heating"
+				app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+		</android.support.design.widget.CoordinatorLayout>
 
 
 	</LinearLayout>
