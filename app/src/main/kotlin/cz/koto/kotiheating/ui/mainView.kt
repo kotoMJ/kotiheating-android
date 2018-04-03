@@ -156,19 +156,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		val itemTouchRightHelper = ItemTouchHelper(swipeRightHandler)
 		itemTouchRightHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
 
-//		vmb.binding.dailyScheduleRecycler.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-//			override fun onGlobalLayout() {
-//				vmb.binding.dailyScheduleRecycler.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//
-//				val params = android.support.design.widget.CoordinatorLayout.LayoutParams(
-//						android.support.design.widget.CoordinatorLayout.LayoutParams.MATCH_PARENT,
-//						android.support.design.widget.CoordinatorLayout.LayoutParams.WRAP_CONTENT
-//				)
-//				params.setMargins(0, 0, 0, vmb.binding.dailyScheduleRecycler.getHeight() / 2)
-//				vmb.binding.mainPager.layoutParams = params
-//			}
-//		})
-
 	}
 
 	private fun setupViewpager() {
@@ -183,6 +170,21 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 				vmb.viewModel.selectedDay.set(position)
 			}
 		})
+
+//		vmb.binding.mainPager.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//			override fun onGlobalLayout() {
+//				vmb.binding.mainPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//
+//				val params = CollapsingToolbarLayout.LayoutParams(
+//						CollapsingToolbarLayout.LayoutParams.MATCH_PARENT,
+//						CollapsingToolbarLayout.LayoutParams.WRAP_CONTENT
+//				)
+//				params.setMargins(0, 0, 0, vmb.binding.mainPager.getHeight() / 2)
+//				vmb.binding.mainPager.layoutParams = params
+//			}
+//		})
+
+
 	}
 
 	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {

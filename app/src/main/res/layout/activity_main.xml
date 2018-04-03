@@ -38,10 +38,10 @@
 
 					app:contentScrim="?attr/colorPrimary">
 
-					<android.support.v4.view.ViewPager
+					<cz.koto.kotiheating.ui.viewpager.StatusViewPager
 						android:id="@+id/main_pager"
 						android:layout_width="match_parent"
-						android:layout_height="200dp"
+						android:layout_height="match_parent"
 						android:layout_marginTop="?attr/actionBarSize"
 						android:layout_alignParentBottom="true"
 						app:layout_collapseMode="none" />
