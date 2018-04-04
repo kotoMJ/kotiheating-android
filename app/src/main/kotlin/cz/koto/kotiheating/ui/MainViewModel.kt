@@ -2,6 +2,7 @@ package cz.koto.kotiheating.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.databinding.ObservableInt
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -15,6 +16,7 @@ import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
 class MainViewModel : BaseViewModel() {
 
+	var selectedDay = ObservableInt(/*Calendar.getInstance().get(Calendar.DAY_OF_WEEK)*/0)
 
 	val userRepository by inject<UserRepository>()
 	val heatingRepository by inject<HeatingRepository>()
@@ -48,20 +50,26 @@ class MainViewModel : BaseViewModel() {
 		})
 	}
 
-	fun revertLocalChanges() {
-		statusRequestLocalList.diffList.forEachIndexed { index, item ->
+	fun revertLocalChanges(day: ObservableInt) {
+		statusRequestLocalList.diffListMap[day.get()]?.forEachIndexed { index, item ->
 			item.apply {
-				item.temperature = statusDeviceList.diffList[index].temperature
+				statusDeviceList.diffListMap[day.get()]?.let { daySchedule ->
+					item.temperature = daySchedule[index].temperature
+				}
 			}
 		}
+		//hack to force listeners think that value has changed.
+		statusRequestLocalList.value = statusRequestLocalList.value
 	}
 
-	fun setLocalTemperatureTo(temp: Float) {
-		statusRequestLocalList.diffList.forEachIndexed { _, item ->
+	fun setLocalTemperatureTo(day: Int, temp: Float) {
+		statusRequestLocalList.diffListMap[day]?.forEachIndexed { _, item ->
 			item.apply {
 				item.temperature = temp
 			}
 		}
+		//hack to force listeners think that value has changed.
+		statusRequestLocalList.value = statusRequestLocalList.value
 	}
 
 

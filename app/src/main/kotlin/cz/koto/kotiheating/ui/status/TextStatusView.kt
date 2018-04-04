@@ -24,13 +24,15 @@ internal class TextStatusView : View {
 	private var initialized: Boolean = false
 	private var drawAction: DrawAction = DrawAction.NONE
 	private lateinit var statusList: List<StatusItem>
+	private var currentDay: Int = -1
 
 	constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
 
 	constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
-	fun init(attrs: TypedArray, statusItemList: List<StatusItem>) {
+	fun init(attrs: TypedArray, statusItemList: List<StatusItem>, currentDay: Int?) {
 		this.statusList = statusItemList
+		currentDay?.let { this.currentDay = it }
 		readAttributesAndSetupFields(attrs)
 		initialized = true
 	}
@@ -49,7 +51,7 @@ internal class TextStatusView : View {
 		when (drawAction) {
 			DrawAction.CLEAN_VIEW -> onDrawCleanView()
 			DrawAction.SHOW_VIEW -> onDrawTextStatus(canvas, centerPoint)
-			else -> logk(">>> Unimplemented draw action ${drawAction}")
+			else -> logk(">>> TextStatusView Unimplemented draw action ${drawAction}")
 		}
 
 
@@ -85,7 +87,7 @@ internal class TextStatusView : View {
 
 
 		val text = "${statusList.get(getCurrentHour())?.temperature?.toInt() ?: "N/A"}°C"
-		canvas.drawText(text,
+		canvas.drawText(currentDay.toString(),
 				centerPoint.x - getHorizontalCenterDelta(text, centerTextPaint.typeface, centerTextPaint.textSize),
 				centerPoint.y + getVerticalCenterDelta(centerTextPaint.textSize),
 				centerTextPaint)

@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RadioButton
-import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -36,11 +35,26 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
 
-	lateinit var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+	var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
+		set(value) {
+			field = value
+			showLayout(true)
+		}
 
-	lateinit var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+	var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
+		set(value) {
+			field = value
+			showLayout(true)
+		}
+
+	var currentDay: Int? = null
+		set(value) {
+			field = value
+			showLayout(true)
+		}
 
 	lateinit var listToDisplay: List<StatusItem>
+
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
@@ -48,7 +62,6 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleNumberUnit: CircleStatusView.CircleNumberUnit
 
 	private var deviceStatusView: DeviceStatusView = DeviceStatusView.SERVER_PROGRESS
-
 
 	constructor(context: Context) : super(context)
 
@@ -202,7 +215,8 @@ class HeatingStatusLayout : FrameLayout {
 				?: emptyList(), circleNumberUnit)
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
-		centralTextStatusView.init(attrs, listToDisplay)
+		centralTextStatusView.init(attrs, listToDisplay, currentDay)
+
 	}
 
 	private fun setProperDataSource(invokedByValueChange: Boolean) {
@@ -211,10 +225,13 @@ class HeatingStatusLayout : FrameLayout {
 				= updateStatusRadioVisibility(invokedByValueChange)
 
 		if (statusDeviceProgressRadio.isChecked || statusDeviceSyncedRadio.isChecked) {
-			listToDisplay = statusDeviceItemList.diffList
+			statusDeviceItemList?.diffListMap?.get(currentDay)?.let {
+				listToDisplay = it
+			}
 		} else if (statusRequestRadio.isChecked) {
-			listToDisplay = statusRequestLocalItemList.diffList
-			logk(">>>STATUS LAYOUT statusRequestLocalItemList.hour0=${statusRequestLocalItemList.diffList.filter { it.hour == 0 }}")
+			statusRequestLocalItemList?.diffListMap?.get(currentDay)?.let {
+				listToDisplay = it
+			}
 		} else {
 			throw IllegalStateException("Unexpected state of status radio group!")
 		}
@@ -225,7 +242,8 @@ class HeatingStatusLayout : FrameLayout {
 		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
 		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
 
-		if (compareLists(statusRequestLocalItemList.diffList, statusDeviceItemList.diffList) == 0) {
+		if (compareLists(statusRequestLocalItemList?.diffListMap?.get(currentDay) ?: emptyList(),
+						statusDeviceItemList?.diffListMap?.get(currentDay) ?: emptyList()) == 0) {
 			statusDeviceProgressRadio.visibility = View.GONE
 			statusRequestRadio.visibility = View.GONE
 			statusDeviceSyncedRadio.visibility = View.VISIBLE
