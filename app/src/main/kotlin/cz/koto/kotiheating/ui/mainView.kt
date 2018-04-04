@@ -77,27 +77,23 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 				return true
 			}
 			R.id.action_clear_all -> {
-				vmb.viewModel.revertLocalChanges(day = vmb.viewModel.selectedDay.get())
-//				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-//				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+				vmb.viewModel.revertLocalChanges(day = vmb.viewModel.selectedDay)
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				return true
 			}
 			R.id.action_anti_freeze -> {
 				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 5f)
-//				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-//				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				return true
 			}
 			R.id.action_night_temp -> {
 				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 15f)
-//				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-//				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				return true
 			}
 			R.id.action_daily_temp -> {
 				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 23f)
-//				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-//				vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				return true
 			}
 		}
@@ -127,15 +123,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			vmb.viewModel.handleSignInGoogleResult(data, { updateProfileMenuIcon() })
 		}
 	}
-
-//	override fun onDayNext() {
-//		vmb.viewModel.selectedDay.set(if (vmb.viewModel.selectedDay.get() + 1 > 6) {
-//			0
-//		} else vmb.viewModel.selectedDay.get() + 1)
-//		(vmb.binding.dailyScheduleRecycler.adapter as BindingRecyclerViewAdapter<StatusItem>).setItems(vmb.viewModel.statusRequestLocalList.diffListMap[vmb.viewModel.selectedDay.get()])
-//		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
-//		vmb.binding.circleProgress.showLayout(invokedByValueChange = true)
-//	}
 
 	override val lifecycleAwareAdapter = LifecycleAwareBindingRecyclerViewAdapter<StatusItem>(this)
 

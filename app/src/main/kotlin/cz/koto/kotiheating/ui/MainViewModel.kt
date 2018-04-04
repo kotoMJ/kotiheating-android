@@ -52,14 +52,16 @@ class MainViewModel : BaseViewModel() {
 		})
 	}
 
-	fun revertLocalChanges(day: Int) {
-		statusRequestLocalList.diffListMap[day]?.forEachIndexed { index, item ->
+	fun revertLocalChanges(day: ObservableInt) {
+		statusRequestLocalList.diffListMap[day.get()]?.forEachIndexed { index, item ->
 			item.apply {
-				statusDeviceList.diffListMap[day]?.let { daySchedule ->
+				statusDeviceList.diffListMap[day.get()]?.let { daySchedule ->
 					item.temperature = daySchedule[index].temperature
 				}
 			}
 		}
+		//hack to force listeners think that value has changed.
+		statusRequestLocalList.value = statusRequestLocalList.value
 	}
 
 	fun setLocalTemperatureTo(day: Int, temp: Float) {
@@ -68,6 +70,8 @@ class MainViewModel : BaseViewModel() {
 				item.temperature = temp
 			}
 		}
+		//hack to force listeners think that value has changed.
+		statusRequestLocalList.value = statusRequestLocalList.value
 	}
 
 
