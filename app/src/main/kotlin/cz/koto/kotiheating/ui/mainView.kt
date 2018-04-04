@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
-import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ui.profile.createProfileDialog
@@ -156,7 +155,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 			override fun onPageSelected(position: Int) {
 				vmb.viewModel.selectedDay.set(position)
-				logk(">>>position=$position, day=${vmb.viewModel.selectedDay.get()}")
 				//TODO is there a better (automatic) way how to force reload of adapter base on day change?
 				val adapter = vmb.binding.dailyScheduleRecycler.adapter as BindingRecyclerViewAdapter<StatusItem>
 				adapter.setItems(vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(position))
@@ -166,7 +164,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {
 		val position = viewHolder.layoutPosition
-		logk(">>>Update item for day=$day")
 		vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.let { dayList ->
 			val updatedItem = dayList[position]
 

@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RadioButton
-import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -39,21 +38,18 @@ class HeatingStatusLayout : FrameLayout {
 	var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
 		set(value) {
 			field = value
-			logk(">>>STATUS DEVICE changed!")
 			showLayout(true)
 		}
 
 	var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
 		set(value) {
 			field = value
-			logk(">>>REQUEST LOCAL changed!")
 			showLayout(true)
 		}
 
 	var currentDay: Int? = null
 		set(value) {
 			field = value
-			logk(">>>CURRENT DAY changed! $value")
 			showLayout(true)
 		}
 

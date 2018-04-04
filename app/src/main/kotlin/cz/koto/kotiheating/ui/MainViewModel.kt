@@ -3,7 +3,6 @@ package cz.koto.kotiheating.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.databinding.ObservableInt
-import common.log.logk
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -33,7 +32,6 @@ class MainViewModel : BaseViewModel() {
 
 	init {
 
-		logk(">>>MainViewModel INIT!!!")
 		userRepository.checkGoogleAccounts()
 
 		statusDeviceList = DiffObservableLiveHeatingSchedule(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE), object : DiffObservableList.Callback<StatusItem> {
