@@ -116,7 +116,7 @@ internal class CircleStatusView : View {
 		when (drawAction) {
 			DrawAction.CLEAN_VIEW -> onDrawCleanView()
 			DrawAction.SHOW_VIEW -> onDrawAnimateDynamic(canvas, centerPoint)
-			else -> logk(">>> Unimplemented draw action ${drawAction}")
+			else -> logk("CircleStatusView Unimplemented draw action ${drawAction}")
 		}
 
 

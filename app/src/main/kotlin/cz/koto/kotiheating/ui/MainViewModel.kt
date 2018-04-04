@@ -3,6 +3,7 @@ package cz.koto.kotiheating.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.databinding.ObservableInt
+import common.log.logk
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -13,11 +14,10 @@ import cz.koto.ktools.DiffObservableLiveHeatingSchedule
 import cz.koto.ktools.inject
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
-import java.util.*
 
 class MainViewModel : BaseViewModel() {
 
-	var selectedDay = ObservableInt(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
+	var selectedDay = ObservableInt(/*Calendar.getInstance().get(Calendar.DAY_OF_WEEK)*/0)
 
 	val userRepository by inject<UserRepository>()
 	val heatingRepository by inject<HeatingRepository>()
@@ -33,6 +33,7 @@ class MainViewModel : BaseViewModel() {
 
 	init {
 
+		logk(">>>MainViewModel INIT!!!")
 		userRepository.checkGoogleAccounts()
 
 		statusDeviceList = DiffObservableLiveHeatingSchedule(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE), object : DiffObservableList.Callback<StatusItem> {

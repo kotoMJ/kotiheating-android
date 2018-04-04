@@ -3,12 +3,11 @@ package cz.koto.kotiheating.ui.status
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
-import android.databinding.ObservableInt
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RadioButton
-import android.widget.TextView
+import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -36,15 +35,30 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewPm: CircleStatusView
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
-	private lateinit var dayTextView: TextView
 
-	lateinit var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+	var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
+		set(value) {
+			field = value
+			logk(">>>STATUS DEVICE changed!")
+			showLayout(true)
+		}
 
-	lateinit var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+	var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
+		set(value) {
+			field = value
+			logk(">>>REQUEST LOCAL changed!")
+			showLayout(true)
+		}
 
-	lateinit var currentDay: ObservableInt
+	var currentDay: Int? = null
+		set(value) {
+			field = value
+			logk(">>>CURRENT DAY changed! $value")
+			showLayout(true)
+		}
 
 	lateinit var listToDisplay: List<StatusItem>
+
 
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
@@ -52,7 +66,6 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleNumberUnit: CircleStatusView.CircleNumberUnit
 
 	private var deviceStatusView: DeviceStatusView = DeviceStatusView.SERVER_PROGRESS
-
 
 	constructor(context: Context) : super(context)
 
@@ -180,7 +193,6 @@ class HeatingStatusLayout : FrameLayout {
 		showLayout()
 	}
 
-	@Deprecated("Restrict call of this to minimum & invoke showLayout with every value change automatically")
 	fun showLayout(invokedByValueChange: Boolean = false): Boolean {
 		if (measuredWidth != 0) {
 			calculateLayout(measuredWidth * MAX_RADIUS_MULTIPLIER, invokedByValueChange)
@@ -207,10 +219,7 @@ class HeatingStatusLayout : FrameLayout {
 				?: emptyList(), circleNumberUnit)
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
-		centralTextStatusView.init(attrs, listToDisplay)
-
-		dayTextView = findViewById(R.id.dayTextView)
-		dayTextView.text = currentDay.get().toString()
+		centralTextStatusView.init(attrs, listToDisplay, currentDay)
 
 	}
 
@@ -220,11 +229,11 @@ class HeatingStatusLayout : FrameLayout {
 				= updateStatusRadioVisibility(invokedByValueChange)
 
 		if (statusDeviceProgressRadio.isChecked || statusDeviceSyncedRadio.isChecked) {
-			statusDeviceItemList.diffListMap[currentDay.get()]?.let {
+			statusDeviceItemList?.diffListMap?.get(currentDay)?.let {
 				listToDisplay = it
 			}
 		} else if (statusRequestRadio.isChecked) {
-			statusRequestLocalItemList.diffListMap[currentDay.get()]?.let {
+			statusRequestLocalItemList?.diffListMap?.get(currentDay)?.let {
 				listToDisplay = it
 			}
 		} else {
@@ -237,8 +246,8 @@ class HeatingStatusLayout : FrameLayout {
 		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
 		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
 
-		if (compareLists(statusRequestLocalItemList.diffListMap[currentDay.get()] ?: emptyList(),
-						statusDeviceItemList.diffListMap[currentDay.get()] ?: emptyList()) == 0) {
+		if (compareLists(statusRequestLocalItemList?.diffListMap?.get(currentDay) ?: emptyList(),
+						statusDeviceItemList?.diffListMap?.get(currentDay) ?: emptyList()) == 0) {
 			statusDeviceProgressRadio.visibility = View.GONE
 			statusRequestRadio.visibility = View.GONE
 			statusDeviceSyncedRadio.visibility = View.VISIBLE

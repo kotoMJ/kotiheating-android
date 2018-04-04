@@ -1,5 +1,6 @@
 package cz.koto.kotiheating.ui
 
+import android.arch.lifecycle.ViewModelProviders
 import android.databinding.ObservableInt
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -17,7 +18,7 @@ class MainFragment : Fragment(), MainFragmentView {
 		fun newInstance(day: Int) = MainFragment().apply { arguments = Bundle().apply { putInt("day", day) } }
 	}
 
-	private val vmb by vmb<MainViewModel, FragmentMainBinding>(R.layout.fragment_main) { MainViewModel() }
+	private val vmb by vmb<MainViewModel, FragmentMainBinding>(R.layout.fragment_main) { ViewModelProviders.of(activity!!).get(MainViewModel::class.java) }
 
 	val fragmentDay = ObservableInt(-1)
 
@@ -50,13 +51,8 @@ class MainFragment : Fragment(), MainFragmentView {
 		vmb.binding.circleProgress.showLayout()
 	}
 
-
-	override fun onDayNext() {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-	}
 }
 
 interface MainFragmentView {
-	fun onDayNext()
 	fun onReloadStatusView()
 }

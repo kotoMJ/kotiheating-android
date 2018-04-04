@@ -19,6 +19,7 @@ import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.koto.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.koto.ktools.vmb
+import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
 
 
 class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnClickListener {
@@ -139,7 +140,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	override val lifecycleAwareAdapter = LifecycleAwareBindingRecyclerViewAdapter<StatusItem>(this)
 
 	private fun setupRecycler() {
-		val swipeLeftHandler = object : SwipeToLeftCallback(this, vmb.viewModel, vmb.viewModel.selectedDay.get()) {
+		val swipeLeftHandler = object : SwipeToLeftCallback(this, vmb.viewModel, vmb.viewModel.selectedDay) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 				updateLocalItem(viewHolder, increase = true, day = vmb.viewModel.selectedDay.get())
 			}
@@ -148,7 +149,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		itemTouchLeftHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
 
 
-		val swipeRightHandler = object : SwipeToRightCallback(this, vmb.viewModel, vmb.viewModel.selectedDay.get()) {
+		val swipeRightHandler = object : SwipeToRightCallback(this, vmb.viewModel, vmb.viewModel.selectedDay) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 				updateLocalItem(viewHolder, increase = false, day = vmb.viewModel.selectedDay.get())
 			}
@@ -159,6 +160,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	}
 
 	private fun setupViewpager() {
+		vmb.binding.mainPager.offscreenPageLimit = 1
 		vmb.binding.mainPager.adapter = MainFragmentAdapter(supportFragmentManager)
 		vmb.binding.mainPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 			override fun onPageScrollStateChanged(state: Int) {}
@@ -166,25 +168,13 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
 			override fun onPageSelected(position: Int) {
-				logk(">>>day/position=$position")
 				vmb.viewModel.selectedDay.set(position)
+				logk(">>>position=$position, day=${vmb.viewModel.selectedDay.get()}")
+				//TODO is there a better (automatic) way how to force reload of adapter base on day change?
+				val adapter = vmb.binding.dailyScheduleRecycler.adapter as BindingRecyclerViewAdapter<StatusItem>
+				adapter.setItems(vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(position))
 			}
 		})
-
-//		vmb.binding.mainPager.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-//			override fun onGlobalLayout() {
-//				vmb.binding.mainPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//
-//				val params = CollapsingToolbarLayout.LayoutParams(
-//						CollapsingToolbarLayout.LayoutParams.MATCH_PARENT,
-//						CollapsingToolbarLayout.LayoutParams.WRAP_CONTENT
-//				)
-//				params.setMargins(0, 0, 0, vmb.binding.mainPager.getHeight() / 2)
-//				vmb.binding.mainPager.layoutParams = params
-//			}
-//		})
-
-
 	}
 
 	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {
@@ -207,9 +197,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			}
 			vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.update(newList)
 			vmb.binding.viewModel?.statusRequestLocalList?.value = vmb.binding.viewModel?.statusRequestLocalList?.value
-			vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//TODO probably not needed
-
-			//vmb.binding.circleProgress.showLayout(invokedByValueChange = true) //TODO repaint automatically in HeatingStatusLayout
+			vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
 		}
 
 	}
