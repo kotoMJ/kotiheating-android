@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.View
 import common.log.logk
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.common.getCurrentHour
 import cz.koto.kotiheating.ui.StatusItem
 
 
@@ -86,14 +85,15 @@ internal class TextStatusView : View {
 		}
 
 
-		val text = "${statusList.get(getCurrentHour())?.temperature?.toInt() ?: "N/A"}°C"
-		canvas.drawText(currentDay.toString(),
+		//val text = "${statusList.get(getCurrentHour())?.temperature?.toInt() ?: "N/A"}°C"
+		val text = getTextForDay(currentDay)
+
+		canvas.drawText(text,
 				centerPoint.x - getHorizontalCenterDelta(text, centerTextPaint.typeface, centerTextPaint.textSize),
 				centerPoint.y + getVerticalCenterDelta(centerTextPaint.textSize),
 				centerTextPaint)
 
 	}
-
 
 	fun showView() {
 		drawAction = DrawAction.SHOW_VIEW
@@ -104,6 +104,19 @@ internal class TextStatusView : View {
 	fun cleanView() {
 		drawAction = DrawAction.CLEAN_VIEW
 		invalidate()
+	}
+
+	private fun getTextForDay(day: Int): String {
+		return when (day) {
+			0 -> context.getString(R.string.text_status_view_monday)
+			1 -> context.getString(R.string.text_status_view_tuesday)
+			2 -> context.getString(R.string.text_status_view_wednesday)
+			3 -> context.getString(R.string.text_status_view_thursday)
+			4 -> context.getString(R.string.text_status_view_friday)
+			5 -> context.getString(R.string.text_status_view_saturday)
+			6 -> context.getString(R.string.text_status_view_sunday)
+			else -> context.getString(R.string.text_status_view_undefined)
+		}
 	}
 
 	private fun readAttributesAndSetupFields(attrs: TypedArray) {

@@ -8,4 +8,13 @@
 	<string name="auth_http_exception">User is not authorized to any heating.</string>
 	<string name="auth_else">Authorization error.</string>
 	<string name="auth_unable_encrypt">Unable to encrypt credentials!</string>
+
+	<string name="text_status_view_monday">Mo</string>
+	<string name="text_status_view_tuesday">Tu</string>
+	<string name="text_status_view_wednesday">We</string>
+	<string name="text_status_view_thursday">Th</string>
+	<string name="text_status_view_friday">Fr</string>
+	<string name="text_status_view_saturday">Sa</string>
+	<string name="text_status_view_sunday">Su</string>
+	<string name="text_status_view_undefined">-</string>
 </resources>
