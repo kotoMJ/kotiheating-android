@@ -12,11 +12,11 @@ data class HeatingStatusResult(
 @JvmSuppressWildcards
 data class HeatingDeviceStatus(
 		@SerializedName("timestamp") val timestamp: Date,
-		@SerializedName("temperature") val temperature: Float,
+		@SerializedName("temperature") val temperature: Int,
 		@SerializedName("deviceMode") val deviceMode: Int,
 		@SerializedName("day") val deviceDay: String,
 		@SerializedName("minute") val deviceMinute: Int,
 		@SerializedName("hour") val deviceHour: Int,
-		@SerializedName("timetable") val timetable: MutableList<MutableList<Float>>,
+		@SerializedName("timetable") val timetable: MutableList<MutableList<Int>>,
 		@SerializedName("deviceId") val deviceId: String
 )

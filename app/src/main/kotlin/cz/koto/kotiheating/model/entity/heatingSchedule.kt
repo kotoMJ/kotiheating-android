@@ -27,7 +27,7 @@ data class HeatingScheduleResult(
 data class HeatingSchedule(
 		@SerializedName("typeId") var scheduleType: ScheduleType,
 		@SerializedName("deviceId") var deviceId: String,
-		@SerializedName("timetable") var timetable: MutableList<MutableList<Float>>
+		@SerializedName("timetable") var timetable: MutableList<MutableList<Int>>
 ) {
 
 	constructor() : this(ScheduleType.UNKNOWN, "", mutableListOf())

@@ -139,8 +139,9 @@ class HeatingStatusLayout : FrameLayout {
 
 		if (!unitHeatingRadio.isChecked &&
 				!unitTimeRadio.isChecked) {
-			unitTimeRadio.isChecked = true //Default option
-			circleNumberUnit = CircleStatusView.CircleNumberUnit.HOURS
+			unitTimeRadio.isChecked = false
+			unitHeatingRadio.isChecked = true //Default option
+			circleNumberUnit = CircleStatusView.CircleNumberUnit.CELSIUS
 		}
 	}
 

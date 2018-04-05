@@ -81,17 +81,17 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 				return true
 			}
 			R.id.action_anti_freeze -> {
-				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 5f)
+				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 50)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				return true
 			}
 			R.id.action_night_temp -> {
-				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 15f)
+				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 150)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				return true
 			}
 			R.id.action_daily_temp -> {
-				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 23f)
+				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 230)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				return true
 			}

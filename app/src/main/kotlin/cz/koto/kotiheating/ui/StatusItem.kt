@@ -1,7 +1,7 @@
 package cz.koto.kotiheating.ui;
 
 
-class StatusItem(var temperature: Float, val hour: Int) : Comparable<StatusItem> {
+class StatusItem(var temperature: Int, val hour: Int) : Comparable<StatusItem> {
 
 	override fun compareTo(other: StatusItem): Int {
 		if (other.temperature == temperature && other.hour == hour) {

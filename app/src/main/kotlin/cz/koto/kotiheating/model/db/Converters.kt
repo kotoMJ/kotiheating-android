@@ -43,18 +43,18 @@ class Converters {
 	}
 
 	@TypeConverter
-	fun listListFloatToString(listListFloat: MutableList<MutableList<Float>>?): String? {
-		return gson.toJson(listListFloat)
+	fun listListFloatToString(listListInt: MutableList<MutableList<Int>>?): String? {
+		return gson.toJson(listListInt)
 	}
 
 
 	@TypeConverter
-	fun stringToListListFloat(listListFloatAsString: String?): MutableList<MutableList<Float>>? {
-		if (listListFloatAsString == null) {
+	fun stringToListListFloat(listListIntAsString: String?): MutableList<MutableList<Int>>? {
+		if (listListIntAsString == null) {
 			return mutableListOf()
 		}
-		val listType = object : TypeToken<MutableList<MutableList<Float>>>() {}.type
+		val listType = object : TypeToken<MutableList<MutableList<Int>>>() {}.type
 
-		return gson.fromJson(listListFloatAsString, listType);
+		return gson.fromJson(listListIntAsString, listType);
 	}
 }

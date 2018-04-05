@@ -62,7 +62,7 @@ class MainViewModel : BaseViewModel() {
 		statusRequestLocalList.value = statusRequestLocalList.value
 	}
 
-	fun setLocalTemperatureTo(day: Int, temp: Float) {
+	fun setLocalTemperatureTo(day: Int, temp: Int) {
 		statusRequestLocalList.diffListMap[day]?.forEachIndexed { _, item ->
 			item.apply {
 				item.temperature = temp
