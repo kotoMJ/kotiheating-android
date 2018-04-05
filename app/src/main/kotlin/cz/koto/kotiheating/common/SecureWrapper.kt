@@ -35,7 +35,7 @@ open class SecureWrapper {
 			}
 		} catch (th: Throwable) {
 			logk("Unable to encrypt $valueSet. $th")
-			throw th
+			return emptySet()
 		}
 		return encryptedSet
 	}

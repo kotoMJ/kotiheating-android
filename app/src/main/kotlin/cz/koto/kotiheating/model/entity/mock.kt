@@ -6,7 +6,7 @@ import cz.koto.ktools.Resource
 import java.util.*
 
 
-fun getMockTimeTableMonday(): List<Float> = listOf(
+fun getMockTimeTableMonday(): MutableList<Float> = mutableListOf(
 		15f,
 		15f,
 		15f,
@@ -33,7 +33,7 @@ fun getMockTimeTableMonday(): List<Float> = listOf(
 		15f,
 		15f)
 
-fun getMockTimeTableDay(): List<Float> = listOf(
+fun getMockTimeTableDay(): MutableList<Float> = mutableListOf(
 		05f,
 		05f,
 		05f,
@@ -60,7 +60,7 @@ fun getMockTimeTableDay(): List<Float> = listOf(
 		10f,
 		10f)
 
-fun getMockTimeTableWeek(): List<List<Float>> = listOf(
+fun getMockTimeTableWeek(): MutableList<MutableList<Float>> = mutableListOf(
 		getMockTimeTableDay(),
 		getMockTimeTableMonday(),
 		getMockTimeTableDay(),

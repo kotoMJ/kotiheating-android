@@ -14,7 +14,7 @@ interface HeatingRouter {
 	@GET("kotinode/heating/status/{deviceId}")
 	fun getHeatingStatusLive(@Path("deviceId") deviceId: String): LiveData<Resource<HeatingStatusResult>>
 
-	@GET("}kotinode/heating/schedule/{deviceId}/{scheduleType}")
+	@GET("kotinode/heating/schedule/{deviceId}/{scheduleType}")
 	fun getHeatingScheduleLive(@Path("deviceId") deviceId: String, @Path("scheduleType") scheduleType: ScheduleType): LiveData<Resource<HeatingScheduleResult>>
 
 

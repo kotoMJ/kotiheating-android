@@ -7,7 +7,6 @@ const val HEATING_SET = "HEATING_SET"
 const val USER_KEY = "USER_KEY"
 
 data class HeatingAuthResult(
-		@SerializedName("heatingKey") val heatingKey: String,
-		@SerializedName("heatingList") val heatingSet: Set<String>,
-		@SerializedName("userKey") val userKey: String
+		@SerializedName("heatingList") val heatingSet: Set<String>? = emptySet(),
+		@SerializedName("userKey") val userKey: String? = ""
 )

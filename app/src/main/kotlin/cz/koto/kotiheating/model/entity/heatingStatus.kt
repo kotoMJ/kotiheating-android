@@ -9,6 +9,7 @@ data class HeatingStatusResult(
 )
 
 @Entity(tableName = "deviceStatus", primaryKeys = ["deviceId"])
+@JvmSuppressWildcards
 data class HeatingDeviceStatus(
 		@SerializedName("timestamp") val timestamp: Date,
 		@SerializedName("temperature") val temperature: Float,
@@ -16,6 +17,6 @@ data class HeatingDeviceStatus(
 		@SerializedName("day") val deviceDay: String,
 		@SerializedName("minute") val deviceMinute: Int,
 		@SerializedName("hour") val deviceHour: Int,
-		@SerializedName("timetable") val timetable: List<List<Float>>,
+		@SerializedName("timetable") val timetable: MutableList<MutableList<Float>>,
 		@SerializedName("deviceId") val deviceId: String
 )

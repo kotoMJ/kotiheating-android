@@ -17,11 +17,6 @@ class HeaderRequestInterceptor : Interceptor {
 		builder.addHeader("Accept-Charset", "utf-8")
 		builder.addHeader("Content-Type", "application/json")
 
-		if (userRepository.heatingKey.isNotBlank()) {
-			builder.addHeader("key", userRepository.heatingKey)
-		}
-
-
 		if (userRepository.userKey.isNotBlank()) {
 			builder.addHeader("userKey", userRepository.userKey)
 		}

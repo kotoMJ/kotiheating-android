@@ -108,13 +108,13 @@ internal class TextStatusView : View {
 
 	private fun getTextForDay(day: Int): String {
 		return when (day) {
-			0 -> context.getString(R.string.text_status_view_monday)
-			1 -> context.getString(R.string.text_status_view_tuesday)
-			2 -> context.getString(R.string.text_status_view_wednesday)
-			3 -> context.getString(R.string.text_status_view_thursday)
-			4 -> context.getString(R.string.text_status_view_friday)
-			5 -> context.getString(R.string.text_status_view_saturday)
-			6 -> context.getString(R.string.text_status_view_sunday)
+			0 -> context.getString(R.string.text_status_view_sunday)
+			1 -> context.getString(R.string.text_status_view_monday)
+			2 -> context.getString(R.string.text_status_view_tuesday)
+			3 -> context.getString(R.string.text_status_view_wednesday)
+			4 -> context.getString(R.string.text_status_view_thursday)
+			5 -> context.getString(R.string.text_status_view_friday)
+			6 -> context.getString(R.string.text_status_view_saturday)
 			else -> context.getString(R.string.text_status_view_undefined)
 		}
 	}
