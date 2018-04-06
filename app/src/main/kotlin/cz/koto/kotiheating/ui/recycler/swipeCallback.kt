@@ -24,7 +24,7 @@ abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: 
 	override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
 		mainViewModel.statusRequestLocalList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder?.adapterPosition?.let {
-				if (diffObservableList[it].temperature > maximumTempValue - 1) {
+				if (diffObservableList[it].temperature > maximumTempValue - 10) {
 					return 0
 				}
 			}
@@ -73,7 +73,7 @@ abstract class SwipeToRightCallback(context: Context, private val mainViewModel:
 	override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
 		mainViewModel.statusRequestLocalList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder?.adapterPosition?.let {
-				if (diffObservableList[it].temperature < minimumTempValue + 1) {
+				if (diffObservableList[it].temperature < minimumTempValue + 10) {
 					return 0
 				}
 			}

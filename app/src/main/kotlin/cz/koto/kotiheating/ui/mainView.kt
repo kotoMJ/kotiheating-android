@@ -169,9 +169,9 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 			updatedItem?.apply {
 				if (increase) {
-					temperature += 1
+					temperature += 10
 				} else {
-					temperature -= 1
+					temperature -= 10
 				}
 			}
 			val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.toList())
