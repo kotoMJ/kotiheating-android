@@ -49,10 +49,8 @@ class UserRepository : BaseRepository() {
 
 	var userKey: String = ""
 		get() {
-			logk(">>>userKey isBlank=${field.isBlank()}")
 			return if (field.isBlank()) {
 				field = SecureWrapper.instance.decrypt(application, userKeyPref ?: "")
-				logk(">>>userKey encrypted = $field")
 				field
 			} else field
 		}
