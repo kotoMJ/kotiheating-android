@@ -10,6 +10,13 @@ android {
 			keyAlias ""
 			keyPassword ""
 		}
+		debug {
+			// passwords and alias are obtained via askForPasswords task
+			storeFile file("../${project.property('keystore.file')}")
+			storePassword ""
+			keyAlias ""
+			keyPassword ""
+		}
 	}
 
 	applicationVariants.all {
@@ -42,6 +49,10 @@ task askForPasswords << {
 	android.signingConfigs.release.storePassword = storePass
 	android.signingConfigs.release.keyAlias = keyAlias
 	android.signingConfigs.release.keyPassword = keyPass
+
+	android.signingConfigs.debug.storePassword = storePass
+	android.signingConfigs.debug.keyAlias = keyAlias
+	android.signingConfigs.debug.keyPassword = keyPass
 }
 
 
@@ -56,7 +67,7 @@ def renameArtifact(variant, apkName) {
 
 tasks.whenTaskAdded {
 	theTask ->
-		if(theTask.name.contains("Release")) {
+		//if(theTask.name.contains("Release")) {
 			theTask.dependsOn "askForPasswords"
-		}
+		//}
 }

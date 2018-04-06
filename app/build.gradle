@@ -83,7 +83,10 @@ android {
         debug {
             buildConfigField "boolean", "LOGS", "true"
             resValue "string", "app_name", "KoTiHeating DEBUG"
-            applicationIdSuffix ".debug"
+
+            //applicationIdSuffix ".debug"
+			signingConfig signingConfigs.debug
+
             versionNameSuffix "-debug"
             aaptOptions.cruncherEnabled true
             // Disable fabric build ID generation for debug builds
