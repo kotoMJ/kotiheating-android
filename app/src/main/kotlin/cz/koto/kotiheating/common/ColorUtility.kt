@@ -1,5 +1,9 @@
 package cz.koto.kotiheating.common
 
+import android.graphics.Color
+import android.support.annotation.ColorInt
+
+
 /**
  * https://material.io/guidelines/style/color.html#color-color-palette
  */
@@ -8,13 +12,13 @@ fun getColorForTemperature(temperature: Int?): String {
 	when (temperature) {
 		null -> return "#ffffff"
 
-		/* marginal freeze values : Light Blue */
+	/* marginal freeze values : Light Blue */
 		in 0..10 -> return "#81D4FA"//200
 		in 10..20 -> return "#81D4FA"//200
 		in 20..30 -> return "#81D4FA"//200
 		in 30..40 -> return "#81D4FA"//200
 
-		/* NON-FREEZE minimum : Cyan */
+	/* NON-FREEZE minimum : Cyan */
 		in 40..50 -> return "#B2EBF2"//100
 		in 50..60 -> return "#B2EBF2"//100
 		in 60..70 -> return "#80DEEA"//200
@@ -26,14 +30,14 @@ fun getColorForTemperature(temperature: Int?): String {
 		in 120..130 -> return "#00838F"//800
 		in 130..140 -> return "#006064"//900
 
-		/* Sleep values set : Light Green*/
+	/* Sleep values set : Light Green*/
 		in 140..150 -> return "#DCEDC8"//100
 		in 150..160 -> return "#C5E1A5"//200
 		in 160..170 -> return "#AED581"//300
 		in 170..180 -> return "#9CCC65"//400
 		in 180..190 -> return "#8BC34A"//500
 
-		/* Living values set : Amber */
+	/* Living values set : Amber */
 		in 190..200 -> return "#FFE082"//200
 		in 200..210 -> return "#FFCA28"//400
 		in 210..220 -> return "#FFC107"//500
@@ -42,17 +46,34 @@ fun getColorForTemperature(temperature: Int?): String {
 		in 240..250 -> return "#FF8F00"//800
 		in 250..260 -> return "#FF6F00"//900
 
-		/* Overheating but acceptable values : Orange*/
+	/* Overheating but acceptable values : Orange*/
 		in 260..270 -> return "#E65100"//900
 		in 270..280 -> return "#E65100"//900
 		in 280..290 -> return "#E65100"//900
 		in 290..300 -> return "#E65100"//900
 
-		/* Overheating alert values : Deep Orange*/
+	/* Overheating alert values : Deep Orange*/
 		in 300..1000 -> return "#FF3D00"//A400
 
-		//All minus degrees : Light Blue
+	//All minus degrees : Light Blue
 		else -> return "#E1F5FE"//50
 	}
 
+}
+
+fun getTextColorByBackground(@ColorInt backGroundColor: Int): Int {
+	//val backGroundColor = Color.parseColor(colorHexaString.replace("#", ""))
+	return if ((Color.red(backGroundColor) * 0.299 + Color.green(backGroundColor) * 0.587 + Color.blue(backGroundColor) * 0.114) > 186) {
+		adjustAlpha(Color.parseColor("#000000"), 0.6f)
+	} else {
+		adjustAlpha(Color.parseColor("#ffffff"), 0.6f)
+	}
+}
+
+fun adjustAlpha(@ColorInt color: Int, factor: Float): Int {
+	val alpha = Math.round((Color.alpha(color) * factor))
+	val red = Color.red(color)
+	val green = Color.green(color)
+	val blue = Color.blue(color)
+	return Color.argb(alpha, red, green, blue)
 }

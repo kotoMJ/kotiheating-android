@@ -1,5 +1,9 @@
 package cz.koto.kotiheating.ui;
 
+import android.graphics.Color
+import cz.koto.kotiheating.common.getColorForTemperature
+import cz.koto.kotiheating.common.getTextColorByBackground
+
 
 class StatusItem(var temperature: Int, val hour: Int) : Comparable<StatusItem> {
 
@@ -17,5 +21,6 @@ class StatusItem(var temperature: Int, val hour: Int) : Comparable<StatusItem> {
 		return "StatusItem(temperature=$temperature, hour=$hour)"
 	}
 
-
+	fun getBackgroundColor() = Color.parseColor(getColorForTemperature(temperature))
+	fun getTextColor() = getTextColorByBackground(getBackgroundColor())
 }
