@@ -208,12 +208,12 @@ class HeatingStatusLayout : FrameLayout {
 		circleViewPm = findViewById(R.id.circlePm)
 		var radius = maxRadius - (circleSeparation * 0)
 		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.filter { it.hour > 11 }
-				?: emptyList(), circleNumberUnit)
+				, circleNumberUnit)
 
 		circleViewAm = findViewById(R.id.circleAm)
 		radius = maxRadius - (circleSeparation * 1)
 		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.filter { it.hour <= 11 }
-				?: emptyList(), circleNumberUnit)
+				, circleNumberUnit)
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
 		centralTextStatusView.init(attrs, listToDisplay, currentDay)

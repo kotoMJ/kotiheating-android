@@ -65,7 +65,7 @@
 
 
 			<android.support.v7.widget.RecyclerView
-				android:id="@+id/dailyScheduleRecycler"
+				android:id="@+id/daily_schedule_recycler"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginBottom="8dp"
@@ -81,6 +81,18 @@
 				app:currentDay="@{viewModel.selectedDay}"
 				tools:listitem="@layout/item_heating"
 				app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+			<android.support.design.widget.FloatingActionButton
+				android:id="@+id/fab_send"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_margin="16dp"
+				android:layout_gravity="end|bottom"
+				android:clickable="true"
+				android:focusable="true"
+				app:fabSize="auto"
+				app:srcCompat="@drawable/ic_send"
+				app:layout_anchorGravity="bottom|right|end" />
 
 		</android.support.design.widget.CoordinatorLayout>
 

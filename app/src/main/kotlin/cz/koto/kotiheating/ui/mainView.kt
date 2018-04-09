@@ -11,12 +11,15 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import cz.koto.kotiheating.R
+import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.koto.ktools.LifecycleAwareBindingRecyclerViewAdapter
+import cz.koto.ktools.showWithAnimation
 import cz.koto.ktools.vmb
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
 
@@ -68,6 +71,11 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		return super.onCreateOptionsMenu(menu)
 	}
 
+	override fun onPostResume() {
+		super.onPostResume()
+		updateFab()
+	}
+
 	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
 		when (item?.itemId) {
@@ -78,21 +86,25 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			R.id.action_clear_all -> {
 				vmb.viewModel.revertLocalChanges(day = vmb.viewModel.selectedDay)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				updateFab()
 				return true
 			}
 			R.id.action_anti_freeze -> {
 				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 50)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				updateFab()
 				return true
 			}
 			R.id.action_night_temp -> {
 				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 150)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				updateFab()
 				return true
 			}
 			R.id.action_daily_temp -> {
 				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 230)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				updateFab()
 				return true
 			}
 		}
@@ -184,6 +196,20 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
 		}
 
+		updateFab()
+
+	}
+
+	private fun updateFab() {
+		if (compareLists(vmb.viewModel.statusRequestLocalList.diffListMap.get(vmb.viewModel.selectedDay.get())
+						?: emptyList(),
+						vmb.viewModel.statusRequestRemoteList.diffListMap.get(vmb.viewModel.selectedDay.get())
+								?: emptyList()) == 0) {
+			vmb.binding.fabSend.visibility = View.GONE
+		} else {
+
+			vmb.binding.fabSend.showWithAnimation()
+		}
 	}
 
 
