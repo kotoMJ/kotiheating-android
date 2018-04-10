@@ -90,6 +90,7 @@
 				android:layout_gravity="end|bottom"
 				android:clickable="true"
 				android:focusable="true"
+				android:onClick="@{()->view.onSend()}"
 				app:fabSize="auto"
 				app:srcCompat="@drawable/ic_send"
 				app:layout_anchorGravity="bottom|right|end" />

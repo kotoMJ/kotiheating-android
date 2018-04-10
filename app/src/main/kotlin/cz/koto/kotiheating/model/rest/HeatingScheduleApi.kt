@@ -5,6 +5,8 @@ import android.arch.lifecycle.LiveData
 import com.google.gson.Gson
 import cz.koto.kotiheating.BuildConfig
 import cz.koto.kotiheating.model.entity.HeatingSchedule
+import cz.koto.kotiheating.model.entity.HeatingScheduleResult
+import cz.koto.kotiheating.model.entity.HeatingScheduleSetRequest
 import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.ktools.Resource
 import cz.koto.ktools.getRetrofit
@@ -32,6 +34,9 @@ class HeatingScheduleApi {
 			ScheduleType.DEVICE -> return api.getHeatingScheduleLive(deviceId, scheduleType).mapResource { it?.heatingSchedule }
 			else -> throw IllegalStateException("Unsupported network call for scheduleType=${scheduleType}")
 		}
+	}
 
+	suspend fun setHeatingSchedule(timeTable: MutableList<MutableList<Int>>, deviceId: String): HeatingScheduleResult? {
+		return api.setHeatingSchedule(HeatingScheduleSetRequest(timeTable), deviceId).await()
 	}
 }

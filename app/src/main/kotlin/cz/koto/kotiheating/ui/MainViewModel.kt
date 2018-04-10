@@ -9,8 +9,11 @@ import cz.koto.kotiheating.model.entity.HeatingSchedule
 import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.kotiheating.model.repo.HeatingRepository
 import cz.koto.kotiheating.model.repo.UserRepository
+import cz.koto.kotiheating.model.rest.HeatingScheduleApi
 import cz.koto.ktools.DiffObservableLiveHeatingSchedule
 import cz.koto.ktools.inject
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
@@ -29,6 +32,7 @@ class MainViewModel : BaseViewModel() {
 	var statusRequestRemoteList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
 	var statusRequestLocalList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
 
+	private val scheduleApi by inject<HeatingScheduleApi>()
 
 	init {
 
@@ -90,6 +94,17 @@ class MainViewModel : BaseViewModel() {
 
 	fun isGoogleUserSignedIn(): Boolean {
 		return userRepository.googleSignInAccount != null
+	}
+
+	fun sendRequestForSchedule() {
+		statusRequestLocalList.value?.data?.timetable?.let { timeTable ->
+			userRepository.heatingSet.firstOrNull()?.let { heatingId ->
+				launch(UI) {
+					scheduleApi.setHeatingSchedule(timeTable, heatingId)
+				}
+			}
+		}
+
 	}
 
 }

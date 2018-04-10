@@ -26,9 +26,11 @@ data class HeatingScheduleResult(
 @Entity(tableName = "heatingSchedule", primaryKeys = ["deviceId", "scheduleType"])
 data class HeatingSchedule(
 		@SerializedName("typeId") var scheduleType: ScheduleType,
-		@SerializedName("deviceId") var deviceId: String,
+		@SerializedName("heatingId") var deviceId: String,
 		@SerializedName("timetable") var timetable: MutableList<MutableList<Int>>
 ) {
 
 	constructor() : this(ScheduleType.UNKNOWN, "", mutableListOf())
 }
+
+data class HeatingScheduleSetRequest(@SerializedName("timetable") var timetable: MutableList<MutableList<Int>>)

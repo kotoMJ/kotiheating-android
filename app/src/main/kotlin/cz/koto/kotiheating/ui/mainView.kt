@@ -12,6 +12,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.databinding.ActivityMainBinding
@@ -178,7 +179,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		val position = viewHolder.layoutPosition
 		vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.let { dayList ->
 			val updatedItem = dayList[position]
-
 			updatedItem?.apply {
 				if (increase) {
 					temperature += 10
@@ -191,6 +191,8 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			updatedItem?.let {
 				newList.set(position, it)
 			}
+
+			vmb.binding.viewModel?.statusRequestLocalList?.value?.data?.timetable?.get(day)?.set(position, updatedItem.temperature)
 			vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.update(newList)
 			vmb.binding.viewModel?.statusRequestLocalList?.value = vmb.binding.viewModel?.statusRequestLocalList?.value
 			vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
@@ -220,11 +222,24 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			profileMenu?.icon = ContextCompat.getDrawable(this, R.drawable.ic_person_outline)
 		}
 	}
+
+	override fun onSend() {
+		vmb.binding.fabSend.isEnabled = false
+		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_anti_freeze))
+		try {
+			vmb.viewModel.sendRequestForSchedule()
+		} catch (th: Throwable) {
+			logk("Unable to send request! $th")
+		}
+		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_send))
+		vmb.binding.fabSend.isEnabled = true
+	}
 }
 
 interface MainActivityView {
 	fun onGoogleSignIn()
 	fun onSignOut()
+	fun onSend()
 	val lifecycleAwareAdapter: LifecycleAwareBindingRecyclerViewAdapter<StatusItem> // TODO: Temp fix for tatarka - remove when tatarka adds support for lifecycle
 }
 
