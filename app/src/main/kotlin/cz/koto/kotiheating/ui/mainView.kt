@@ -3,6 +3,7 @@ package cz.koto.kotiheating.ui
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
@@ -20,8 +21,8 @@ import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.koto.ktools.LifecycleAwareBindingRecyclerViewAdapter
-import cz.koto.ktools.showWithAnimation
 import cz.koto.ktools.vmb
+import kotlinx.android.synthetic.main.activity_main.view.*
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
 
 
@@ -197,7 +198,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			vmb.binding.viewModel?.statusRequestLocalList?.value = vmb.binding.viewModel?.statusRequestLocalList?.value
 			vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
 		}
-
 		updateFab()
 
 	}
@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			vmb.binding.fabSend.visibility = View.GONE
 		} else {
 
-			vmb.binding.fabSend.showWithAnimation()
+			vmb.binding.fabSend.show()//showWithAnimation()
 		}
 	}
 
@@ -225,14 +225,22 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 	override fun onSend() {
 		vmb.binding.fabSend.isEnabled = false
-		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_anti_freeze))
+		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_sync))
 		try {
-			vmb.viewModel.sendRequestForSchedule()
+			vmb.viewModel.sendRequestForSchedule()?.let {
+				vmb.viewModel.updateLocalList(it)
+				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
+			}
+		} catch (ise: IllegalStateException) {
+			Snackbar.make(vmb.rootView.coordinate, "User has no heating deice assigned", Snackbar.LENGTH_LONG).show()
 		} catch (th: Throwable) {
 			logk("Unable to send request! $th")
 		}
 		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_send))
 		vmb.binding.fabSend.isEnabled = true
+		updateFab()
+
+
 	}
 }
 

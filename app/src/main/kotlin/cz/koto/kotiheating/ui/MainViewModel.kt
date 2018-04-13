@@ -3,6 +3,7 @@ package cz.koto.kotiheating.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.databinding.ObservableInt
+import common.log.logk
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.model.entity.HeatingSchedule
@@ -12,8 +13,8 @@ import cz.koto.kotiheating.model.repo.UserRepository
 import cz.koto.kotiheating.model.rest.HeatingScheduleApi
 import cz.koto.ktools.DiffObservableLiveHeatingSchedule
 import cz.koto.ktools.inject
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.runBlocking
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
@@ -54,11 +55,29 @@ class MainViewModel : BaseViewModel() {
 		})
 	}
 
+	fun updateLocalList(newLocalSchedule: HeatingSchedule) {
+		statusRequestLocalList.value?.data?.timetable = newLocalSchedule.timetable
+
+		for (day in 0..6) {
+			statusRequestLocalList.diffListMap[day]?.forEachIndexed { hour, item ->
+				item.apply {
+					item.temperature = newLocalSchedule.timetable[day][hour]
+				}
+			}
+		}
+		statusRequestLocalList.value = statusRequestLocalList.value
+
+		newLocalSchedule.scheduleType = ScheduleType.REQUEST_LOCAL
+		heatingRepository.updateSchedule(newLocalSchedule)
+		newLocalSchedule.scheduleType = ScheduleType.REQUEST_REMOTE
+		heatingRepository.updateSchedule(newLocalSchedule)
+	}
+
 	fun revertLocalChanges(day: ObservableInt) {
-		statusRequestLocalList.diffListMap[day.get()]?.forEachIndexed { index, item ->
+		statusRequestLocalList.diffListMap[day.get()]?.forEachIndexed { hour, item ->
 			item.apply {
 				statusDeviceList.diffListMap[day.get()]?.let { daySchedule ->
-					item.temperature = daySchedule[index].temperature
+					item.temperature = daySchedule[hour].temperature
 				}
 			}
 		}
@@ -77,7 +96,6 @@ class MainViewModel : BaseViewModel() {
 	}
 
 
-	//TODO solve it!
 	@SuppressLint("RestrictedApi")
 	fun getSignInGoogleIntent(): Intent {
 		return userRepository.googleSignInClient.signInIntent
@@ -96,15 +114,25 @@ class MainViewModel : BaseViewModel() {
 		return userRepository.googleSignInAccount != null
 	}
 
-	fun sendRequestForSchedule() {
+	fun sendRequestForSchedule(): HeatingSchedule? {
+		logk(">>>${statusRequestLocalList.value}")
+		logk(">>>${statusRequestLocalList.value?.data}")
+		logk(">>>${statusRequestLocalList.value?.data?.timetable}")
 		statusRequestLocalList.value?.data?.timetable?.let { timeTable ->
-			userRepository.heatingSet.firstOrNull()?.let { heatingId ->
-				launch(UI) {
-					scheduleApi.setHeatingSchedule(timeTable, heatingId)
+			val heatingSet = userRepository.heatingSet.firstOrNull()
+					?: throw IllegalStateException("No heatingSet assigned to the user!")
+			heatingSet.let { heatingId ->
+				try {
+					logk(">>>${heatingId}")
+					return runBlocking(CommonPool) {
+						scheduleApi.setHeatingSchedule(timeTable, heatingId)?.heatingSchedule
+					}
+				} catch (e: Throwable) {
+					logk(">>>$e")
 				}
 			}
 		}
-
+		return null
 	}
 
 }
