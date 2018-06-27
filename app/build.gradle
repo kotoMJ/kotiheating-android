@@ -146,10 +146,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$koroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$koroutines_version"
 
-    kapt "com.android.databinding:compiler:$android_gradle_version"
-    implementation "com.android.databinding:library:$android_binding_version"
-    implementation "com.android.databinding:adapters:$android_binding_version"
-
     //implementation "com.android.support:multidex:$multidex_version"
 
     // support library
