@@ -45,9 +45,9 @@ open class ResourceLiveData<T> : MediatorLiveData<Resource<T>>() {
 		resource.setupCached(resourceCallback)
 	}
 
-	fun setup(networkCallLiveData: LiveData<Resource<T>>) {
-		resource.setup(networkCallLiveData)
-	}
+//	fun setup(networkCallLiveData: LiveData<Resource<T>>) {
+//		resource.setup(networkCallLiveData)
+//	}
 }
 
 // -- internal --
@@ -83,20 +83,20 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		result.value = Resource.loading()
 	}
 
-	fun setup(networkCallLiveData: LiveData<Resource<T>>) {
-		callback = null
-
-		// clear saved sources from previous setup
-		savedSources.forEach { result.removeSource(it) }
-		savedSources.clear()
-
-		result.value = result.value?.copy(status = result.value?.status
-				?: Resource.Status.LOADING) ?: Resource.loading()
-
-		result.addSource(networkCallLiveData, { networkResource ->
-			result.setValue(networkResource)
-		})
-	}
+//	fun setup(networkCallLiveData: LiveData<Resource<T>>) {
+//		callback = null
+//
+//		// clear saved sources from previous setup
+//		savedSources.forEach { result.removeSource(it) }
+//		savedSources.clear()
+//
+//		result.value = result.value?.copy(status = result.value?.status
+//				?: Resource.Status.LOADING) ?: Resource.loading()
+//
+//		result.addSource(networkCallLiveData, { networkResource ->
+//			result.setValue(networkResource)
+//		})
+//	}
 
 	fun setupCached(resourceCallback: Callback<T>) {
 		callback = resourceCallback

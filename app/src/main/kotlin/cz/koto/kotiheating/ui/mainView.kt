@@ -124,7 +124,9 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	}
 
 	override fun onSignOut() {
-		vmb.viewModel.signOutGoogleUser { updateProfileMenuIcon() }
+		vmb.viewModel.signOutGoogleUser {
+			updateProfileMenuIcon()
+		}
 	}
 
 	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -133,7 +135,9 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		// Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
 		if (requestCode == ACTION_SIGN_IN_GOOGLE) {
 			// The Task returned from this call is always completed, no need to attach a listener.
-			vmb.viewModel.handleSignInGoogleResult(data, { updateProfileMenuIcon() })
+			vmb.viewModel.handleSignInGoogleResult(data, {
+				updateProfileMenuIcon()
+			})
 		}
 	}
 

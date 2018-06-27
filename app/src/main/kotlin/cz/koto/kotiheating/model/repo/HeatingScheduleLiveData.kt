@@ -9,6 +9,9 @@ import cz.koto.ktools.NetworkBoundResource
 import cz.koto.ktools.Resource
 import cz.koto.ktools.ResourceLiveData
 import cz.koto.ktools.inject
+import android.arch.lifecycle.MediatorLiveData
+
+
 
 class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 
@@ -25,13 +28,15 @@ class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 			override fun shouldFetch(dataFromCache: HeatingSchedule?): Boolean {
 				return when (scheduleType) {
 					ScheduleType.REQUEST_LOCAL -> {
-						return (dataFromCache?.timetable?.isEmpty() != false)
+						return true//TODO solve fetch condition better//(dataFromCache?.timetable?.isEmpty() != false)
 					}
 					else -> true
 				}
 			}
 
-			override fun loadFromDb(): LiveData<HeatingSchedule> = cache.getSchedule(deviceId, scheduleType)
+			override fun loadFromDb(): LiveData<HeatingSchedule> {
+				return MediatorLiveData<HeatingSchedule>()//cache.getSchedule(deviceId, scheduleType)
+			}
 
 			override fun createNetworkCall(): LiveData<Resource<HeatingSchedule>> {
 				return when (scheduleType) {
