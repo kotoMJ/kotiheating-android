@@ -35,7 +35,7 @@ class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 			}
 
 			override fun loadFromDb(): LiveData<HeatingSchedule> {
-				return MediatorLiveData<HeatingSchedule>()//cache.getSchedule(deviceId, scheduleType)
+				return cache.getSchedule(deviceId, scheduleType)
 			}
 
 			override fun createNetworkCall(): LiveData<Resource<HeatingSchedule>> {

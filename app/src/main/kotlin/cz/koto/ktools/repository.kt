@@ -4,6 +4,10 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.support.annotation.MainThread
 import android.support.annotation.WorkerThread
+import cz.koto.ktools.NoConnectivityException
+import cz.koto.ktools.doAsync
+import cz.koto.ktools.map
+import cz.koto.ktools.uiThread
 import retrofit2.Response
 
 /**
@@ -45,9 +49,9 @@ open class ResourceLiveData<T> : MediatorLiveData<Resource<T>>() {
 		resource.setupCached(resourceCallback)
 	}
 
-//	fun setup(networkCallLiveData: LiveData<Resource<T>>) {
-//		resource.setup(networkCallLiveData)
-//	}
+	fun setup(networkCallLiveData: LiveData<Resource<T>>) {
+		resource.setup(networkCallLiveData)
+	}
 }
 
 // -- internal --
@@ -83,20 +87,19 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		result.value = Resource.loading()
 	}
 
-//	fun setup(networkCallLiveData: LiveData<Resource<T>>) {
-//		callback = null
-//
-//		// clear saved sources from previous setup
-//		savedSources.forEach { result.removeSource(it) }
-//		savedSources.clear()
-//
-//		result.value = result.value?.copy(status = result.value?.status
-//				?: Resource.Status.LOADING) ?: Resource.loading()
-//
-//		result.addSource(networkCallLiveData, { networkResource ->
-//			result.setValue(networkResource)
-//		})
-//	}
+	fun setup(networkCallLiveData: LiveData<Resource<T>>) {
+		callback = null
+
+		// clear saved sources from previous setup
+		savedSources.forEach { result.removeSource(it) }
+		savedSources.clear()
+
+		result.value = result.value?.copy(status = result.value?.status ?: Resource.Status.LOADING) ?: Resource.loading()
+
+		result.addSource(networkCallLiveData, { networkResource ->
+			result.setValue(networkResource)
+		})
+	}
 
 	fun setupCached(resourceCallback: Callback<T>) {
 		callback = resourceCallback
@@ -105,8 +108,7 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		savedSources.forEach { result.removeSource(it) }
 		savedSources.clear()
 
-		result.value = result.value?.copy(status = result.value?.status
-				?: Resource.Status.LOADING) ?: Resource.loading()
+		result.value = result.value?.copy(status = result.value?.status ?: Resource.Status.LOADING) ?: Resource.loading()
 
 		val dbSource = callback!!.loadFromDb()
 		savedSources.add(dbSource)
