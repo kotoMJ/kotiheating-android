@@ -123,9 +123,15 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		startActivityForResult(vmb.viewModel.getSignInGoogleIntent(), ACTION_SIGN_IN_GOOGLE)
 	}
 
+
+	private fun refresh() {
+		vmb.binding.viewModel?.refreshData()
+		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
+	}
 	override fun onSignOut() {
 		vmb.viewModel.signOutGoogleUser {
 			updateProfileMenuIcon()
+			refresh()
 		}
 	}
 
@@ -135,9 +141,10 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		// Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
 		if (requestCode == ACTION_SIGN_IN_GOOGLE) {
 			// The Task returned from this call is always completed, no need to attach a listener.
-			vmb.viewModel.handleSignInGoogleResult(data, {
+			vmb.viewModel.handleSignInGoogleResult(data) {
 				updateProfileMenuIcon()
-			})
+				refresh()
+			}
 		}
 	}
 

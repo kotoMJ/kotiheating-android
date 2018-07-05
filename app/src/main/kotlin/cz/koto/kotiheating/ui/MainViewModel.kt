@@ -53,6 +53,12 @@ class MainViewModel : BaseViewModel() {
 		})
 	}
 
+	fun refreshData() {
+		statusRequestLocalList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST_LOCAL))
+		statusDeviceList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE))
+		statusRequestRemoteList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST_REMOTE))
+	}
+
 	fun updateLocalList(newLocalSchedule: HeatingSchedule) {
 		statusRequestLocalList.value?.data?.timetable = newLocalSchedule.timetable
 
@@ -93,7 +99,6 @@ class MainViewModel : BaseViewModel() {
 		statusRequestLocalList.value = statusRequestLocalList.value
 	}
 
-
 	@SuppressLint("RestrictedApi")
 	fun getSignInGoogleIntent(): Intent {
 		return userRepository.googleSignInClient.signInIntent
@@ -101,13 +106,11 @@ class MainViewModel : BaseViewModel() {
 
 	fun handleSignInGoogleResult(signInGoogleResultIntent: Intent, credentialsHasChanged: () -> Unit) {
 		userRepository.handleSignInResult(signInGoogleResultIntent, credentialsHasChanged)
-		//TODO refresh / re-connect repo
 	}
 
 
 	fun signOutGoogleUser(credentialsHasChanged: () -> Unit) {
 		userRepository.signOutGoogleUser(credentialsHasChanged)
-		//TODO refresh / re-connect repo
 	}
 
 	fun isGoogleUserSignedIn(): Boolean {

@@ -27,6 +27,12 @@ class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<
 			diffListMap[day] = DiffObservableList<StatusItem>(callback)
 		}
 
+		connectSource(liveData)
+
+	}
+
+	fun connectSource(liveData: LiveData<Resource<T>>) {
+
 		if (liveData.value?.data?.timetable?.isNotEmpty() == true) {
 			value = liveData.value
 			liveData.value?.data.let {
