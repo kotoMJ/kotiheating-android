@@ -6,6 +6,8 @@ import cz.koto.kotiheating.model.entity.MockHeatingScheduleLiveData
 import cz.koto.kotiheating.model.entity.MockHeatingStatusLiveData
 import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.ktools.inject
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 
 class HeatingRepository {
 
@@ -24,7 +26,13 @@ class HeatingRepository {
 		HeatingScheduleLiveData().apply { refresh(deviceId, scheduleType) }
 	}
 
-	fun updateSchedule(schedule: HeatingSchedule) {
-		cache.putSchedule(schedule)
+	suspend fun updateSchedule(schedule: HeatingSchedule) {
+
+		val query = async(CommonPool) {
+			// Async stuff
+			cache.putSchedule(schedule)
+		}
+
+		query.await()
 	}
 }

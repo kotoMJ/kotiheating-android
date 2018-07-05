@@ -14,6 +14,8 @@ import cz.koto.kotiheating.model.rest.HeatingScheduleApi
 import cz.koto.ktools.DiffObservableLiveHeatingSchedule
 import cz.koto.ktools.inject
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
@@ -71,10 +73,12 @@ class MainViewModel : BaseViewModel() {
 		}
 		statusRequestLocalList.value = statusRequestLocalList.value
 
-		newLocalSchedule.scheduleType = ScheduleType.REQUEST_LOCAL
-		heatingRepository.updateSchedule(newLocalSchedule)
-		newLocalSchedule.scheduleType = ScheduleType.REQUEST_REMOTE
-		heatingRepository.updateSchedule(newLocalSchedule)
+		launch(UI) {
+			newLocalSchedule.scheduleType = ScheduleType.REQUEST_LOCAL
+			heatingRepository.updateSchedule(newLocalSchedule)
+			newLocalSchedule.scheduleType = ScheduleType.REQUEST_REMOTE
+			heatingRepository.updateSchedule(newLocalSchedule)
+		}
 	}
 
 	fun revertLocalChanges(day: ObservableInt) {

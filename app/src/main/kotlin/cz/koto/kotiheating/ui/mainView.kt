@@ -240,9 +240,9 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		try {
 			vmb.viewModel.sendRequestForSchedule()?.let {
 				vmb.viewModel.updateLocalList(it)
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
 			}
 		} catch (ise: IllegalStateException) {
+			logk("IllegalStateException! ${ise.message}")
 			Snackbar.make(vmb.rootView.coordinate, "User has no heating deice assigned", Snackbar.LENGTH_LONG).show()
 		} catch (th: Throwable) {
 			logk("Unable to send request! $th")
