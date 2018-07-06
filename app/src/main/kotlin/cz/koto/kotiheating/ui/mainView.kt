@@ -92,19 +92,19 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 				return true
 			}
 			R.id.action_anti_freeze -> {
-				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 50)
+				vmb.viewModel.setLocalDailyTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 50)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				updateFab()
 				return true
 			}
 			R.id.action_night_temp -> {
-				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 150)
+				vmb.viewModel.setLocalDailyTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 150)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				updateFab()
 				return true
 			}
 			R.id.action_daily_temp -> {
-				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 230)
+				vmb.viewModel.setLocalDailyTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 230)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
 				updateFab()
 				return true
@@ -125,9 +125,10 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 
 	private fun refresh() {
-		vmb.binding.viewModel?.refreshData()
+		vmb.binding.viewModel?.refreshDataFromServer()
 		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
 	}
+
 	override fun onSignOut() {
 		vmb.viewModel.signOutGoogleUser {
 			updateProfileMenuIcon()
@@ -189,26 +190,8 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {
 		val position = viewHolder.layoutPosition
-		vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.let { dayList ->
-			val updatedItem = dayList[position]
-			updatedItem?.apply {
-				if (increase) {
-					temperature += 10
-				} else {
-					temperature -= 10
-				}
-			}
-			val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.toList())
-
-			updatedItem?.let {
-				newList.set(position, it)
-			}
-
-			vmb.binding.viewModel?.statusRequestLocalList?.value?.data?.timetable?.get(day)?.set(position, updatedItem.temperature)
-			vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.update(newList)
-			vmb.binding.viewModel?.statusRequestLocalList?.value = vmb.binding.viewModel?.statusRequestLocalList?.value
-			vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
-		}
+		if (increase) vmb.viewModel.increaseLocalHourlyTemperatureTo(day, position) else vmb.viewModel.decreaseLocalHourlyTemperatureTo(day, position)
+		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
 		updateFab()
 
 	}
@@ -239,7 +222,12 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_sync))
 		try {
 			vmb.viewModel.sendRequestForSchedule()?.let {
-				vmb.viewModel.updateLocalList(it)
+				vmb.viewModel.statusRequestLocalList.diffListMap
+				vmb.viewModel.statusRequestRemoteList.diffListMap
+				vmb.viewModel.updateWhatThefuck(it)
+				vmb.viewModel.statusRequestLocalList.diffListMap
+				vmb.viewModel.statusRequestRemoteList.diffListMap
+				updateFab()
 			}
 		} catch (ise: IllegalStateException) {
 			logk("IllegalStateException! ${ise.message}")
@@ -249,8 +237,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		}
 		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_send))
 		vmb.binding.fabSend.isEnabled = true
-		updateFab()
-
 
 	}
 }

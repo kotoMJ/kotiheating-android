@@ -35,4 +35,13 @@ class HeatingRepository {
 
 		query.await()
 	}
+
+	suspend fun removeSchedule(scheduleType: ScheduleType) {
+		val query = async(CommonPool) {
+			// Async stuff
+			cache.removeSchedule(scheduleType)
+		}
+
+		query.await()
+	}
 }

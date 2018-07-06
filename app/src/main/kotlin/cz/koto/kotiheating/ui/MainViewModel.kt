@@ -55,13 +55,16 @@ class MainViewModel : BaseViewModel() {
 		})
 	}
 
-	fun refreshData() {
-		statusRequestLocalList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST_LOCAL))
+	fun refreshDataFromServer() {
+		launch(UI) {
+			heatingRepository.removeSchedule(ScheduleType.REQUEST_LOCAL)
+		}
 		statusDeviceList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE))
 		statusRequestRemoteList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST_REMOTE))
+		statusRequestLocalList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST_LOCAL))
 	}
 
-	fun updateLocalList(newLocalSchedule: HeatingSchedule) {
+	fun updateWhatThefuck(newLocalSchedule: HeatingSchedule) {
 		statusRequestLocalList.value?.data?.timetable = newLocalSchedule.timetable
 
 		for (day in 0..6) {
@@ -82,25 +85,74 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun revertLocalChanges(day: ObservableInt) {
-		statusRequestLocalList.diffListMap[day.get()]?.forEachIndexed { hour, item ->
+//		statusRequestLocalList.diffListMap[day.get()]?.forEachIndexed { hour, item ->
+//			item.apply {
+//				statusDeviceList.diffListMap[day.get()]?.let { daySchedule ->
+//					item.temperature = daySchedule[hour].temperature
+//				}
+//			}
+//		}
+//		//hack to force listeners think that value has changed.
+//		statusRequestLocalList.value = statusRequestLocalList.value
+//
+//		launch(UI) {
+//			statusRequestLocalList.value?.data?.let { heatingRepository.updateSchedule(it) }
+//		}
+
+		refreshDataFromServer()
+		statusRequestLocalList.value = statusRequestRemoteList.value
+		statusDeviceList.diffListMap[day.get()]?.forEachIndexed { hour, item ->
 			item.apply {
-				statusDeviceList.diffListMap[day.get()]?.let { daySchedule ->
+				statusRequestLocalList.diffListMap[day.get()]?.let { daySchedule ->
 					item.temperature = daySchedule[hour].temperature
 				}
 			}
 		}
-		//hack to force listeners think that value has changed.
-		statusRequestLocalList.value = statusRequestLocalList.value
+		launch(UI) {
+			statusRequestLocalList.value?.data?.let {
+				heatingRepository.updateSchedule(it)
+			}
+
+		}
 	}
 
-	fun setLocalTemperatureTo(day: Int, temp: Int) {
-		statusRequestLocalList.diffListMap[day]?.forEachIndexed { _, item ->
-			item.apply {
-				item.temperature = temp
+
+	fun decreaseLocalHourlyTemperatureTo(day: Int, hour: Int) {
+		statusRequestLocalList.diffListMap.get(day)?.let { dayList ->
+			val updatedItem = dayList[hour]
+			val newTemperature = updatedItem.temperature - 10
+			statusRequestLocalList.setHourlyTemperatureTo(day, hour, newTemperature)
+		}
+
+		launch(UI) {
+			statusRequestLocalList.value?.data?.let {
+				heatingRepository.updateSchedule(it)
 			}
 		}
-		//hack to force listeners think that value has changed.
-		statusRequestLocalList.value = statusRequestLocalList.value
+	}
+
+	fun increaseLocalHourlyTemperatureTo(day: Int, hour: Int) {
+		statusRequestLocalList.diffListMap.get(day)?.let { dayList ->
+			val updatedItem = dayList[hour]
+			val newTemperature = updatedItem.temperature + 10
+			statusRequestLocalList.setHourlyTemperatureTo(day, hour, newTemperature)
+		}
+
+		launch(UI) {
+			statusRequestLocalList.value?.data?.let {
+				heatingRepository.updateSchedule(it)
+			}
+		}
+	}
+
+	fun setLocalDailyTemperatureTo(day: Int, temp: Int) {
+		statusRequestLocalList.setDailyTemperatureTo(day, temp)
+		launch(UI) {
+			statusRequestLocalList.value?.data?.let {
+				heatingRepository.updateSchedule(it)
+			}
+
+		}
 	}
 
 	@SuppressLint("RestrictedApi")
@@ -122,20 +174,18 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun sendRequestForSchedule(): HeatingSchedule? {
-		logk(">>>${statusRequestLocalList.value}")
-		logk(">>>${statusRequestLocalList.value?.data}")
-		logk(">>>${statusRequestLocalList.value?.data?.timetable}")
+		logk("Sending schedule request timetable:${statusRequestLocalList.value?.data?.timetable}")
 		statusRequestLocalList.value?.data?.timetable?.let { timeTable ->
 			val heatingSet = userRepository.heatingSet.firstOrNull()
 					?: throw IllegalStateException("No heatingSet assigned to the user!")
 			heatingSet.let { heatingId ->
 				try {
-					logk(">>>${heatingId}")
+					logk("Sending schedule request for heatingId:${heatingId}")
 					return runBlocking(CommonPool) {
 						scheduleApi.setHeatingSchedule(timeTable, heatingId)?.heatingSchedule
 					}
 				} catch (e: Throwable) {
-					logk(">>>$e")
+					logk("Unable to set new schedule! $e")
 				}
 			}
 		}

@@ -17,4 +17,9 @@ interface HeatingScheduleDao {
 	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND scheduleType = :scheduleType")
 	fun getHeatingSchedule(deviceId: String, scheduleType: ScheduleType): LiveData<HeatingSchedule>
 
+	@Query("DELETE FROM heatingSchedule WHERE deviceId = :deviceId AND scheduleType = :scheduleType")
+	fun deleteHeatingSchedule(deviceId: String, scheduleType: ScheduleType): Int
+
+	@Query("DELETE FROM heatingSchedule WHERE scheduleType = :scheduleType")
+	fun deleteHeatingSchedule(scheduleType: ScheduleType): Int
 }

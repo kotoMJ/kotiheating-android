@@ -31,6 +31,25 @@ class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<
 
 	}
 
+	fun setHourlyTemperatureTo(setDay: Int, setHour: Int, setTemp: Int) {
+		diffListMap[setDay]?.get(setHour)?.temperature = setTemp
+		value?.data?.timetable?.get(setDay)?.set(setHour, setTemp)
+	}
+
+	fun setDailyTemperatureTo(setDay: Int, setTemp: Int) {
+		diffListMap[setDay]?.forEachIndexed { _, item ->
+			item.apply {
+				item.temperature = setTemp
+			}
+		}
+
+		value?.data.let {
+			it?.timetable?.forEachIndexed { day, dayList ->
+				it.timetable[day] = mutableListOf(setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp)
+			}
+		}
+	}
+
 	fun connectSource(liveData: LiveData<Resource<T>>) {
 
 		if (liveData.value?.data?.timetable?.isNotEmpty() == true) {
