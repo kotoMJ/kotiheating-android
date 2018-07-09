@@ -222,11 +222,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_sync))
 		try {
 			vmb.viewModel.sendRequestForSchedule()?.let {
-				vmb.viewModel.statusRequestLocalList.diffListMap
-				vmb.viewModel.statusRequestRemoteList.diffListMap
-				vmb.viewModel.updateWhatThefuck(it)
-				vmb.viewModel.statusRequestLocalList.diffListMap
-				vmb.viewModel.statusRequestRemoteList.diffListMap
+				vmb.viewModel.updateRequestListWithServerResponse(it)
 				updateFab()
 			}
 		} catch (ise: IllegalStateException) {

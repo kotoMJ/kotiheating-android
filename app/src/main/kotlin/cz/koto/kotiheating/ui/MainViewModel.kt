@@ -64,24 +64,34 @@ class MainViewModel : BaseViewModel() {
 		statusRequestLocalList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST_LOCAL))
 	}
 
-	fun updateWhatThefuck(newLocalSchedule: HeatingSchedule) {
-		statusRequestLocalList.value?.data?.timetable = newLocalSchedule.timetable
+	fun updateRequestListWithServerResponse(serverResponseSchedule: HeatingSchedule) {
+		statusRequestLocalList.value?.data?.timetable = serverResponseSchedule.timetable
+		statusRequestRemoteList.value?.data?.timetable = serverResponseSchedule.timetable
 
 		for (day in 0..6) {
 			statusRequestLocalList.diffListMap[day]?.forEachIndexed { hour, item ->
 				item.apply {
-					item.temperature = newLocalSchedule.timetable[day][hour]
+					item.temperature = serverResponseSchedule.timetable[day][hour]
 				}
 			}
 		}
-		statusRequestLocalList.value = statusRequestLocalList.value
+
+		for (day in 0..6) {
+			statusRequestRemoteList.diffListMap[day]?.forEachIndexed { hour, item ->
+				item.apply {
+					item.temperature = serverResponseSchedule.timetable[day][hour]
+				}
+			}
+		}
+
 
 		launch(UI) {
-			newLocalSchedule.scheduleType = ScheduleType.REQUEST_LOCAL
-			heatingRepository.updateSchedule(newLocalSchedule)
-			newLocalSchedule.scheduleType = ScheduleType.REQUEST_REMOTE
-			heatingRepository.updateSchedule(newLocalSchedule)
+			serverResponseSchedule.scheduleType = ScheduleType.REQUEST_LOCAL
+			heatingRepository.updateSchedule(serverResponseSchedule)
+			serverResponseSchedule.scheduleType = ScheduleType.REQUEST_REMOTE
+			heatingRepository.updateSchedule(serverResponseSchedule)
 		}
+
 	}
 
 	fun revertLocalChanges(day: ObservableInt) {
