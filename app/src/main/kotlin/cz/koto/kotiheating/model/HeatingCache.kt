@@ -33,8 +33,13 @@ class HeatingCache {
 	}
 
 	fun putSchedule(heatingSchedule: HeatingSchedule) {
-		logk("Saving heating device status: $heatingSchedule")
+		logk("Saving heating schedule: $heatingSchedule")
 		scheduleDao.putHeatingSchedule(heatingSchedule)
+	}
+
+	fun removeSchedule(scheduleType: ScheduleType) {
+		logk("Removing schedule for all device id's and scheduleType=$scheduleType from db!")
+		scheduleDao.deleteHeatingSchedule(scheduleType)
 	}
 
 

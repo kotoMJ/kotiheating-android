@@ -3,6 +3,7 @@ package cz.koto.kotiheating.ui
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
@@ -11,13 +12,17 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import common.log.logk
 import cz.koto.kotiheating.R
+import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.koto.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.koto.ktools.vmb
+import kotlinx.android.synthetic.main.activity_main.view.*
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
 
 
@@ -68,6 +73,11 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		return super.onCreateOptionsMenu(menu)
 	}
 
+	override fun onPostResume() {
+		super.onPostResume()
+		updateFab()
+	}
+
 	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
 		when (item?.itemId) {
@@ -78,21 +88,25 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			R.id.action_clear_all -> {
 				vmb.viewModel.revertLocalChanges(day = vmb.viewModel.selectedDay)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				updateFab()
 				return true
 			}
 			R.id.action_anti_freeze -> {
-				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 5f)
+				vmb.viewModel.setLocalDailyTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 50)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				updateFab()
 				return true
 			}
 			R.id.action_night_temp -> {
-				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 15f)
+				vmb.viewModel.setLocalDailyTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 150)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				updateFab()
 				return true
 			}
 			R.id.action_daily_temp -> {
-				vmb.viewModel.setLocalTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 23f)
+				vmb.viewModel.setLocalDailyTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 230)
 				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				updateFab()
 				return true
 			}
 		}
@@ -109,8 +123,17 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		startActivityForResult(vmb.viewModel.getSignInGoogleIntent(), ACTION_SIGN_IN_GOOGLE)
 	}
 
+
+	private fun refresh() {
+		vmb.binding.viewModel?.refreshDataFromServer()
+		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
+	}
+
 	override fun onSignOut() {
-		vmb.viewModel.signOutGoogleUser { updateProfileMenuIcon() }
+		vmb.viewModel.signOutGoogleUser {
+			updateProfileMenuIcon()
+			refresh()
+		}
 	}
 
 	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -119,7 +142,10 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		// Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
 		if (requestCode == ACTION_SIGN_IN_GOOGLE) {
 			// The Task returned from this call is always completed, no need to attach a listener.
-			vmb.viewModel.handleSignInGoogleResult(data, { updateProfileMenuIcon() })
+			vmb.viewModel.handleSignInGoogleResult(data) {
+				updateProfileMenuIcon()
+				refresh()
+			}
 		}
 	}
 
@@ -164,26 +190,22 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {
 		val position = viewHolder.layoutPosition
-		vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.let { dayList ->
-			val updatedItem = dayList[position]
+		if (increase) vmb.viewModel.increaseLocalHourlyTemperatureTo(day, position) else vmb.viewModel.decreaseLocalHourlyTemperatureTo(day, position)
+		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
+		updateFab()
 
-			updatedItem?.apply {
-				if (increase) {
-					temperature += 1
-				} else {
-					temperature -= 1
-				}
-			}
-			val newList: ArrayList<StatusItem> = ArrayList(vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.toList())
+	}
 
-			updatedItem?.let {
-				newList.set(position, it)
-			}
-			vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(day)?.update(newList)
-			vmb.binding.viewModel?.statusRequestLocalList?.value = vmb.binding.viewModel?.statusRequestLocalList?.value
-			vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
+	private fun updateFab() {
+		if (compareLists(vmb.viewModel.statusRequestLocalList.diffListMap.get(vmb.viewModel.selectedDay.get())
+						?: emptyList(),
+						vmb.viewModel.statusRequestRemoteList.diffListMap.get(vmb.viewModel.selectedDay.get())
+								?: emptyList()) == 0) {
+			vmb.binding.fabSend.visibility = View.GONE
+		} else {
+
+			vmb.binding.fabSend.show()//showWithAnimation()
 		}
-
 	}
 
 
@@ -194,11 +216,31 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			profileMenu?.icon = ContextCompat.getDrawable(this, R.drawable.ic_person_outline)
 		}
 	}
+
+	override fun onSend() {
+		vmb.binding.fabSend.isEnabled = false
+		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_sync))
+		try {
+			vmb.viewModel.sendRequestForSchedule()?.let {
+				vmb.viewModel.updateRequestListWithServerResponse(it)
+				updateFab()
+			}
+		} catch (ise: IllegalStateException) {
+			logk("IllegalStateException! ${ise.message}")
+			Snackbar.make(vmb.rootView.coordinate, "User has no heating deice assigned", Snackbar.LENGTH_LONG).show()
+		} catch (th: Throwable) {
+			logk("Unable to send request! $th")
+		}
+		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_send))
+		vmb.binding.fabSend.isEnabled = true
+
+	}
 }
 
 interface MainActivityView {
 	fun onGoogleSignIn()
 	fun onSignOut()
+	fun onSend()
 	val lifecycleAwareAdapter: LifecycleAwareBindingRecyclerViewAdapter<StatusItem> // TODO: Temp fix for tatarka - remove when tatarka adds support for lifecycle
 }
 

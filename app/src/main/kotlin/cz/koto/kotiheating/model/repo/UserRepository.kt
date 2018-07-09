@@ -14,7 +14,6 @@ import common.log.logk
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.SecureWrapper
-import cz.koto.kotiheating.model.entity.HEATING_KEY
 import cz.koto.kotiheating.model.entity.HEATING_SET
 import cz.koto.kotiheating.model.entity.USER_KEY
 import cz.koto.kotiheating.model.rest.HeatingUserApi
@@ -32,25 +31,20 @@ class UserRepository : BaseRepository() {
 	private val application by inject<Application>()
 	val heatingApi by inject<HeatingUserApi>()
 
-	private var heatingKeyPref by application.sharedPrefs().string(key = HEATING_KEY)
 	private var heatingSetPref by application.sharedPrefs().stringSet(key = HEATING_SET)
 	private var userKeyPref by application.sharedPrefs().string(key = USER_KEY)
-
-	var heatingKey: String = ""
-		get() {
-			return if (field.isBlank()) {
-				field = SecureWrapper.instance.decrypt(application, heatingKeyPref ?: "")
-				field
-			} else field
-		}
-
 
 	var heatingSet: Set<String> = setOf()
 		get() {
 			return if (field.isEmpty()) {
-				field = SecureWrapper.instance.decrypt(application, heatingSetPref ?: emptySet())
-				field
+				//field = SecureWrapper.instance.decrypt(application, heatingSetPref ?: emptySet())
+				//field
+				heatingSetPref ?: emptySet()
 			} else field
+		}
+		set(value) {
+			field = value
+			heatingSetPref = value
 		}
 
 	var userKey: String = ""
@@ -58,9 +52,14 @@ class UserRepository : BaseRepository() {
 			return if (field.isBlank()) {
 				field = SecureWrapper.instance.decrypt(application, userKeyPref ?: "")
 				field
-			} else field
+			} else {
+				field
+			}
 		}
-
+		set(value) {
+			field = value
+			userKeyPref = value
+		}
 
 	var googleSignInAccount: GoogleSignInAccount? = null
 		@Bindable get
@@ -81,6 +80,7 @@ class UserRepository : BaseRepository() {
 
 	var googleSignInAccountError: ObservableField<String> = ObservableField()
 
+	@SuppressLint("RestrictedApi")
 	fun handleSignInResult(signInGoogleResultIntent: Intent, credentialsHasChanged: () -> Unit/*updateProfileMenuIcon()*/) {
 		try {
 			val completedTask = GoogleSignIn.getSignedInAccountFromIntent(signInGoogleResultIntent)
@@ -90,9 +90,12 @@ class UserRepository : BaseRepository() {
 				try {
 					val heatingAuth = heatingApi.authorizeGoogleUser(account.idToken)
 					heatingAuth?.let {
-						heatingKey = SecureWrapper.instance.encrypt(application, it.heatingKey)
-						heatingSet = SecureWrapper.instance.encrypt(application, it.heatingSet)
-						userKey = SecureWrapper.instance.encrypt(application, it.userKey)
+						it.heatingSet?.let { hs ->
+							heatingSet = hs
+						}
+						it.userKey?.let { uk ->
+							userKeyPref = SecureWrapper.instance.encrypt(application, uk)
+						}
 
 						googleSignInAccount = account
 						credentialsHasChanged.invoke()
@@ -132,8 +135,6 @@ class UserRepository : BaseRepository() {
 
 	private fun cleanUpGoogleUser(credsentialsHasChanged: () -> Unit) {
 		googleSignInAccount = null
-		heatingKeyPref = ""
-		heatingKey = ""
 		heatingSetPref = emptySet()
 		heatingSet = emptySet()
 		userKeyPref = ""
@@ -154,14 +155,13 @@ class UserRepository : BaseRepository() {
 		// Configure sign-in to request the user's ID, email address, and basic
 		// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
 		val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-				.requestIdToken(application.getString(R.string.init_client_id))
-				.requestProfile()
-				.requestEmail()
-				.build()
+			.requestIdToken(application.getString(R.string.init_client_id))
+			.requestProfile()
+			.requestEmail()
+			.build()
 
 		// Build a GoogleSignInClient with the options specified by gso.
 		googleSignInClient = GoogleSignIn.getClient(application, gso);
-
 
 		// Check for existing Google Sign In account, if the user is already signed in
 		// the GoogleSignInAccount will be non-null.

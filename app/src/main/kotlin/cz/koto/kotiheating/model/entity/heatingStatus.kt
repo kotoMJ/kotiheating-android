@@ -9,13 +9,14 @@ data class HeatingStatusResult(
 )
 
 @Entity(tableName = "deviceStatus", primaryKeys = ["deviceId"])
+@JvmSuppressWildcards
 data class HeatingDeviceStatus(
 		@SerializedName("timestamp") val timestamp: Date,
-		@SerializedName("temperature") val temperature: Float,
-		@SerializedName("deviceMode") val deviceMode: Int,
+		@SerializedName("temperature") val temperature: Int,
+		@SerializedName("heatingMode") val deviceMode: Int,
 		@SerializedName("day") val deviceDay: String,
 		@SerializedName("minute") val deviceMinute: Int,
 		@SerializedName("hour") val deviceHour: Int,
-		@SerializedName("timetable") val timetable: List<List<Float>>,
-		@SerializedName("deviceId") val deviceId: String
+		@SerializedName("timetable") val timetable: MutableList<MutableList<Int>>,
+		@SerializedName("heatingId") val deviceId: String
 )

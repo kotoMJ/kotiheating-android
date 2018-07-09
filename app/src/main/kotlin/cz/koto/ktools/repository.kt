@@ -4,6 +4,10 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.support.annotation.MainThread
 import android.support.annotation.WorkerThread
+import cz.koto.ktools.NoConnectivityException
+import cz.koto.ktools.doAsync
+import cz.koto.ktools.map
+import cz.koto.ktools.uiThread
 import retrofit2.Response
 
 /**
@@ -90,8 +94,7 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		savedSources.forEach { result.removeSource(it) }
 		savedSources.clear()
 
-		result.value = result.value?.copy(status = result.value?.status
-				?: Resource.Status.LOADING) ?: Resource.loading()
+		result.value = result.value?.copy(status = result.value?.status ?: Resource.Status.LOADING) ?: Resource.loading()
 
 		result.addSource(networkCallLiveData, { networkResource ->
 			result.setValue(networkResource)
@@ -105,8 +108,7 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		savedSources.forEach { result.removeSource(it) }
 		savedSources.clear()
 
-		result.value = result.value?.copy(status = result.value?.status
-				?: Resource.Status.LOADING) ?: Resource.loading()
+		result.value = result.value?.copy(status = result.value?.status ?: Resource.Status.LOADING) ?: Resource.loading()
 
 		val dbSource = callback!!.loadFromDb()
 		savedSources.add(dbSource)

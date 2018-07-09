@@ -22,9 +22,15 @@ class HeatingUserApi {
 					customInterceptors = *arrayOf(headerRequestInterceptor)).create(HeatingRouter::class.java)
 		}
 
+	private val apiNoAuth: HeatingRouter
+		get() {
+			return getRetrofit(application, BuildConfig.REST_BASE_URL, HttpLoggingInterceptor.Level.BODY, gson = gson)
+					.create(HeatingRouter::class.java)
+		}
+
 	suspend fun authorizeGoogleUser(idToken: String?): HeatingAuthResult? {
 		if (idToken != null) {
-			return api.authorizeGoogleUser(idToken).await()
+			return apiNoAuth.authorizeGoogleUser(idToken).await()
 		} else {
 			throw IllegalStateException("idToken must not be null!")
 		}

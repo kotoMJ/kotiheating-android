@@ -35,19 +35,22 @@ open class SecureWrapper {
 			}
 		} catch (th: Throwable) {
 			logk("Unable to encrypt $valueSet. $th")
-			throw th
+			return emptySet()
 		}
 		return encryptedSet
 	}
 
 	fun decrypt(applicationContext: Context, cipherTextString: String): String {
 		return try {
+			if (cipherTextString.isBlank()) {
+				throw IllegalStateException("Attempt to decrypt empty string! Check issue with source for cipherTextString")
+			}
 			val keys = AesCbcWithIntegrity.generateKeyFromPassword(getSignature(applicationContext), Base64.encode(applicationContext.packageName.toByteArray(), BASE64_FLAGS))
 			val cipherTextIvMac = AesCbcWithIntegrity.CipherTextIvMac(cipherTextString)
 			AesCbcWithIntegrity.decryptString(cipherTextIvMac, keys)
 		} catch (th: Throwable) {
 			logk("Unable to decrypt $cipherTextString. $th")
-			throw th
+			return ""
 		}
 	}
 
@@ -61,7 +64,7 @@ open class SecureWrapper {
 			}
 		} catch (th: Throwable) {
 			logk("Unable to decrypt $cipherTextStringSet. $th")
-			throw th
+			return emptySet()
 		}
 		return decryptedSet
 	}

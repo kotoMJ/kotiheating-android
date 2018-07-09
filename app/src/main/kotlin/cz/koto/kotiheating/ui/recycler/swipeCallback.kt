@@ -14,7 +14,7 @@ import cz.koto.kotiheating.ui.MainViewModel
 
 abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: MainViewModel, private val day: ObservableInt) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
-	private val maximumTempValue = 30f
+	private val maximumTempValue = 300
 	private val decreaseIcon = ContextCompat.getDrawable(context, R.drawable.ic_increase)
 	private val intrinsicWidth = decreaseIcon?.intrinsicWidth ?: 0
 	private val intrinsicHeight = decreaseIcon?.intrinsicHeight ?: 0
@@ -24,7 +24,7 @@ abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: 
 	override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
 		mainViewModel.statusRequestLocalList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder?.adapterPosition?.let {
-				if (diffObservableList[it].temperature > maximumTempValue - 1) {
+				if (diffObservableList[it].temperature > maximumTempValue - 10) {
 					return 0
 				}
 			}
@@ -63,7 +63,7 @@ abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: 
 
 abstract class SwipeToRightCallback(context: Context, private val mainViewModel: MainViewModel, private val day: ObservableInt) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
-	private val minimumTempValue = 5f
+	private val minimumTempValue = 50
 	private val increaseIcon = ContextCompat.getDrawable(context, R.drawable.ic_decrease)
 	private val intrinsicWidth = increaseIcon?.intrinsicWidth ?: 0
 	private val intrinsicHeight = increaseIcon?.intrinsicHeight ?: 0
@@ -73,7 +73,7 @@ abstract class SwipeToRightCallback(context: Context, private val mainViewModel:
 	override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
 		mainViewModel.statusRequestLocalList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder?.adapterPosition?.let {
-				if (diffObservableList[it].temperature < minimumTempValue + 1) {
+				if (diffObservableList[it].temperature < minimumTempValue + 10) {
 					return 0
 				}
 			}

@@ -26,6 +26,45 @@ class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<
 		for (day in 0..6) {
 			diffListMap[day] = DiffObservableList<StatusItem>(callback)
 		}
+
+		connectSource(liveData)
+
+	}
+
+	fun setHourlyTemperatureTo(setDay: Int, setHour: Int, setTemp: Int) {
+		diffListMap[setDay]?.get(setHour)?.temperature = setTemp
+		value?.data?.timetable?.get(setDay)?.set(setHour, setTemp)
+	}
+
+	fun setDailyTemperatureTo(setDay: Int, setTemp: Int) {
+		diffListMap[setDay]?.forEachIndexed { _, item ->
+			item.apply {
+				item.temperature = setTemp
+			}
+		}
+
+		value?.data.let {
+			it?.timetable?.forEachIndexed { day, dayList ->
+				it.timetable[day] = mutableListOf(setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp)
+			}
+		}
+	}
+
+	fun connectSource(liveData: LiveData<Resource<T>>) {
+
+		if (liveData.value?.data?.timetable?.isNotEmpty() == true) {
+			value = liveData.value
+			liveData.value?.data.let {
+				it?.timetable?.forEachIndexed { day, dayList ->
+					diffListMap[day]?.update(it.timetable[day].mapIndexed { index, float ->
+						StatusItem(float, index)
+					})
+				}
+			}
+		} else {
+			value = Resource(Resource.Status.FAILURE, null)
+		}
+
 		addSource(liveData, {
 
 			if (it?.data?.timetable?.isNotEmpty() == true) {
@@ -33,7 +72,7 @@ class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<
 
 				it.data.let {
 					it.timetable.forEachIndexed { day, dayList ->
-						diffListMap.get(day)?.update(it.timetable[day].mapIndexed { index, float ->
+						diffListMap[day]?.update(it.timetable[day].mapIndexed { index, float ->
 							StatusItem(float, index)
 						})
 					}

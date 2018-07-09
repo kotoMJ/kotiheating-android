@@ -17,7 +17,6 @@ import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.ArcUtils
 import cz.koto.kotiheating.common.getColorForTemperature
 import cz.koto.kotiheating.ui.StatusItem
-import kotlin.math.round
 
 
 internal class CircleStatusView : View {
@@ -170,7 +169,7 @@ internal class CircleStatusView : View {
 				} else {
 					when (circleNumberUnit) {
 						CircleNumberUnit.HOURS -> "${statusItemList[i].hour}"
-						CircleNumberUnit.CELSIUS -> "${round(statusItemList[i].temperature).toInt()}°"
+						CircleNumberUnit.CELSIUS -> "${statusItemList[i].temperature / 10}°"
 					}
 				}
 				ArcUtils.drawArc(canvas, centerPoint, radius, circleHourBackgroundAngel.apply { circleHourBackgroundAngel += circleHourSweepAngle }, circleHourSweepAngle, it)//body

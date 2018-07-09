@@ -23,6 +23,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginBottom="@dimen/global_spacing_8"
+		app:cardBackgroundColor="@{item.backgroundColor}"
 		android:foreground="?attr/selectableItemBackground">
 
 		<android.support.constraint.ConstraintLayout
@@ -40,7 +41,7 @@
 				android:textAppearance="@style/TextAppearance.AppCompat.Display1"
 				android:textStyle="bold"
 				android:text="@{``+item.hour+`:00`}"
-				android:textColor="@color/primaryColor"
+				android:textColor="@{item.textColor}"
 				tools:text="16:00"
 				app:layout_constraintEnd_toStartOf="@+id/temperatureView"
 				app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +60,8 @@
 				android:layout_marginTop="8dp"
 				android:layout_marginBottom="8dp"
 				android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-				android:text="@{``+item.temperature+`°C`}"
+				android:text="@{``+item.temperature/10+`°C`}"
+				android:textColor="@{item.textColor}"
 				tools:text="18°C"
 				app:layout_constraintStart_toEndOf="@+id/hourView"
 				app:layout_constraintHorizontal_bias="0.5"
