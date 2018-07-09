@@ -30,9 +30,8 @@ class HeatingScheduleApi {
 
 	fun getHeatingSchedule(scheduleType: ScheduleType, deviceId: String): LiveData<Resource<HeatingSchedule>> {
 		when (scheduleType) {
-			ScheduleType.REQUEST_REMOTE -> return api.getHeatingScheduleLive(deviceId, scheduleType).mapResource { it?.heatingSchedule }
-			ScheduleType.DEVICE -> return api.getHeatingScheduleLive(deviceId, scheduleType).mapResource { it?.heatingSchedule }
-			else -> throw IllegalStateException("Unsupported network call for scheduleType=${scheduleType}")
+			ScheduleType.REQUEST, ScheduleType.DEVICE -> return api.getHeatingScheduleLive(deviceId, scheduleType).mapResource { it?.heatingSchedule }
+			else -> throw IllegalStateException("Unsupported network call for scheduleType=$scheduleType")
 		}
 	}
 

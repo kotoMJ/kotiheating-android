@@ -24,10 +24,7 @@ class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 			}
 
 			override fun shouldFetch(dataFromCache: HeatingSchedule?): Boolean {
-				return when (scheduleType) {
-					ScheduleType.REQUEST_LOCAL -> return dataFromCache == null //Init local with remote
-					else -> true
-				}
+				return true
 			}
 
 			override fun loadFromDb(): LiveData<HeatingSchedule> {
@@ -35,10 +32,7 @@ class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 			}
 
 			override fun createNetworkCall(): LiveData<Resource<HeatingSchedule>> {
-				return when (scheduleType) {
-					ScheduleType.REQUEST_LOCAL -> statusApi.getHeatingSchedule(ScheduleType.REQUEST_REMOTE, deviceId)
-					else -> statusApi.getHeatingSchedule(scheduleType, deviceId)
-				}
+				return statusApi.getHeatingSchedule(scheduleType, deviceId)
 			}
 		})
 	}

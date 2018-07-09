@@ -26,7 +26,7 @@
 			android:layout_margin="8dp"
 			android:onClick="@{()-> view.onReloadStatusView()}"
 			app:statusDeviceItemList="@{viewModel.statusDeviceList}"
-			app:statusRequestLocalItemList="@{viewModel.statusRequestLocalList}"
+			app:statusRequestLocalItemList="@{viewModel.statusRequestList}"
 			app:currentDay="@{viewModel.selectedDay}" />
 	</LinearLayout>
 </layout>

@@ -77,7 +77,7 @@
 				android:clipToPadding="false"
 				app:layoutManager="@{LayoutManagers.linear()}"
 				app:liveDataItemBinding="@{viewModel.itemBinding}"
-				app:liveDataItems="@{viewModel.statusRequestLocalList}"
+				app:liveDataItems="@{viewModel.statusRequestList}"
 				app:liveDataAdapter="@{view.lifecycleAwareAdapter}"
 				app:currentDay="@{viewModel.selectedDay}"
 				tools:listitem="@layout/item_heating"

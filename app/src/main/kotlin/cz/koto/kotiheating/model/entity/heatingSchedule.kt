@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 enum class ScheduleType {
 	DEVICE,
-	REQUEST_LOCAL,
-	REQUEST_REMOTE,
+	REQUEST,
 	UNKNOWN;
 
 	override fun toString(): String {

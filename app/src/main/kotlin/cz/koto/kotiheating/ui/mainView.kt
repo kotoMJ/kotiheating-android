@@ -12,10 +12,8 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import common.log.logk
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.databinding.ActivityMainBinding
 import cz.koto.kotiheating.ui.profile.createProfileDialog
 import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
@@ -183,7 +181,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 				vmb.viewModel.selectedDay.set(position)
 				//TODO is there a better (automatic) way how to force reload of adapter base on day change?
 				val adapter = vmb.binding.dailyScheduleRecycler.adapter as BindingRecyclerViewAdapter<StatusItem>
-				adapter.setItems(vmb.binding.viewModel?.statusRequestLocalList?.diffListMap?.get(position))
+				adapter.setItems(vmb.binding.viewModel?.statusRequestList?.diffListMap?.get(position))
 			}
 		})
 	}
@@ -197,15 +195,15 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	}
 
 	private fun updateFab() {
-		if (compareLists(vmb.viewModel.statusRequestLocalList.diffListMap.get(vmb.viewModel.selectedDay.get())
-						?: emptyList(),
-						vmb.viewModel.statusRequestRemoteList.diffListMap.get(vmb.viewModel.selectedDay.get())
-								?: emptyList()) == 0) {
-			vmb.binding.fabSend.visibility = View.GONE
-		} else {
+//		if (compareLists(vmb.viewModel.statusRequestLocalList.diffListMap.get(vmb.viewModel.selectedDay.get())
+//						?: emptyList(),
+//						vmb.viewModel.statusRequestRemoteList.diffListMap.get(vmb.viewModel.selectedDay.get())
+//								?: emptyList()) == 0) {
+//			vmb.binding.fabSend.visibility = View.GONE
+//		} else {
 
 			vmb.binding.fabSend.show()//showWithAnimation()
-		}
+//		}
 	}
 
 

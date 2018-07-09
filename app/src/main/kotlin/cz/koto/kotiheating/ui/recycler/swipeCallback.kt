@@ -22,7 +22,7 @@ abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: 
 	private val backgroundColor = Color.parseColor(getColorForTemperature(maximumTempValue))
 
 	override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
-		mainViewModel.statusRequestLocalList.diffListMap[day.get()]?.let { diffObservableList ->
+		mainViewModel.statusRequestList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder?.adapterPosition?.let {
 				if (diffObservableList[it].temperature > maximumTempValue - 10) {
 					return 0
@@ -71,7 +71,7 @@ abstract class SwipeToRightCallback(context: Context, private val mainViewModel:
 	private val backgroundColor = Color.parseColor(getColorForTemperature(minimumTempValue))
 
 	override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
-		mainViewModel.statusRequestLocalList.diffListMap[day.get()]?.let { diffObservableList ->
+		mainViewModel.statusRequestList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder?.adapterPosition?.let {
 				if (diffObservableList[it].temperature < minimumTempValue + 10) {
 					return 0
