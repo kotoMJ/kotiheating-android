@@ -77,20 +77,20 @@ class MainViewModel : BaseViewModel() {
 
 	fun revertLocalChanges(day: ObservableInt) {
 		refreshDataFromServer()
-		statusRequestList.value = statusRequestList.value
-		statusDeviceList.diffListMap[day.get()]?.forEachIndexed { hour, item ->
-			item.apply {
-				statusRequestList.diffListMap[day.get()]?.let { daySchedule ->
-					item.temperature = daySchedule[hour].temperature
-				}
-			}
-		}
-		launch(UI) {
-			statusRequestList.value?.data?.let {
-				heatingRepository.updateSchedule(it)
-			}
-
-		}
+//		statusRequestList.value = statusRequestList.value
+//		statusDeviceList.diffListMap[day.get()]?.forEachIndexed { hour, item ->
+//			item.apply {
+//				statusRequestList.diffListMap[day.get()]?.let { daySchedule ->
+//					item.temperature = daySchedule[hour].temperature
+//				}
+//			}
+//		}
+//		launch(UI) {
+//			statusRequestList.value?.data?.let {
+//				heatingRepository.updateSchedule(it)
+//			}
+//
+//		}
 	}
 
 
