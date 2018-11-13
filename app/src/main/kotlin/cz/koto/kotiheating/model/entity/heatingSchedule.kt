@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 enum class ScheduleType {
 	DEVICE,
-	REQUEST_LOCAL,
-	REQUEST_REMOTE,
+	REQUEST,
 	UNKNOWN;
 
 	override fun toString(): String {
@@ -23,14 +22,15 @@ data class HeatingScheduleResult(
 		@SerializedName("result") val heatingSchedule: HeatingSchedule
 )
 
-@Entity(tableName = "heatingSchedule", primaryKeys = ["deviceId", "scheduleType"])
+@Entity(tableName = "heatingSchedule", primaryKeys = ["deviceId", "scheduleType", "remoteCopy"])
 data class HeatingSchedule(
 		@SerializedName("typeId") var scheduleType: ScheduleType,
 		@SerializedName("heatingId") var deviceId: String,
-		@SerializedName("timetable") var timetable: MutableList<MutableList<Int>>
+		@SerializedName("timetable") var timetable: MutableList<MutableList<Int>>,
+		var remoteCopy: Boolean
 ) {
 
-	constructor() : this(ScheduleType.UNKNOWN, "", mutableListOf())
+	constructor() : this(ScheduleType.UNKNOWN, "", mutableListOf(), false)
 }
 
 data class HeatingScheduleSetRequest(@SerializedName("timetable") var timetable: MutableList<MutableList<Int>>)

@@ -81,7 +81,7 @@ class UserRepository : BaseRepository() {
 	var googleSignInAccountError: ObservableField<String> = ObservableField()
 
 	@SuppressLint("RestrictedApi")
-	fun handleSignInResult(signInGoogleResultIntent: Intent, credentialsHasChanged: () -> Unit/*updateProfileMenuIcon()*/) {
+	fun handleSignInResult(signInGoogleResultIntent: Intent?, credentialsHasChanged: () -> Unit/*updateProfileMenuIcon()*/) {
 		try {
 			val completedTask = GoogleSignIn.getSignedInAccountFromIntent(signInGoogleResultIntent)
 			val account = completedTask.getResult(ApiException::class.java)
