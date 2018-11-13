@@ -70,7 +70,8 @@ class MainViewModel : BaseViewModel() {
 
 		launch(UI) {
 			serverResponseSchedule.scheduleType = ScheduleType.REQUEST
-			heatingRepository.updateSchedule(serverResponseSchedule)
+			heatingRepository.updateRemoteSchedule(serverResponseSchedule)
+			heatingRepository.updateLocalSchedule(serverResponseSchedule)
 		}
 
 	}
@@ -103,7 +104,7 @@ class MainViewModel : BaseViewModel() {
 
 		launch(UI) {
 			statusRequestList.value?.data?.let {
-				heatingRepository.updateSchedule(it)
+				heatingRepository.updateLocalSchedule(it)
 			}
 		}
 	}
@@ -117,7 +118,7 @@ class MainViewModel : BaseViewModel() {
 
 		launch(UI) {
 			statusRequestList.value?.data?.let {
-				heatingRepository.updateSchedule(it)
+				heatingRepository.updateLocalSchedule(it)
 			}
 		}
 	}
@@ -126,10 +127,20 @@ class MainViewModel : BaseViewModel() {
 		statusRequestList.setDailyTemperatureTo(day, temp)
 		launch(UI) {
 			statusRequestList.value?.data?.let {
-				heatingRepository.updateSchedule(it)
+				heatingRepository.updateLocalSchedule(it)
 			}
 
 		}
+	}
+
+	fun differLocalRequestFromRemote(): Boolean {
+		val keySet = userRepository.heatingSet.firstOrNull()
+		return if (keySet == null) {
+			false
+		} else {
+			heatingRepository.hasLocalScheduleChanges(keySet, ScheduleType.REQUEST)
+		}
+
 	}
 
 	@SuppressLint("RestrictedApi")
@@ -137,7 +148,7 @@ class MainViewModel : BaseViewModel() {
 		return userRepository.googleSignInClient.signInIntent
 	}
 
-	fun handleSignInGoogleResult(signInGoogleResultIntent: Intent, credentialsHasChanged: () -> Unit) {
+	fun handleSignInGoogleResult(signInGoogleResultIntent: Intent?, credentialsHasChanged: () -> Unit) {
 		userRepository.handleSignInResult(signInGoogleResultIntent, credentialsHasChanged)
 	}
 

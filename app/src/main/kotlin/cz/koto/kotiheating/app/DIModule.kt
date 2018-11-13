@@ -24,7 +24,7 @@ object DIModule {
 		provideSingleton { HeaderRequestInterceptor() }
 		provideSingleton { HeatingScheduleApi() }
 
-		val database = Room.databaseBuilder(application, HeatingDatabase::class.java, "heating-database").build()
+		val database = Room.databaseBuilder(application, HeatingDatabase::class.java, "heating-database").allowMainThreadQueries().build()
 		provideSingleton { database.scheduleDao() }
 		provideSingleton { database.statusDao() }
 	}

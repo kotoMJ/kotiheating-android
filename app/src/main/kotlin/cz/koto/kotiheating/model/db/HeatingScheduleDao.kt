@@ -14,8 +14,14 @@ interface HeatingScheduleDao {
 	@Insert(onConflict = REPLACE)
 	fun putHeatingSchedule(heatingSchedule: HeatingSchedule)
 
-	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND scheduleType = :scheduleType")
-	fun getHeatingSchedule(deviceId: String, scheduleType: ScheduleType): LiveData<HeatingSchedule>
+	@Query("SELECT * FROM heatingSchedule")
+	fun getHeatingScheduleAll(): LiveData<HeatingSchedule>
+
+	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND scheduleType = :scheduleType AND remoteCopy = :remoteCopyOnly")
+	fun getHeatingScheduleX(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): HeatingSchedule
+
+	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND scheduleType = :scheduleType AND remoteCopy = :remoteCopyOnly")
+	fun getHeatingSchedule(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): LiveData<HeatingSchedule>
 
 	@Query("DELETE FROM heatingSchedule WHERE deviceId = :deviceId AND scheduleType = :scheduleType")
 	fun deleteHeatingSchedule(deviceId: String, scheduleType: ScheduleType): Int

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
@@ -85,25 +86,25 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			}
 			R.id.action_clear_all -> {
 				vmb.viewModel.revertLocalChanges(day = vmb.viewModel.selectedDay)
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				vmb.binding.dailyScheduleRecycler.adapter?.notifyDataSetChanged()
 				updateFab()
 				return true
 			}
 			R.id.action_anti_freeze -> {
 				vmb.viewModel.setLocalDailyTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 50)
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				vmb.binding.dailyScheduleRecycler.adapter?.notifyDataSetChanged()
 				updateFab()
 				return true
 			}
 			R.id.action_night_temp -> {
 				vmb.viewModel.setLocalDailyTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 150)
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				vmb.binding.dailyScheduleRecycler.adapter?.notifyDataSetChanged()
 				updateFab()
 				return true
 			}
 			R.id.action_daily_temp -> {
 				vmb.viewModel.setLocalDailyTemperatureTo(day = vmb.viewModel.selectedDay.get(), temp = 230)
-				vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()
+				vmb.binding.dailyScheduleRecycler.adapter?.notifyDataSetChanged()
 				updateFab()
 				return true
 			}
@@ -124,7 +125,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 	private fun refresh() {
 		vmb.binding.viewModel?.refreshDataFromServer()
-		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
+		vmb.binding.dailyScheduleRecycler.adapter?.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
 	}
 
 	override fun onSignOut() {
@@ -134,7 +135,10 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		}
 	}
 
-	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+
+
+
+	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
 
 		// Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -189,21 +193,20 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {
 		val position = viewHolder.layoutPosition
 		if (increase) vmb.viewModel.increaseLocalHourlyTemperatureTo(day, position) else vmb.viewModel.decreaseLocalHourlyTemperatureTo(day, position)
-		vmb.binding.dailyScheduleRecycler.adapter.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
+		vmb.binding.dailyScheduleRecycler.adapter?.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
 		updateFab()
 
 	}
 
 	private fun updateFab() {
-//		if (compareLists(vmb.viewModel.statusRequestLocalList.diffListMap.get(vmb.viewModel.selectedDay.get())
-//						?: emptyList(),
-//						vmb.viewModel.statusRequestRemoteList.diffListMap.get(vmb.viewModel.selectedDay.get())
-//								?: emptyList()) == 0) {
-//			vmb.binding.fabSend.visibility = View.GONE
-//		} else {
 
-			vmb.binding.fabSend.show()//showWithAnimation()
-//		}
+
+		if (vmb.binding.viewModel?.differLocalRequestFromRemote() == true) {
+			vmb.binding.fabSend.show()
+		} else {
+			vmb.binding.fabSend.hide()
+		}
+
 	}
 
 

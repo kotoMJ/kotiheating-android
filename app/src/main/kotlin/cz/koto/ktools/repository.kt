@@ -73,7 +73,7 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 
 		// Called to get the cached data from the database
 		@MainThread
-		fun loadFromDb(): LiveData<T>
+		fun loadFromDb(remoteCopyOnly:Boolean = false): LiveData<T>
 
 		// Called to create the API call.
 		@MainThread

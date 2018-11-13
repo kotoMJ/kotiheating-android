@@ -83,7 +83,7 @@ class MockHeatingStatusLiveData(deviceId: String) : LiveData<Resource<HeatingDev
 class MockHeatingScheduleLiveData(scheduleType: ScheduleType, deviceId: String) : LiveData<Resource<HeatingSchedule>>() {
 
 	init {
-		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(scheduleType, deviceId, getMockTimeTableWeek()))
+		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(scheduleType, deviceId, getMockTimeTableWeek(),false))
 	}
 
 }
@@ -92,7 +92,7 @@ class MockHeatingScheduleLiveData(scheduleType: ScheduleType, deviceId: String) 
 class MockHeatingScheduleEmptyLiveData(scheduleType: ScheduleType, deviceId: String) : LiveData<Resource<HeatingSchedule>>() {
 
 	init {
-		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(scheduleType, deviceId, mutableListOf()))
+		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(scheduleType, deviceId, mutableListOf(), false))
 	}
 
 }

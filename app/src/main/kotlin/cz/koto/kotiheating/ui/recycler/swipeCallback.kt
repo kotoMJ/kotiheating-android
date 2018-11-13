@@ -21,7 +21,7 @@ abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: 
 	private val background = ColorDrawable()
 	private val backgroundColor = Color.parseColor(getColorForTemperature(maximumTempValue))
 
-	override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
+	override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
 		mainViewModel.statusRequestList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder?.adapterPosition?.let {
 				if (diffObservableList[it].temperature > maximumTempValue - 10) {
@@ -33,11 +33,11 @@ abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: 
 		return super.getMovementFlags(recyclerView, viewHolder)
 	}
 
-	override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?): Boolean {
+	override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
 		return false
 	}
 
-	override fun onChildDraw(c: Canvas?, recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+	override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
 		val itemView = viewHolder.itemView
 		val itemHeight = itemView.bottom - itemView.top
 
@@ -70,7 +70,8 @@ abstract class SwipeToRightCallback(context: Context, private val mainViewModel:
 	private val background = ColorDrawable()
 	private val backgroundColor = Color.parseColor(getColorForTemperature(minimumTempValue))
 
-	override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
+
+	override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
 		mainViewModel.statusRequestList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder?.adapterPosition?.let {
 				if (diffObservableList[it].temperature < minimumTempValue + 10) {
@@ -82,11 +83,11 @@ abstract class SwipeToRightCallback(context: Context, private val mainViewModel:
 		return super.getMovementFlags(recyclerView, viewHolder)
 	}
 
-	override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?): Boolean {
+	override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
 		return false
 	}
 
-	override fun onChildDraw(c: Canvas?, recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+	override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
 		val itemView = viewHolder.itemView
 		val itemHeight = itemView.bottom - itemView.top
 
