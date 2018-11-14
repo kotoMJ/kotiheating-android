@@ -1,7 +1,13 @@
 package cz.koto.ktools
 
 import android.app.Activity
-import android.arch.lifecycle.*
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.LifecycleOwner
+import android.arch.lifecycle.OnLifecycleEvent
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.support.annotation.LayoutRes
@@ -44,11 +50,11 @@ inline fun <reified VM : ViewModel, B : ViewDataBinding> Fragment.vmb(@LayoutRes
  * Note: Do not use this constructor directly. Use extension functions above instead.
  */
 class ViewModelBinding<out VM : ViewModel, out B : ViewDataBinding> constructor(
-		private val lifecycleOwner: LifecycleOwner,
-		private val viewModelClass: Class<VM>,
-		@LayoutRes private val layoutResId: Int,
-		private var viewModelProvider: ViewModelProvider?,
-		val viewModelFactory: (() -> VM)?
+	private val lifecycleOwner: LifecycleOwner,
+	private val viewModelClass: Class<VM>,
+	@LayoutRes private val layoutResId: Int,
+	private var viewModelProvider: ViewModelProvider?,
+	val viewModelFactory: (() -> VM)?
 ) {
 	init {
 		if (!(lifecycleOwner is FragmentActivity || lifecycleOwner is Fragment))
@@ -75,8 +81,13 @@ class ViewModelBinding<out VM : ViewModel, out B : ViewDataBinding> constructor(
 		lifecycleOwner.lifecycle.addObserver(object : LifecycleObserver {
 			@OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
 			fun onCreate() {
+				// Note: This line will not work for Android Gradle plugin older than 3.1.0-alpha06 - comment it out if using those
 				binding.setLifecycleOwner(lifecycleOwner)
-				// setup binding variables
+				// setupCached binding variables
+				// Note: BR.viewModel, BR.view will be auto-generated if you have those variables somewhere in your layout files
+				// If you're not using both of them you will have to comment out one of the lines
+
+				//TODO MJ - uncomment this whenever some used.
 				binding.setVariable(BR.viewModel, viewModel)
 				binding.setVariable(BR.view, fragment ?: activity)
 
