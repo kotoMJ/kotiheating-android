@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.ActivityMainBinding
@@ -21,9 +20,8 @@ import cz.koto.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.koto.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.koto.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.koto.ktools.vmb
-import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.activity_main.view.coordinate
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
-
 
 class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnClickListener {
 
@@ -45,6 +43,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	private var setToDayMenu: MenuItem? = null
 
 
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
@@ -59,6 +58,11 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 		setupRecycler()
 		setupViewpager()
+	}
+
+	override fun onResume() {
+		refresh()
+		super.onResume()
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -19,7 +19,6 @@ class HeatingRepository {
 		HeatingStatusLiveData().apply { refresh(deviceId) }
 	}
 
-
 	fun getSchedule(deviceId: String?, scheduleType: ScheduleType) = if (deviceId == null) {
 		MockHeatingScheduleLiveData(scheduleType, "0")
 	} else {
@@ -28,9 +27,8 @@ class HeatingRepository {
 
 	fun hasLocalScheduleChanges(deviceId: String, scheduleType: ScheduleType): Boolean {
 
-
-		val remote = cache.getScheduleX(deviceId, scheduleType, true).timetable ?: mutableListOf()
-		val local = cache.getScheduleX(deviceId, scheduleType, false).timetable ?: mutableListOf()
+		val remote = cache.getScheduleX(deviceId, scheduleType, true)?.timetable ?: mutableListOf()
+		val local = cache.getScheduleX(deviceId, scheduleType, false)?.timetable ?: mutableListOf()
 		remote.forEachIndexed { index, remoteItem ->
 			if (remoteItem.zip(local[index]) { a, b -> a.compareTo(b) != 0 }.contains(true)) return true
 		}
