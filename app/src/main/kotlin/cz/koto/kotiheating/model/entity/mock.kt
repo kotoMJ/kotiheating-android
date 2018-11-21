@@ -3,8 +3,7 @@ package cz.koto.kotiheating.model.entity
 import android.arch.lifecycle.LiveData
 import cz.koto.kotiheating.ui.StatusItem
 import cz.koto.ktools.Resource
-import java.util.*
-
+import java.util.Date
 
 fun getMockTimeTableMonday(): MutableList<Int> = mutableListOf(
 		150,
@@ -76,23 +75,22 @@ class MockHeatingStatusLiveData(deviceId: String) : LiveData<Resource<HeatingDev
 	init {
 		value = Resource(Resource.Status.SUCCESS,
 				HeatingDeviceStatus(Date(), 220, 2, "MO", 11, 8,
-						getMockTimeTableWeek(), deviceId))
+					getMockTimeTableWeek(), getMockTimeTableWeek(), deviceId))
 	}
 }
 
-class MockHeatingScheduleLiveData(scheduleType: ScheduleType, deviceId: String) : LiveData<Resource<HeatingSchedule>>() {
+class MockHeatingScheduleLiveData(deviceId: String) : LiveData<Resource<HeatingSchedule>>() {
 
 	init {
-		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(scheduleType, deviceId, getMockTimeTableWeek(),false))
+		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(deviceId, getMockTimeTableWeek(), false))
 	}
 
 }
 
-
-class MockHeatingScheduleEmptyLiveData(scheduleType: ScheduleType, deviceId: String) : LiveData<Resource<HeatingSchedule>>() {
+class MockHeatingScheduleEmptyLiveData(deviceId: String) : LiveData<Resource<HeatingSchedule>>() {
 
 	init {
-		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(scheduleType, deviceId, mutableListOf(), false))
+		value = Resource(Resource.Status.SUCCESS, HeatingSchedule(deviceId, mutableListOf(), false))
 	}
 
 }

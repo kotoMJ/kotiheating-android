@@ -8,11 +8,9 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.RadioButton
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.common.compareLists
 import cz.koto.kotiheating.model.entity.HeatingSchedule
 import cz.koto.kotiheating.ui.StatusItem
 import cz.koto.ktools.DiffObservableLiveHeatingSchedule
-
 
 class HeatingStatusLayout : FrameLayout {
 
@@ -35,11 +33,11 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
 
-	var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
-		set(value) {
-			field = value
-			showLayout(true)
-		}
+//	var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
+//		set(value) {
+//			field = value
+//			showLayout(true)
+//		}
 
 	var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
 		set(value) {
@@ -55,13 +53,10 @@ class HeatingStatusLayout : FrameLayout {
 
 	lateinit var listToDisplay: List<StatusItem>
 
-
 	// Attributes from layout
 	private lateinit var attrs: TypedArray
 
 	private lateinit var circleNumberUnit: CircleStatusView.CircleNumberUnit
-
-	private var deviceStatusView: DeviceStatusView = DeviceStatusView.SERVER_PROGRESS
 
 	constructor(context: Context) : super(context)
 
@@ -74,7 +69,6 @@ class HeatingStatusLayout : FrameLayout {
 		this.attrs = context.theme.obtainStyledAttributes(attrs, R.styleable.ProgressCircleLayout, 0, 0)
 		inflateViews()
 	}
-
 
 	@SuppressLint("SwitchIntDef")
 	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -115,7 +109,6 @@ class HeatingStatusLayout : FrameLayout {
 	}
 
 	private fun initCustomRadioGroups() {
-		initStatusRadioGroup()
 		initUnitRadioGroup()
 	}
 
@@ -138,56 +131,11 @@ class HeatingStatusLayout : FrameLayout {
 		})
 
 		if (!unitHeatingRadio.isChecked &&
-				!unitTimeRadio.isChecked) {
+			!unitTimeRadio.isChecked) {
 			unitTimeRadio.isChecked = false
 			unitHeatingRadio.isChecked = true //Default option
 			circleNumberUnit = CircleStatusView.CircleNumberUnit.CELSIUS
 		}
-	}
-
-	private fun initStatusRadioGroup() {
-
-		val statusDeviceProgressRadio: RadioButton = findViewById(R.id.deviceStatusProgress)
-		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
-		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
-
-		statusDeviceProgressRadio.setOnClickListener({
-			deviceStatusView = DeviceStatusView.SERVER_PROGRESS
-			updateStatusRadio(statusDeviceProgressRadio, statusDeviceSyncedRadio, statusRequestRadio)
-		})
-
-		statusDeviceSyncedRadio.setOnClickListener({
-			deviceStatusView = DeviceStatusView.SERVER_SYNCED
-			updateStatusRadio(statusDeviceProgressRadio, statusDeviceSyncedRadio, statusRequestRadio)
-		})
-
-		statusRequestRadio.setOnClickListener({
-			deviceStatusView = DeviceStatusView.REQUEST
-			updateStatusRadio(statusDeviceProgressRadio, statusDeviceSyncedRadio, statusRequestRadio)
-		})
-
-
-	}
-
-	private fun updateStatusRadio(statusDeviceProgressRadio: RadioButton, statusDeviceSyncedRadio: RadioButton, statusRequestRadio: RadioButton) {
-		when (deviceStatusView) {
-			DeviceStatusView.SERVER_PROGRESS -> {
-				statusDeviceProgressRadio.isChecked = true
-				statusDeviceSyncedRadio.isChecked = false
-				statusRequestRadio.isChecked = false
-			}
-			DeviceStatusView.SERVER_SYNCED -> {
-				statusDeviceSyncedRadio.isChecked = true
-				statusDeviceProgressRadio.isChecked = false
-				statusRequestRadio.isChecked = false
-			}
-			DeviceStatusView.REQUEST -> {
-				statusRequestRadio.isChecked = true
-				statusDeviceProgressRadio.isChecked = false
-				statusDeviceSyncedRadio.isChecked = false
-			}
-		}
-		showLayout()
 	}
 
 	fun showLayout(invokedByValueChange: Boolean = false): Boolean {
@@ -199,7 +147,6 @@ class HeatingStatusLayout : FrameLayout {
 		return false
 	}
 
-
 	private fun calculateLayout(maxRadius: Float, invokedByValueChange: Boolean) {
 		setProperDataSource(invokedByValueChange)
 
@@ -208,12 +155,12 @@ class HeatingStatusLayout : FrameLayout {
 		circleViewPm = findViewById(R.id.circlePm)
 		var radius = maxRadius - (circleSeparation * 0)
 		circleViewPm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.filter { it.hour > 11 }
-				, circleNumberUnit)
+			, circleNumberUnit)
 
 		circleViewAm = findViewById(R.id.circleAm)
 		radius = maxRadius - (circleSeparation * 1)
 		circleViewAm.init(attrs, radius, circleSeparation / CIRCLE_STROKE_WIDTH_FACTOR, listToDisplay.filter { it.hour <= 11 }
-				, circleNumberUnit)
+			, circleNumberUnit)
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
 		centralTextStatusView.init(attrs, listToDisplay, currentDay)
@@ -221,52 +168,11 @@ class HeatingStatusLayout : FrameLayout {
 	}
 
 	private fun setProperDataSource(invokedByValueChange: Boolean) {
-
-		val (statusDeviceProgressRadio: RadioButton, statusDeviceSyncedRadio: RadioButton, statusRequestRadio: RadioButton)
-				= updateStatusRadioVisibility(invokedByValueChange)
-
-		if (statusDeviceProgressRadio.isChecked || statusDeviceSyncedRadio.isChecked) {
-			statusDeviceItemList?.diffListMap?.get(currentDay)?.let {
-				listToDisplay = it
-			}
-		} else if (statusRequestRadio.isChecked) {
-			statusRequestLocalItemList?.diffListMap?.get(currentDay)?.let {
-				listToDisplay = it
-			}
-		} else {
-			throw IllegalStateException("Unexpected state of status radio group!")
+		statusRequestLocalItemList?.diffListMap?.get(currentDay)?.let {
+			listToDisplay = it
 		}
+
 	}
-
-	private fun updateStatusRadioVisibility(invokedByValueChange: Boolean): Triple<RadioButton, RadioButton, RadioButton> {
-		val statusDeviceProgressRadio: RadioButton = findViewById(R.id.deviceStatusProgress)
-		val statusDeviceSyncedRadio: RadioButton = findViewById(R.id.deviceStatusSynced)
-		val statusRequestRadio: RadioButton = findViewById(R.id.requestStatus)
-
-		if (compareLists(statusRequestLocalItemList?.diffListMap?.get(currentDay) ?: emptyList(),
-						statusDeviceItemList?.diffListMap?.get(currentDay) ?: emptyList()) == 0) {
-			statusDeviceProgressRadio.visibility = View.GONE
-			statusRequestRadio.visibility = View.GONE
-			statusDeviceSyncedRadio.visibility = View.VISIBLE
-			statusDeviceSyncedRadio.isChecked = true
-		} else {
-			statusDeviceProgressRadio.visibility = View.VISIBLE
-			statusRequestRadio.visibility = View.VISIBLE
-			statusDeviceSyncedRadio.visibility = View.GONE
-
-			if (invokedByValueChange) {
-				statusRequestRadio.isChecked = true
-				statusDeviceProgressRadio.isChecked = false
-				statusDeviceSyncedRadio.isChecked = false
-			} else if (!statusDeviceProgressRadio.isChecked &&
-					!statusDeviceSyncedRadio.isChecked &&
-					!statusRequestRadio.isChecked) {
-				statusRequestRadio.isChecked = true //Default option
-			}
-		}
-		return Triple(statusDeviceProgressRadio, statusDeviceSyncedRadio, statusRequestRadio)
-	}
-
 
 	private fun showViews() {
 		circleViewPm.showView()

@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData
 import cz.koto.kotiheating.model.HeatingCache
 import cz.koto.kotiheating.model.entity.HeatingDeviceStatus
 import cz.koto.kotiheating.model.entity.HeatingSchedule
-import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.kotiheating.model.rest.HeatingStatusApi
 import cz.koto.ktools.NetworkBoundResource
 import cz.koto.ktools.ResourceLiveData
@@ -19,7 +18,7 @@ class HeatingStatusLiveData : ResourceLiveData<HeatingDeviceStatus>() {
 		setupCached(object : NetworkBoundResource.Callback<HeatingDeviceStatus> {
 			override fun saveCallResult(item: HeatingDeviceStatus) {
 				cache.putStatus(item)
-				cache.putSchedule(HeatingSchedule(ScheduleType.DEVICE, item.deviceId, item.timetable, true), true)
+				cache.putSchedule(HeatingSchedule(item.deviceId, item.timetableServer, true), true)
 			}
 
 			override fun shouldFetch(dataFromCache: HeatingDeviceStatus?) = true

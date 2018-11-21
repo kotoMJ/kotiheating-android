@@ -3,10 +3,8 @@ package cz.koto.kotiheating.model.db
 import android.arch.persistence.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.ktools.inject
 import java.util.Date
-import kotlin.collections.HashMap
 
 class Converters {
 
@@ -30,16 +28,6 @@ class Converters {
 	@TypeConverter
 	fun stringToMap(json: String?): Map<String, Double>? {
 		return gson.fromJson(json, HashMap<String, Double>().javaClass)
-	}
-
-	@TypeConverter
-	fun scheduleTypeToString(scheduleType: ScheduleType?): String? {
-		return scheduleType?.toString()
-	}
-
-	@TypeConverter
-	fun stringToScheduleType(string: String?): ScheduleType? {
-		return ScheduleType.fromString(string)
 	}
 
 	@TypeConverter

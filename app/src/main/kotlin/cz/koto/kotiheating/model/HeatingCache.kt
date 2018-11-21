@@ -6,14 +6,11 @@ import cz.koto.kotiheating.model.db.HeatingScheduleDao
 import cz.koto.kotiheating.model.db.HeatingStatusDao
 import cz.koto.kotiheating.model.entity.HeatingDeviceStatus
 import cz.koto.kotiheating.model.entity.HeatingSchedule
-import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.ktools.inject
-
 
 class HeatingCache {
 	private val statusDao by inject<HeatingStatusDao>()
 	private val scheduleDao by inject<HeatingScheduleDao>()
-
 
 	fun getStatus(deviceId: String): LiveData<HeatingDeviceStatus> {
 		val fromDb = statusDao.getHeatingStatus(deviceId)
@@ -26,15 +23,15 @@ class HeatingCache {
 		statusDao.putHeatingStatus(heatingDeviceStatus)
 	}
 
-	fun getSchedule(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): LiveData<HeatingSchedule>? {
-		val fromDb = scheduleDao.getHeatingSchedule(deviceId, scheduleType, remoteCopyOnly)
-		logk("Reading schedule $scheduleType remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb.value}")
+	fun getSchedule(deviceId: String, remoteCopyOnly: Boolean): LiveData<HeatingSchedule>? {
+		val fromDb = scheduleDao.getHeatingSchedule(deviceId, remoteCopyOnly)
+		logk("Reading schedule remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb.value}")
 		return fromDb
 	}
 
-	fun getScheduleX(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): HeatingSchedule? {
-		val fromDb = scheduleDao.getHeatingScheduleX(deviceId, scheduleType, remoteCopyOnly)
-		logk("Reading schedule $scheduleType remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb} ")
+	fun getScheduleX(deviceId: String, remoteCopyOnly: Boolean): HeatingSchedule? {
+		val fromDb = scheduleDao.getHeatingScheduleX(deviceId, remoteCopyOnly)
+		logk("Reading schedule remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb} ")
 
 		return fromDb
 	}
@@ -45,10 +42,9 @@ class HeatingCache {
 		scheduleDao.putHeatingSchedule(heatingSchedule)
 	}
 
-	fun removeSchedule(scheduleType: ScheduleType) {
-		logk("Removing schedule for all device id's and scheduleType=$scheduleType from db!")
-		scheduleDao.deleteHeatingSchedule(scheduleType)
+	fun removeSchedule() {
+		logk("Removing schedule for all device id's from db!")
+		scheduleDao.deleteHeatingScheduleAllDevices()
 	}
-
 
 }

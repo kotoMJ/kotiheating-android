@@ -21,8 +21,9 @@ import cz.koto.ktools.inject
 import cz.koto.ktools.sharedPrefs
 import cz.koto.ktools.string
 import cz.koto.ktools.stringSet
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -86,7 +87,7 @@ class UserRepository : BaseRepository() {
 			val completedTask = GoogleSignIn.getSignedInAccountFromIntent(signInGoogleResultIntent)
 			val account = completedTask.getResult(ApiException::class.java)
 			googleSignInAccountError.set("")
-			launch(UI) {
+			GlobalScope.launch(Dispatchers.Main) {
 				try {
 					val heatingAuth = heatingApi.authorizeGoogleUser(account.idToken)
 					heatingAuth?.let {

@@ -7,7 +7,6 @@ import cz.koto.kotiheating.BuildConfig
 import cz.koto.kotiheating.model.entity.HeatingSchedule
 import cz.koto.kotiheating.model.entity.HeatingScheduleResult
 import cz.koto.kotiheating.model.entity.HeatingScheduleSetRequest
-import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.ktools.Resource
 import cz.koto.ktools.getRetrofit
 import cz.koto.ktools.inject
@@ -28,11 +27,8 @@ class HeatingScheduleApi {
 					customInterceptors = *arrayOf(headerRequestInterceptor)).create(HeatingRouter::class.java)
 		}
 
-	fun getHeatingSchedule(scheduleType: ScheduleType, deviceId: String): LiveData<Resource<HeatingSchedule>> {
-		when (scheduleType) {
-			ScheduleType.REQUEST, ScheduleType.DEVICE -> return api.getHeatingScheduleLive(deviceId, scheduleType).mapResource { it?.heatingSchedule }
-			else -> throw IllegalStateException("Unsupported network call for scheduleType=$scheduleType")
-		}
+	fun getHeatingSchedule(deviceId: String): LiveData<Resource<HeatingSchedule>> {
+		return api.getHeatingScheduleLive(deviceId).mapResource { it?.heatingSchedule }
 	}
 
 	suspend fun setHeatingSchedule(timeTable: MutableList<MutableList<Int>>, deviceId: String): HeatingScheduleResult? {

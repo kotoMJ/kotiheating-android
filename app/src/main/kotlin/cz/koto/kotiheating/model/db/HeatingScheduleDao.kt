@@ -6,7 +6,6 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy.REPLACE
 import android.arch.persistence.room.Query
 import cz.koto.kotiheating.model.entity.HeatingSchedule
-import cz.koto.kotiheating.model.entity.ScheduleType
 
 @Dao
 interface HeatingScheduleDao {
@@ -17,15 +16,15 @@ interface HeatingScheduleDao {
 	@Query("SELECT * FROM heatingSchedule")
 	fun getHeatingScheduleAll(): LiveData<HeatingSchedule>
 
-	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND scheduleType = :scheduleType AND remoteCopy = :remoteCopyOnly")
-	fun getHeatingScheduleX(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): HeatingSchedule
+	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND remoteCopy = :remoteCopyOnly")
+	fun getHeatingScheduleX(deviceId: String, remoteCopyOnly: Boolean): HeatingSchedule
 
-	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND scheduleType = :scheduleType AND remoteCopy = :remoteCopyOnly")
-	fun getHeatingSchedule(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): LiveData<HeatingSchedule>
+	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND remoteCopy = :remoteCopyOnly")
+	fun getHeatingSchedule(deviceId: String, remoteCopyOnly: Boolean): LiveData<HeatingSchedule>
 
-	@Query("DELETE FROM heatingSchedule WHERE deviceId = :deviceId AND scheduleType = :scheduleType")
-	fun deleteHeatingSchedule(deviceId: String, scheduleType: ScheduleType): Int
+	@Query("DELETE FROM heatingSchedule WHERE deviceId = :deviceId")
+	fun deleteHeatingSchedule(deviceId: String): Int
 
-	@Query("DELETE FROM heatingSchedule WHERE scheduleType = :scheduleType")
-	fun deleteHeatingSchedule(scheduleType: ScheduleType): Int
+	@Query("DELETE FROM heatingSchedule")
+	fun deleteHeatingScheduleAllDevices(): Int
 }

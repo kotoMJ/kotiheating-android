@@ -4,10 +4,10 @@ import cz.koto.kotiheating.model.HeatingCache
 import cz.koto.kotiheating.model.entity.HeatingSchedule
 import cz.koto.kotiheating.model.entity.MockHeatingScheduleLiveData
 import cz.koto.kotiheating.model.entity.MockHeatingStatusLiveData
-import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.ktools.inject
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 class HeatingRepository {
 
@@ -19,16 +19,16 @@ class HeatingRepository {
 		HeatingStatusLiveData().apply { refresh(deviceId) }
 	}
 
-	fun getSchedule(deviceId: String?, scheduleType: ScheduleType) = if (deviceId == null) {
-		MockHeatingScheduleLiveData(scheduleType, "0")
+	fun getSchedule(deviceId: String?) = if (deviceId == null) {
+		MockHeatingScheduleLiveData("0")
 	} else {
-		HeatingScheduleLiveData().apply { refresh(deviceId, scheduleType) }
+		HeatingScheduleLiveData().apply { refresh(deviceId) }
 	}
 
-	fun hasLocalScheduleChanges(deviceId: String, scheduleType: ScheduleType): Boolean {
+	fun hasLocalScheduleChanges(deviceId: String): Boolean {
 
-		val remote = cache.getScheduleX(deviceId, scheduleType, true)?.timetable ?: mutableListOf()
-		val local = cache.getScheduleX(deviceId, scheduleType, false)?.timetable ?: mutableListOf()
+		val remote = cache.getScheduleX(deviceId, true)?.timetable ?: mutableListOf()
+		val local = cache.getScheduleX(deviceId, false)?.timetable ?: mutableListOf()
 		remote.forEachIndexed { index, remoteItem ->
 			if (remoteItem.zip(local[index]) { a, b -> a.compareTo(b) != 0 }.contains(true)) return true
 		}
@@ -37,7 +37,7 @@ class HeatingRepository {
 
 	suspend fun updateRemoteSchedule(schedule: HeatingSchedule) {
 
-		val query = async(CommonPool) {
+		val query = GlobalScope.async(Dispatchers.Default) {
 			// Async stuff
 			cache.putSchedule(schedule, true)
 		}
@@ -47,7 +47,7 @@ class HeatingRepository {
 
 	suspend fun updateLocalSchedule(schedule: HeatingSchedule) {
 
-		val query = async(CommonPool) {
+		val query = GlobalScope.async(Dispatchers.Default) {
 			// Async stuff
 			cache.putSchedule(schedule, false)
 		}
@@ -55,10 +55,10 @@ class HeatingRepository {
 		query.await()
 	}
 
-	suspend fun removeSchedule(scheduleType: ScheduleType) {
-		val query = async(CommonPool) {
+	suspend fun removeSchedule() {
+		val query = GlobalScope.async(Dispatchers.Default) {
 			// Async stuff
-			cache.removeSchedule(scheduleType)
+			cache.removeSchedule()
 		}
 
 		query.await()

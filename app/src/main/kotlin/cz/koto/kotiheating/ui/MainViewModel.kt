@@ -7,16 +7,15 @@ import common.log.logk
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.model.entity.HeatingSchedule
-import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.kotiheating.model.repo.HeatingRepository
 import cz.koto.kotiheating.model.repo.UserRepository
 import cz.koto.kotiheating.model.rest.HeatingScheduleApi
 import cz.koto.ktools.DiffObservableLiveHeatingSchedule
 import cz.koto.ktools.inject
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
@@ -30,8 +29,7 @@ class MainViewModel : BaseViewModel() {
 	val itemBinding = ItemBinding.of<StatusItem>(BR.item, R.layout.item_heating)
 			.bindExtra(BR.viewModel, this)
 
-
-	var statusDeviceList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+	//var statusDeviceList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
 	var statusRequestList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
 
 	private val scheduleApi by inject<HeatingScheduleApi>()
@@ -39,22 +37,22 @@ class MainViewModel : BaseViewModel() {
 	init {
 
 		userRepository.checkGoogleAccounts()
-		statusRequestList = DiffObservableLiveHeatingSchedule(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST), object : DiffObservableList.Callback<StatusItem> {
+		statusRequestList = DiffObservableLiveHeatingSchedule(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull()), object : DiffObservableList.Callback<StatusItem> {
 			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
 			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
 		})
-		statusDeviceList = DiffObservableLiveHeatingSchedule(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE), object : DiffObservableList.Callback<StatusItem> {
-			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
-			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
-		})
+//		statusDeviceList = DiffObservableLiveHeatingSchedule(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE), object : DiffObservableList.Callback<StatusItem> {
+//			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
+//			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
+//		})
 	}
 
 	fun refreshDataFromServer() {
-		launch(UI) {
-			heatingRepository.removeSchedule(ScheduleType.REQUEST)
+		GlobalScope.launch(Dispatchers.Main) {
+			heatingRepository.removeSchedule()
 		}
-		statusDeviceList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE))
-		statusRequestList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST))
+		//statusDeviceList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE))
+		statusRequestList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull()))
 	}
 
 	fun updateRequestListWithServerResponse(serverResponseSchedule: HeatingSchedule) {
@@ -68,8 +66,7 @@ class MainViewModel : BaseViewModel() {
 			}
 		}
 
-		launch(UI) {
-			serverResponseSchedule.scheduleType = ScheduleType.REQUEST
+		GlobalScope.launch(Dispatchers.Main) {
 			heatingRepository.updateRemoteSchedule(serverResponseSchedule)
 			heatingRepository.updateLocalSchedule(serverResponseSchedule)
 		}
@@ -102,7 +99,7 @@ class MainViewModel : BaseViewModel() {
 			statusRequestList.setHourlyTemperatureTo(day, hour, newTemperature)
 		}
 
-		launch(UI) {
+		GlobalScope.launch(Dispatchers.Main) {
 			statusRequestList.value?.data?.let {
 				heatingRepository.updateLocalSchedule(it)
 			}
@@ -116,7 +113,7 @@ class MainViewModel : BaseViewModel() {
 			statusRequestList.setHourlyTemperatureTo(day, hour, newTemperature)
 		}
 
-		launch(UI) {
+		GlobalScope.launch(Dispatchers.Main) {
 			statusRequestList.value?.data?.let {
 				heatingRepository.updateLocalSchedule(it)
 			}
@@ -125,7 +122,7 @@ class MainViewModel : BaseViewModel() {
 
 	fun setLocalDailyTemperatureTo(day: Int, temp: Int) {
 		statusRequestList.setDailyTemperatureTo(day, temp)
-		launch(UI) {
+		GlobalScope.launch(Dispatchers.Main) {
 			statusRequestList.value?.data?.let {
 				heatingRepository.updateLocalSchedule(it)
 			}
@@ -138,7 +135,7 @@ class MainViewModel : BaseViewModel() {
 		return if (keySet == null) {
 			false
 		} else {
-			heatingRepository.hasLocalScheduleChanges(keySet, ScheduleType.REQUEST)
+			heatingRepository.hasLocalScheduleChanges(keySet)
 		}
 
 	}
@@ -169,7 +166,7 @@ class MainViewModel : BaseViewModel() {
 			heatingSet.let { heatingId ->
 				try {
 					logk("Sending schedule request for heatingId:${heatingId}")
-					return runBlocking(CommonPool) {
+					return runBlocking(Dispatchers.Default) {
 						scheduleApi.setHeatingSchedule(timeTable, heatingId)?.heatingSchedule
 					}
 				} catch (e: Throwable) {

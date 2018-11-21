@@ -2,7 +2,7 @@ package cz.koto.kotiheating.model.entity
 
 import android.arch.persistence.room.Entity
 import com.google.gson.annotations.SerializedName
-import java.util.*
+import java.util.Date
 
 data class HeatingStatusResult(
 		@SerializedName("result") val heatingDeviceStatus: HeatingDeviceStatus
@@ -17,6 +17,7 @@ data class HeatingDeviceStatus(
 		@SerializedName("day") val deviceDay: String,
 		@SerializedName("minute") val deviceMinute: Int,
 		@SerializedName("hour") val deviceHour: Int,
-		@SerializedName("timetable") val timetable: MutableList<MutableList<Int>>,
+	@SerializedName("timetableDevice") val timetableDevice: MutableList<MutableList<Int>>,
+	@SerializedName("timetableServer") val timetableServer: MutableList<MutableList<Int>>,
 		@SerializedName("heatingId") val deviceId: String
 )

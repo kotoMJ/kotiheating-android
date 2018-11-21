@@ -14,12 +14,6 @@ kapt {
     correctErrorTypes = true // avoid unknown type replacing with NonExistentClass
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
 // Last Git tag name on current branch
 final GIT_TAG_NAME = "git describe --tags --abbrev=0".execute([], project.rootDir).text.trim()
 
