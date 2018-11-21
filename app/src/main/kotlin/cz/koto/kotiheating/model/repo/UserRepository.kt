@@ -38,8 +38,8 @@ class UserRepository : BaseRepository() {
 		get() {
 			return if (field.isEmpty()) {
 				//field = SecureWrapper.instance.decrypt(application, heatingSetPref ?: emptySet())
-				//field
-				heatingSetPref ?: emptySet()
+				field = heatingSetPref ?: emptySet()
+				field
 			} else field
 		}
 		set(value) {

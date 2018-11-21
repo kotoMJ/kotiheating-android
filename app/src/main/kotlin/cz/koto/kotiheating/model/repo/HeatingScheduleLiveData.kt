@@ -1,6 +1,7 @@
 package cz.koto.kotiheating.model.repo
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import cz.koto.kotiheating.model.HeatingCache
 import cz.koto.kotiheating.model.entity.HeatingSchedule
 import cz.koto.kotiheating.model.entity.ScheduleType
@@ -9,7 +10,6 @@ import cz.koto.ktools.NetworkBoundResource
 import cz.koto.ktools.Resource
 import cz.koto.ktools.ResourceLiveData
 import cz.koto.ktools.inject
-
 
 class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 
@@ -20,10 +20,10 @@ class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 		setupCached(object : NetworkBoundResource.Callback<HeatingSchedule> {
 			override fun saveCallResult(item: HeatingSchedule) {
 				item.scheduleType = scheduleType
-				if (scheduleType==ScheduleType.REQUEST){
+				if (scheduleType == ScheduleType.REQUEST) {
 					cache.putSchedule(item, true)
 					cache.putSchedule(item, false)
-				}else{
+				} else {
 					cache.putSchedule(item, true)
 				}
 
@@ -37,7 +37,7 @@ class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 			}
 
 			override fun loadFromDb(remoteCopyOnly: Boolean): LiveData<HeatingSchedule> {
-				return cache.getSchedule(deviceId, scheduleType, remoteCopyOnly)
+				return cache.getSchedule(deviceId, scheduleType, remoteCopyOnly) ?: MutableLiveData<HeatingSchedule>()
 			}
 
 			override fun createNetworkCall(): LiveData<Resource<HeatingSchedule>> {

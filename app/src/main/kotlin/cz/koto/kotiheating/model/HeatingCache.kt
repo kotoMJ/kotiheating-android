@@ -26,15 +26,16 @@ class HeatingCache {
 		statusDao.putHeatingStatus(heatingDeviceStatus)
 	}
 
-	fun getSchedule(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): LiveData<HeatingSchedule> {
+	fun getSchedule(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): LiveData<HeatingSchedule>? {
 		val fromDb = scheduleDao.getHeatingSchedule(deviceId, scheduleType, remoteCopyOnly)
-		logk("Reading schedule $scheduleType remoteOnly=$remoteCopyOnly from db: ${fromDb.value}")
+		logk("Reading schedule $scheduleType remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb.value}")
 		return fromDb
 	}
 
-	fun getScheduleX(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): HeatingSchedule {
+	fun getScheduleX(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): HeatingSchedule? {
 		val fromDb = scheduleDao.getHeatingScheduleX(deviceId, scheduleType, remoteCopyOnly)
-		logk("Reading schedule $scheduleType remoteOnly=$remoteCopyOnly from db: ${fromDb}")
+		logk("Reading schedule $scheduleType remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb} ")
+
 		return fromDb
 	}
 
