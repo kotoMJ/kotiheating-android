@@ -181,7 +181,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit-mock:$retrofit_version") {
         exclude group: 'com.squareup.retrofit2', module: 'retrofit'
     }
-    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
 
     // leakcanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
