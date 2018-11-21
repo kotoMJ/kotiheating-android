@@ -9,9 +9,9 @@ import cz.koto.kotiheating.model.repo.HeatingRepository
 import cz.koto.kotiheating.model.repo.UserRepository
 import cz.koto.kotiheating.model.rest.HeaderRequestInterceptor
 import cz.koto.kotiheating.model.rest.HeatingScheduleApi
+import cz.koto.kotiheating.model.rest.HeatingStatusApi
 import cz.koto.kotiheating.model.rest.HeatingUserApi
 import cz.koto.ktools.provideSingleton
-
 
 object DIModule {
 	fun initialize(application: Application) {
@@ -23,10 +23,11 @@ object DIModule {
 		provideSingleton { HeatingRepository() }
 		provideSingleton { HeaderRequestInterceptor() }
 		provideSingleton { HeatingScheduleApi() }
+		provideSingleton { HeatingStatusApi() }
 
 		val database = Room.databaseBuilder(application, HeatingDatabase::class.java, "heating-database").allowMainThreadQueries().build()
-		provideSingleton { database.scheduleDao() }
 		provideSingleton { database.statusDao() }
+//		provideSingleton { database.localChangeDao() }
 	}
 }
 

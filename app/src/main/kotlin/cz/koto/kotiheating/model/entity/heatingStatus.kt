@@ -21,3 +21,9 @@ data class HeatingDeviceStatus(
 	@SerializedName("timetableServer") val timetableServer: MutableList<MutableList<Int>>,
 	@SerializedName("heatingId") val deviceId: String
 )
+
+@Entity(tableName = "localChanges", primaryKeys = ["deviceId"])
+data class HeatingLocalChange(
+	val deviceId: String,
+	val timetable: MutableList<MutableList<Int>> = mutableListOf()
+)

@@ -2,7 +2,6 @@ package cz.koto.kotiheating.model.rest
 
 import android.arch.lifecycle.LiveData
 import cz.koto.kotiheating.model.entity.HeatingAuthResult
-import cz.koto.kotiheating.model.entity.HeatingScheduleResult
 import cz.koto.kotiheating.model.entity.HeatingScheduleSetRequest
 import cz.koto.kotiheating.model.entity.HeatingStatusResult
 import cz.koto.ktools.Resource
@@ -19,11 +18,11 @@ interface HeatingRouter {
 	@GET("kotinode/heating/status/{deviceId}")
 	fun getHeatingStatusLive(@Path("deviceId") deviceId: String): LiveData<Resource<HeatingStatusResult>>
 
-	@GET("kotinode/heating/schedule/{deviceId}")
-	fun getHeatingScheduleLive(@Path("deviceId") deviceId: String): LiveData<Resource<HeatingScheduleResult>>
+//	@GET("kotinode/heating/schedule/{deviceId}")
+//	fun getHeatingScheduleLive(@Path("deviceId") deviceId: String): LiveData<Resource<HeatingScheduleResult>>
 
 	@POST("kotinode/heating/schedule/{deviceId}")
-	fun setHeatingSchedule(@Body heatingScheduleSetRequest: HeatingScheduleSetRequest, @Path("deviceId") deviceId: String): Deferred<HeatingScheduleResult>
+	fun setHeatingSchedule(@Body heatingScheduleSetRequest: HeatingScheduleSetRequest, @Path("deviceId") deviceId: String): Deferred<HeatingStatusResult>
 
 	@FormUrlEncoded
 	@POST("kotinode/auth/google")

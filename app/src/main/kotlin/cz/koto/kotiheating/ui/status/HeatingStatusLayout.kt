@@ -8,9 +8,9 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.RadioButton
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.model.entity.HeatingSchedule
+import cz.koto.kotiheating.model.entity.HeatingDeviceStatus
 import cz.koto.kotiheating.ui.StatusItem
-import cz.koto.ktools.DiffObservableLiveHeatingSchedule
+import cz.koto.ktools.DiffObservableLiveHeatingStatus
 
 class HeatingStatusLayout : FrameLayout {
 
@@ -33,13 +33,7 @@ class HeatingStatusLayout : FrameLayout {
 	private lateinit var circleViewAm: CircleStatusView
 	private lateinit var centralTextStatusView: TextStatusView
 
-//	var statusDeviceItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
-//		set(value) {
-//			field = value
-//			showLayout(true)
-//		}
-
-	var statusRequestLocalItemList: DiffObservableLiveHeatingSchedule<HeatingSchedule>? = null
+	var statusRequestLocalItemList: DiffObservableLiveHeatingStatus<HeatingDeviceStatus>? = null
 		set(value) {
 			field = value
 			showLayout(true)
