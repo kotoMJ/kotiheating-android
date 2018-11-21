@@ -12,7 +12,7 @@ class HeatingCache {
 	private val statusDao by inject<HeatingStatusDao>()
 	private val scheduleDao by inject<HeatingScheduleDao>()
 
-	fun getStatus(deviceId: String): LiveData<HeatingDeviceStatus> {
+	fun getStatus(deviceId: String): LiveData<HeatingDeviceStatus>? {
 		val fromDb = statusDao.getHeatingStatus(deviceId)
 		logk("Reading status from db: ${fromDb.value}")
 		return fromDb
@@ -23,22 +23,21 @@ class HeatingCache {
 		statusDao.putHeatingStatus(heatingDeviceStatus)
 	}
 
-	fun getSchedule(deviceId: String, remoteCopyOnly: Boolean): LiveData<HeatingSchedule>? {
-		val fromDb = scheduleDao.getHeatingSchedule(deviceId, remoteCopyOnly)
-		logk("Reading schedule remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb.value}")
+	fun getSchedule(deviceId: String): LiveData<HeatingSchedule>? {
+		val fromDb = scheduleDao.getHeatingSchedule(deviceId)
+		logk("Reading schedule for deviceId=[${deviceId}] with value ${fromDb.value}")
 		return fromDb
 	}
 
-	fun getScheduleX(deviceId: String, remoteCopyOnly: Boolean): HeatingSchedule? {
-		val fromDb = scheduleDao.getHeatingScheduleX(deviceId, remoteCopyOnly)
-		logk("Reading schedule remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb} ")
+	fun getScheduleX(deviceId: String): HeatingSchedule? {
+		val fromDb = scheduleDao.getHeatingScheduleX(deviceId)
+		logk("Reading schedule for deviceId=[$deviceId] with value ${fromDb} ")
 
 		return fromDb
 	}
 
-	fun putSchedule(heatingSchedule: HeatingSchedule, remoteCopyOnly: Boolean) {
+	fun putSchedule(heatingSchedule: HeatingSchedule) {
 		logk("Saving heating schedule: $heatingSchedule")
-		heatingSchedule.remoteCopy = remoteCopyOnly
 		scheduleDao.putHeatingSchedule(heatingSchedule)
 	}
 

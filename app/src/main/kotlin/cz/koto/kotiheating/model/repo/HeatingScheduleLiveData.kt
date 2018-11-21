@@ -18,8 +18,7 @@ class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 	fun refresh(deviceId: String) {
 		setupCached(object : NetworkBoundResource.Callback<HeatingSchedule> {
 			override fun saveCallResult(item: HeatingSchedule) {
-				cache.putSchedule(item, true)
-				cache.putSchedule(item, false)
+				cache.putSchedule(item)
 
 			}
 
@@ -27,8 +26,8 @@ class HeatingScheduleLiveData : ResourceLiveData<HeatingSchedule>() {
 				return dataFromCache == null //Init local with remote
 			}
 
-			override fun loadFromDb(remoteCopyOnly: Boolean): LiveData<HeatingSchedule> {
-				return cache.getSchedule(deviceId, remoteCopyOnly) ?: MutableLiveData<HeatingSchedule>()
+			override fun loadFromDb(): LiveData<HeatingSchedule> {
+				return cache.getSchedule(deviceId) ?: MutableLiveData<HeatingSchedule>()
 			}
 
 			override fun createNetworkCall(): LiveData<Resource<HeatingSchedule>> {

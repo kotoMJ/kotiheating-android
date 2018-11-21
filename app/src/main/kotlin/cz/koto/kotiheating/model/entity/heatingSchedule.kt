@@ -7,14 +7,13 @@ data class HeatingScheduleResult(
 		@SerializedName("result") val heatingSchedule: HeatingSchedule
 )
 
-@Entity(tableName = "heatingSchedule", primaryKeys = ["deviceId", "remoteCopy"])
+@Entity(tableName = "heatingSchedule", primaryKeys = ["deviceId"])
 data class HeatingSchedule(
 		@SerializedName("heatingId") var deviceId: String,
-		@SerializedName("timetable") var timetable: MutableList<MutableList<Int>>,
-		var remoteCopy: Boolean
+	@SerializedName("timetable") var timetable: MutableList<MutableList<Int>>
 ) {
 
-	constructor() : this("", mutableListOf(), false)
+	constructor() : this("", mutableListOf())
 }
 
 data class HeatingScheduleSetRequest(@SerializedName("timetable") var timetable: MutableList<MutableList<Int>>)

@@ -29,7 +29,6 @@ class MainViewModel : BaseViewModel() {
 	val itemBinding = ItemBinding.of<StatusItem>(BR.item, R.layout.item_heating)
 			.bindExtra(BR.viewModel, this)
 
-	//var statusDeviceList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
 	var statusRequestList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
 
 	private val scheduleApi by inject<HeatingScheduleApi>()
@@ -41,17 +40,12 @@ class MainViewModel : BaseViewModel() {
 			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
 			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
 		})
-//		statusDeviceList = DiffObservableLiveHeatingSchedule(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE), object : DiffObservableList.Callback<StatusItem> {
-//			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
-//			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
-//		})
 	}
 
 	fun refreshDataFromServer() {
 		GlobalScope.launch(Dispatchers.Main) {
 			heatingRepository.removeSchedule()
 		}
-		//statusDeviceList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE))
 		statusRequestList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull()))
 	}
 
@@ -67,28 +61,13 @@ class MainViewModel : BaseViewModel() {
 		}
 
 		GlobalScope.launch(Dispatchers.Main) {
-			heatingRepository.updateRemoteSchedule(serverResponseSchedule)
 			heatingRepository.updateLocalSchedule(serverResponseSchedule)
 		}
 
 	}
 
-	fun revertLocalChanges(day: ObservableInt) {
+	fun revertLocalChanges() {
 		refreshDataFromServer()
-//		statusRequestList.value = statusRequestList.value
-//		statusDeviceList.diffListMap[day.get()]?.forEachIndexed { hour, item ->
-//			item.apply {
-//				statusRequestList.diffListMap[day.get()]?.let { daySchedule ->
-//					item.temperature = daySchedule[hour].temperature
-//				}
-//			}
-//		}
-//		launch(UI) {
-//			statusRequestList.value?.data?.let {
-//				heatingRepository.updateSchedule(it)
-//			}
-//
-//		}
 	}
 
 
@@ -165,7 +144,7 @@ class MainViewModel : BaseViewModel() {
 					?: throw IllegalStateException("No heatingSet assigned to the user!")
 			heatingSet.let { heatingId ->
 				try {
-					logk("Sending schedule request for heatingId:${heatingId}")
+					logk("Sending schedule request for heatingId:$heatingId")
 					return runBlocking(Dispatchers.Default) {
 						scheduleApi.setHeatingSchedule(timeTable, heatingId)?.heatingSchedule
 					}

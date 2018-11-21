@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 				return true
 			}
 			R.id.action_clear_all -> {
-				vmb.viewModel.revertLocalChanges(day = vmb.viewModel.selectedDay)
+				vmb.viewModel.revertLocalChanges()
 				vmb.binding.dailyScheduleRecycler.adapter?.notifyDataSetChanged()
 				updateFab()
 				return true
@@ -203,7 +203,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	}
 
 	private fun updateFab() {
-
 
 		if (vmb.binding.viewModel?.differLocalRequestFromRemote() == true) {
 			vmb.binding.fabSend.show()

@@ -27,29 +27,19 @@ class HeatingRepository {
 
 	fun hasLocalScheduleChanges(deviceId: String): Boolean {
 
-		val remote = cache.getScheduleX(deviceId, true)?.timetable ?: mutableListOf()
-		val local = cache.getScheduleX(deviceId, false)?.timetable ?: mutableListOf()
+		val remote = cache.getStatus(deviceId)?.value?.timetableServer ?: mutableListOf()
+		val local = cache.getScheduleX(deviceId)?.timetable ?: mutableListOf()
 		remote.forEachIndexed { index, remoteItem ->
 			if (remoteItem.zip(local[index]) { a, b -> a.compareTo(b) != 0 }.contains(true)) return true
 		}
 		return false
 	}
 
-	suspend fun updateRemoteSchedule(schedule: HeatingSchedule) {
-
-		val query = GlobalScope.async(Dispatchers.Default) {
-			// Async stuff
-			cache.putSchedule(schedule, true)
-		}
-
-		query.await()
-	}
-
 	suspend fun updateLocalSchedule(schedule: HeatingSchedule) {
 
 		val query = GlobalScope.async(Dispatchers.Default) {
 			// Async stuff
-			cache.putSchedule(schedule, false)
+			cache.putSchedule(schedule)
 		}
 
 		query.await()

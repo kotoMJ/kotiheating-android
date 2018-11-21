@@ -16,11 +16,11 @@ interface HeatingScheduleDao {
 	@Query("SELECT * FROM heatingSchedule")
 	fun getHeatingScheduleAll(): LiveData<HeatingSchedule>
 
-	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND remoteCopy = :remoteCopyOnly")
-	fun getHeatingScheduleX(deviceId: String, remoteCopyOnly: Boolean): HeatingSchedule
+	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId")
+	fun getHeatingScheduleX(deviceId: String): HeatingSchedule
 
-	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId AND remoteCopy = :remoteCopyOnly")
-	fun getHeatingSchedule(deviceId: String, remoteCopyOnly: Boolean): LiveData<HeatingSchedule>
+	@Query("SELECT * FROM heatingSchedule WHERE deviceId = :deviceId")
+	fun getHeatingSchedule(deviceId: String): LiveData<HeatingSchedule>
 
 	@Query("DELETE FROM heatingSchedule WHERE deviceId = :deviceId")
 	fun deleteHeatingSchedule(deviceId: String): Int

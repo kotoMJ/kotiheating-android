@@ -18,12 +18,12 @@ class HeatingStatusLiveData : ResourceLiveData<HeatingDeviceStatus>() {
 		setupCached(object : NetworkBoundResource.Callback<HeatingDeviceStatus> {
 			override fun saveCallResult(item: HeatingDeviceStatus) {
 				cache.putStatus(item)
-				cache.putSchedule(HeatingSchedule(item.deviceId, item.timetableServer, true), true)
+				cache.putSchedule(HeatingSchedule(item.deviceId, item.timetableServer))
 			}
 
 			override fun shouldFetch(dataFromCache: HeatingDeviceStatus?) = true
 
-			override fun loadFromDb(remoteCopyOnly: Boolean): LiveData<HeatingDeviceStatus> {
+			override fun loadFromDb(): LiveData<HeatingDeviceStatus>? {
 				return cache.getStatus(deviceId)
 			}
 
