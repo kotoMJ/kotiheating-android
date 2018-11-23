@@ -75,7 +75,7 @@ class MockHeatingStatusLiveData(deviceId: String) : LiveData<Resource<HeatingDev
 	init {
 		value = Resource(Resource.Status.SUCCESS,
 			HeatingDeviceStatus(Date(), 220, 2, "MO", 11, 8,
-				getMockTimeTableWeek(), getMockTimeTableWeek(), deviceId))
+				getMockTimeTableWeek(), getMockTimeTableWeek(), getMockTimeTableWeek(), deviceId))
 	}
 }
 

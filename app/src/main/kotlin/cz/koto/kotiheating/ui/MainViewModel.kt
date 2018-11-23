@@ -46,9 +46,11 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun refreshDataFromServer() {
-		//TODO is this helpuful???
+
 //		GlobalScope.launch(Dispatchers.Main) {
-//			heatingRepository.removeSchedule()
+//			statusRequestList.value?.data?.let {
+//				heatingRepository.removeStatus(it.deviceId)
+//			}
 //		}
 		statusRequestList.connectSource(heatingRepository.getStatus(userRepository.heatingSet.firstOrNull()))
 	}
@@ -140,7 +142,7 @@ class MainViewModel : BaseViewModel() {
 
 	fun sendRequestForSchedule(): HeatingDeviceStatus? {
 		logk("Sending schedule request timetable:${statusRequestList.value?.data?.timetableServer}")
-		statusRequestList.value?.data?.timetableServer?.let { timeTable ->
+		statusRequestList.value?.data?.timetableLocal?.let { timeTable ->
 			val heatingSet = userRepository.heatingSet.firstOrNull()
 				?: throw IllegalStateException("No heatingSet assigned to the user!")
 			heatingSet.let { heatingId ->

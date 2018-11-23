@@ -16,4 +16,6 @@ interface HeatingStatusDao {
 	@Query("SELECT * FROM deviceStatus WHERE deviceId = :deviceId")
 	fun getHeatingStatus(deviceId: String): LiveData<HeatingDeviceStatus>
 
+	@Query("DELETE FROM deviceStatus WHERE deviceId = :deviceId")
+	fun deleteHeatingStatus(deviceId: String): Int
 }

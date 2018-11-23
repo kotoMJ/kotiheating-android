@@ -13,13 +13,24 @@ class HeatingCache {
 
 	fun getStatus(deviceId: String): LiveData<HeatingDeviceStatus>? {
 		val fromDb = statusDao.getHeatingStatus(deviceId)
-		logk("Reading status from db: ${fromDb.value}")
+		logk("Loading status from db: ${fromDb.value}")
 		return fromDb
 	}
 
 	fun putStatus(heatingDeviceStatus: HeatingDeviceStatus) {
-		logk("Saving heating device status: $heatingDeviceStatus")
+		logk("Storing heating device status: $heatingDeviceStatus")
+		heatingDeviceStatus.let {
+			val timetableLocal = it.timetableLocal
+			if (timetableLocal == null || timetableLocal.isEmpty()) {
+				it.timetableLocal = it.timetableServer
+			}
+		}
 		statusDao.putHeatingStatus(heatingDeviceStatus)
+	}
+
+	fun removeSchedule(deviceId: String) {
+		logk("Removing schedule for all device id's from db!")
+		statusDao.deleteHeatingStatus(deviceId)
 	}
 
 //	fun getLocalChange(deviceId: String): LiveData<HeatingLocalChange>? {

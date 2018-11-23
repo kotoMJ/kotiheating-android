@@ -21,7 +21,7 @@ class HeatingRepository {
 	fun hasLocalScheduleChanges(deviceId: String): Boolean {
 
 		val remote = cache.getStatus(deviceId)?.value?.timetableServer ?: mutableListOf()
-		val local = cache.getStatus(deviceId)?.value?.timetableServer ?: mutableListOf()//TODO local
+		val local = cache.getStatus(deviceId)?.value?.timetableLocal ?: mutableListOf()//TODO local
 		remote.forEachIndexed { index, remoteItem ->
 			if (remoteItem.zip(local[index]) { a, b -> a.compareTo(b) != 0 }.contains(true)) return true
 		}
@@ -37,6 +37,16 @@ class HeatingRepository {
 
 		query.await()
 	}
+
+	suspend fun removeStatus(deviceId: String) {
+		val query = GlobalScope.async(Dispatchers.Default) {
+			// Async stuff
+			cache.removeSchedule(deviceId)
+		}
+
+		query.await()
+	}
+
 
 //	suspend fun updateLocalChange(localChange: HeatingLocalChange) {
 //

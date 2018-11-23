@@ -48,6 +48,7 @@ class MainFragment : Fragment(), MainFragmentView {
 	}
 
 	override fun onReloadStatusView() {
+		vmb.viewModel.refreshDataFromServer()
 		vmb.binding.circleProgress.showLayout()
 	}
 

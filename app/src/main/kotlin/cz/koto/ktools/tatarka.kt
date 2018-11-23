@@ -32,7 +32,7 @@ class DiffObservableLiveHeatingStatus<T : HeatingDeviceStatus>(liveData: LiveDat
 
 	fun setHourlyTemperatureTo(setDay: Int, setHour: Int, setTemp: Int) {
 		diffListMap[setDay]?.get(setHour)?.temperature = setTemp
-		value?.data?.timetableServer?.get(setDay)?.set(setHour, setTemp)
+		value?.data?.timetableLocal?.get(setDay)?.set(setHour, setTemp)
 	}
 
 	fun setDailyTemperatureTo(setDay: Int, setTemp: Int) {
@@ -42,20 +42,23 @@ class DiffObservableLiveHeatingStatus<T : HeatingDeviceStatus>(liveData: LiveDat
 			}
 		}
 
-		value?.data.let {
-			it?.timetableServer?.forEachIndexed { day, dayList ->
-				it.timetableServer[day] = mutableListOf(setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp)
+		value?.data?.let {
+			val timetableLocal = it.timetableLocal
+			timetableLocal?.forEachIndexed { day, dayList ->
+				timetableLocal[day] = mutableListOf(setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp)
 			}
+			it.timetableLocal = timetableLocal
 		}
 	}
 
 	fun connectSource(liveData: LiveData<Resource<T>>) {
 
-		if (liveData.value?.data?.timetableServer?.isNotEmpty() == true) {
+		if (liveData.value?.data?.timetableLocal?.isNotEmpty() == true) {
 			value = liveData.value
 			liveData.value?.data.let {
-				it?.timetableServer?.forEachIndexed { day, dayList ->
-					diffListMap[day]?.update(it.timetableServer[day].mapIndexed { index, float ->
+				val timetableLocal = it?.timetableLocal
+				timetableLocal?.forEachIndexed { day, dayList ->
+					diffListMap[day]?.update(timetableLocal[day].mapIndexed { index, float ->
 						StatusItem(float, index)
 					})
 				}
@@ -64,14 +67,15 @@ class DiffObservableLiveHeatingStatus<T : HeatingDeviceStatus>(liveData: LiveDat
 			value = Resource(Resource.Status.FAILURE, null)
 		}
 
-		addSource(liveData, {
+		addSource(liveData) {
 
-			if (it?.data?.timetableServer?.isNotEmpty() == true) {
+			if (it?.data?.timetableLocal?.isNotEmpty() == true) {
 				value = it
 
 				it.data.let {
-					it.timetableServer.forEachIndexed { day, dayList ->
-						diffListMap[day]?.update(it.timetableServer[day].mapIndexed { index, float ->
+					val timetableLocal = it.timetableLocal
+					timetableLocal?.forEachIndexed { day, dayList ->
+						diffListMap[day]?.update(timetableLocal[day].mapIndexed { index, float ->
 							StatusItem(float, index)
 						})
 					}
@@ -80,21 +84,21 @@ class DiffObservableLiveHeatingStatus<T : HeatingDeviceStatus>(liveData: LiveDat
 			} else {
 				value = Resource(Resource.Status.FAILURE, null)
 			}
-		})
+		}
 	}
 }
 
 @Suppress("UNCHECKED_CAST")
 @BindingAdapter(value = ["liveDataItemBinding", "liveDataItems", "liveDataAdapter", "currentDay"], requireAll = false)
 fun <T> setAdapterLiveData(recyclerView: RecyclerView,
-						   liveDataItemBinding: ItemBinding<StatusItem>,
+	liveDataItemBinding: ItemBinding<StatusItem>,
 	liveDataItems: DiffObservableLiveHeatingStatus<HeatingDeviceStatus>,
-						   presetAdapter: BindingRecyclerViewAdapter<StatusItem>?,
-						   currentDay: ObservableInt) {
+	presetAdapter: BindingRecyclerViewAdapter<StatusItem>?,
+	currentDay: ObservableInt) {
 	val oldAdapter = recyclerView.adapter as BindingRecyclerViewAdapter<StatusItem>?
 	val adapter: BindingRecyclerViewAdapter<StatusItem>
 	adapter = presetAdapter ?: (oldAdapter
-			?: BindingRecyclerViewAdapter())
+		?: BindingRecyclerViewAdapter())
 	if (oldAdapter !== adapter) {
 		adapter.itemBinding = liveDataItemBinding
 		adapter.setItems(liveDataItems.diffListMap[currentDay.get()])
