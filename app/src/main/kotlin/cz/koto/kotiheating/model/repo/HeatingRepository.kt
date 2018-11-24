@@ -18,12 +18,11 @@ class HeatingRepository {
 		HeatingStatusLiveData().apply { refresh(deviceId) }
 	}
 
-	fun hasLocalScheduleChanges(deviceId: String): Boolean {
+	fun hasLocalScheduleChanges(localValues: MutableList<MutableList<Int>>?, serverValues: MutableList<MutableList<Int>>): Boolean {
 
-		val remote = cache.getStatus(deviceId)?.value?.timetableServer ?: mutableListOf()
-		val local = cache.getStatus(deviceId)?.value?.timetableLocal ?: mutableListOf()//TODO local
-		remote.forEachIndexed { index, remoteItem ->
-			if (remoteItem.zip(local[index]) { a, b -> a.compareTo(b) != 0 }.contains(true)) return true
+		if (localValues == null) return false
+		serverValues.forEachIndexed { index, remoteItem ->
+			if (remoteItem.zip(localValues[index]) { a, b -> a.compareTo(b) != 0 }.contains(true)) return true
 		}
 		return false
 	}
@@ -46,7 +45,6 @@ class HeatingRepository {
 
 		query.await()
 	}
-
 
 //	suspend fun updateLocalChange(localChange: HeatingLocalChange) {
 //

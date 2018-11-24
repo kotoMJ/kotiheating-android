@@ -114,13 +114,12 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun differLocalRequestFromRemote(): Boolean {
-		val keySet = userRepository.heatingSet.firstOrNull()
-		return if (keySet == null) {
+		val status = statusRequestList.value?.data
+		return if (status == null) {
 			false
 		} else {
-			heatingRepository.hasLocalScheduleChanges(keySet)
+			heatingRepository.hasLocalScheduleChanges(localValues = status.timetableLocal, serverValues = status.timetableServer)
 		}
-
 	}
 
 	@SuppressLint("RestrictedApi")
