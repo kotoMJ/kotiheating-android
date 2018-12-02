@@ -30,7 +30,6 @@ class HeatingRepository {
 	suspend fun updateStatus(schedule: HeatingDeviceStatus) {
 
 		val query = GlobalScope.async(Dispatchers.Default) {
-			// Async stuff
 			cache.putStatus(schedule)
 		}
 
@@ -39,7 +38,6 @@ class HeatingRepository {
 
 	suspend fun removeStatus(deviceId: String) {
 		val query = GlobalScope.async(Dispatchers.Default) {
-			// Async stuff
 			cache.removeSchedule(deviceId)
 		}
 
@@ -49,7 +47,6 @@ class HeatingRepository {
 //	suspend fun updateLocalChange(localChange: HeatingLocalChange) {
 //
 //		val query = GlobalScope.async(Dispatchers.Default) {
-//			// Async stuff
 //			cache.putLocalChange(localChange)
 //		}
 //

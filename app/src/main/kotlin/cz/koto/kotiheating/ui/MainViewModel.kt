@@ -65,6 +65,8 @@ class MainViewModel : BaseViewModel() {
 			}
 		}
 
+		statusRequestList.value?.data?.timetableLocal = statusRequestList.value?.data?.timetableServer
+
 		GlobalScope.launch(Dispatchers.Main) {
 			heatingRepository.updateStatus(serverResponseSchedule)
 		}
@@ -140,7 +142,7 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun sendRequestForSchedule(): HeatingDeviceStatus? {
-		logk("Sending schedule request timetable:${statusRequestList.value?.data?.timetableServer}")
+		logk("Sending schedule request timetable:${statusRequestList.value?.data?.timetableLocal}")
 		statusRequestList.value?.data?.timetableLocal?.let { timeTable ->
 			val heatingSet = userRepository.heatingSet.firstOrNull()
 				?: throw IllegalStateException("No heatingSet assigned to the user!")

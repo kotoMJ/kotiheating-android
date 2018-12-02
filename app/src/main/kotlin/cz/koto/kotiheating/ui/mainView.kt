@@ -198,8 +198,10 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 		if (vmb.binding.viewModel?.differLocalRequestFromRemote() == true) {
 			vmb.binding.fabSend.show()
+			logk(">>>showFab")
 		} else {
 			vmb.binding.fabSend.hide()
+			logk(">>>hideFab")
 		}
 
 	}
