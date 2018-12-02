@@ -15,3 +15,10 @@ fun compareLists(list1: List<Comparable<*>>, list2: List<Comparable<*>>): Int {
 	}
 	return compareValues(list1.size, list2.size)
 }
+
+fun areListsDifferent(localValues: MutableList<MutableList<Int>>, serverValues: MutableList<MutableList<Int>>): Boolean {
+	serverValues.forEachIndexed { index, remoteItem ->
+		if (remoteItem.zip(localValues[index]) { a, b -> a.compareTo(b) != 0 }.contains(true)) return true
+	}
+	return false
+}

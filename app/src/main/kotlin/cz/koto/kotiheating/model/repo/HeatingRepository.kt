@@ -18,15 +18,6 @@ class HeatingRepository {
 		HeatingStatusLiveData().apply { refresh(deviceId) }
 	}
 
-	fun hasLocalScheduleChanges(localValues: MutableList<MutableList<Int>>?, serverValues: MutableList<MutableList<Int>>): Boolean {
-
-		if (localValues == null) return false
-		serverValues.forEachIndexed { index, remoteItem ->
-			if (remoteItem.zip(localValues[index]) { a, b -> a.compareTo(b) != 0 }.contains(true)) return true
-		}
-		return false
-	}
-
 	suspend fun updateStatus(schedule: HeatingDeviceStatus) {
 
 		val query = GlobalScope.async(Dispatchers.Default) {

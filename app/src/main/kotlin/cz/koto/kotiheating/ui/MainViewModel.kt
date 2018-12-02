@@ -6,6 +6,7 @@ import android.databinding.ObservableInt
 import common.log.logk
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
+import cz.koto.kotiheating.common.areListsDifferent
 import cz.koto.kotiheating.model.entity.HeatingDeviceStatus
 import cz.koto.kotiheating.model.repo.HeatingRepository
 import cz.koto.kotiheating.model.repo.UserRepository
@@ -52,6 +53,7 @@ class MainViewModel : BaseViewModel() {
 //				heatingRepository.removeStatus(it.deviceId)
 //			}
 //		}
+
 		statusRequestList.connectSource(heatingRepository.getStatus(userRepository.heatingSet.firstOrNull()))
 	}
 
@@ -117,10 +119,11 @@ class MainViewModel : BaseViewModel() {
 
 	fun differLocalRequestFromRemote(): Boolean {
 		val status = statusRequestList.value?.data
-		return if (status == null) {
+		val timetableLocal = status?.timetableLocal
+		return if (timetableLocal == null) {
 			false
 		} else {
-			heatingRepository.hasLocalScheduleChanges(localValues = status.timetableLocal, serverValues = status.timetableServer)
+			areListsDifferent(localValues = timetableLocal, serverValues = status.timetableServer)
 		}
 	}
 
