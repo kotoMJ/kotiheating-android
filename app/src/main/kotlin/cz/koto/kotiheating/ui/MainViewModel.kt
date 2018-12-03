@@ -47,13 +47,6 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun refreshDataFromServer() {
-
-//		GlobalScope.launch(Dispatchers.Main) {
-//			statusRequestList.value?.data?.let {
-//				heatingRepository.removeStatus(it.deviceId)
-//			}
-//		}
-
 		statusRequestList.connectSource(heatingRepository.getStatus(userRepository.heatingSet.firstOrNull()))
 	}
 
@@ -76,7 +69,12 @@ class MainViewModel : BaseViewModel() {
 	}
 
 	fun revertLocalChanges() {
-		refreshDataFromServer()
+		statusRequestList.value?.data?.timetableLocal = statusRequestList.value?.data?.timetableServer
+
+		GlobalScope.launch(Dispatchers.Main) {
+			statusRequestList.value?.data?.let { heatingRepository.updateStatus(it) }
+			refreshDataFromServer()
+		}
 	}
 
 	fun decreaseLocalHourlyTemperatureTo(day: Int, hour: Int) {
