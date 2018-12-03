@@ -10,14 +10,13 @@ import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import cz.koto.kotiheating.model.entity.HeatingSchedule
+import cz.koto.kotiheating.model.entity.HeatingDeviceStatus
 import cz.koto.kotiheating.ui.StatusItem
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
-
-class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<Resource<T>>, callback: DiffObservableList.Callback<StatusItem>) : MediatorLiveData<Resource<T>>() {
+class DiffObservableLiveHeatingStatus<T : HeatingDeviceStatus>(liveData: LiveData<Resource<T>>, callback: DiffObservableList.Callback<StatusItem>) : MediatorLiveData<Resource<T>>() {
 
 	val diffListMap = hashMapOf<Int, DiffObservableList<StatusItem>>()
 
@@ -33,7 +32,7 @@ class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<
 
 	fun setHourlyTemperatureTo(setDay: Int, setHour: Int, setTemp: Int) {
 		diffListMap[setDay]?.get(setHour)?.temperature = setTemp
-		value?.data?.timetable?.get(setDay)?.set(setHour, setTemp)
+		value?.data?.timetableLocal?.get(setDay)?.set(setHour, setTemp)
 	}
 
 	fun setDailyTemperatureTo(setDay: Int, setTemp: Int) {
@@ -43,20 +42,23 @@ class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<
 			}
 		}
 
-		value?.data.let {
-			it?.timetable?.forEachIndexed { day, dayList ->
-				it.timetable[day] = mutableListOf(setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp)
+		value?.data?.let {
+			val timetableLocal = it.timetableLocal
+			timetableLocal?.forEachIndexed { day, dayList ->
+				timetableLocal[day] = mutableListOf(setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp)
 			}
+			it.timetableLocal = timetableLocal
 		}
 	}
 
 	fun connectSource(liveData: LiveData<Resource<T>>) {
 
-		if (liveData.value?.data?.timetable?.isNotEmpty() == true) {
+		if (liveData.value?.data?.timetableLocal?.isNotEmpty() == true) {
 			value = liveData.value
 			liveData.value?.data.let {
-				it?.timetable?.forEachIndexed { day, dayList ->
-					diffListMap[day]?.update(it.timetable[day].mapIndexed { index, float ->
+				val timetableLocal = it?.timetableLocal
+				timetableLocal?.forEachIndexed { day, dayList ->
+					diffListMap[day]?.update(timetableLocal[day].mapIndexed { index, float ->
 						StatusItem(float, index)
 					})
 				}
@@ -65,14 +67,15 @@ class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<
 			value = Resource(Resource.Status.FAILURE, null)
 		}
 
-		addSource(liveData, {
+		addSource(liveData) {
 
-			if (it?.data?.timetable?.isNotEmpty() == true) {
+			if (it?.data?.timetableLocal?.isNotEmpty() == true) {
 				value = it
 
 				it.data.let {
-					it.timetable.forEachIndexed { day, dayList ->
-						diffListMap[day]?.update(it.timetable[day].mapIndexed { index, float ->
+					val timetableLocal = it.timetableLocal
+					timetableLocal?.forEachIndexed { day, dayList ->
+						diffListMap[day]?.update(timetableLocal[day].mapIndexed { index, float ->
 							StatusItem(float, index)
 						})
 					}
@@ -81,21 +84,21 @@ class DiffObservableLiveHeatingSchedule<T : HeatingSchedule>(liveData: LiveData<
 			} else {
 				value = Resource(Resource.Status.FAILURE, null)
 			}
-		})
+		}
 	}
 }
 
 @Suppress("UNCHECKED_CAST")
 @BindingAdapter(value = ["liveDataItemBinding", "liveDataItems", "liveDataAdapter", "currentDay"], requireAll = false)
 fun <T> setAdapterLiveData(recyclerView: RecyclerView,
-						   liveDataItemBinding: ItemBinding<StatusItem>,
-						   liveDataItems: DiffObservableLiveHeatingSchedule<HeatingSchedule>,
-						   presetAdapter: BindingRecyclerViewAdapter<StatusItem>?,
-						   currentDay: ObservableInt) {
+	liveDataItemBinding: ItemBinding<StatusItem>,
+	liveDataItems: DiffObservableLiveHeatingStatus<HeatingDeviceStatus>,
+	presetAdapter: BindingRecyclerViewAdapter<StatusItem>?,
+	currentDay: ObservableInt) {
 	val oldAdapter = recyclerView.adapter as BindingRecyclerViewAdapter<StatusItem>?
 	val adapter: BindingRecyclerViewAdapter<StatusItem>
 	adapter = presetAdapter ?: (oldAdapter
-			?: BindingRecyclerViewAdapter())
+		?: BindingRecyclerViewAdapter())
 	if (oldAdapter !== adapter) {
 		adapter.itemBinding = liveDataItemBinding
 		adapter.setItems(liveDataItems.diffListMap[currentDay.get()])

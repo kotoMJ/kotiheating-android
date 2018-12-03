@@ -42,8 +42,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	private var setToNightMenu: MenuItem? = null
 	private var setToDayMenu: MenuItem? = null
 
-
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
@@ -89,7 +87,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 				return true
 			}
 			R.id.action_clear_all -> {
-				vmb.viewModel.revertLocalChanges(day = vmb.viewModel.selectedDay)
+				vmb.viewModel.revertLocalChanges()
 				vmb.binding.dailyScheduleRecycler.adapter?.notifyDataSetChanged()
 				updateFab()
 				return true
@@ -121,11 +119,9 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		profileDialog.dismiss()
 	}
 
-
 	override fun onGoogleSignIn() {
 		startActivityForResult(vmb.viewModel.getSignInGoogleIntent(), ACTION_SIGN_IN_GOOGLE)
 	}
-
 
 	private fun refresh() {
 		vmb.binding.viewModel?.refreshDataFromServer()
@@ -138,9 +134,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 			refresh()
 		}
 	}
-
-
-
 
 	public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		super.onActivityResult(requestCode, resultCode, data)
@@ -165,7 +158,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		}
 		val itemTouchLeftHelper = ItemTouchHelper(swipeLeftHandler)
 		itemTouchLeftHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
-
 
 		val swipeRightHandler = object : SwipeToRightCallback(this, vmb.viewModel, vmb.viewModel.selectedDay) {
 			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -204,15 +196,15 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 	private fun updateFab() {
 
-
 		if (vmb.binding.viewModel?.differLocalRequestFromRemote() == true) {
 			vmb.binding.fabSend.show()
+			logk(">>>showFab")
 		} else {
 			vmb.binding.fabSend.hide()
+			logk(">>>hideFab")
 		}
 
 	}
-
 
 	private fun updateProfileMenuIcon() {
 		if (vmb.viewModel.isGoogleUserSignedIn()) {

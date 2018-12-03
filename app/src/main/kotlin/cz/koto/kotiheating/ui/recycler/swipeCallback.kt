@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import common.log.logk
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.common.getColorForTemperature
 import cz.koto.kotiheating.ui.MainViewModel
@@ -23,8 +24,13 @@ abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: 
 
 	override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
 		mainViewModel.statusRequestList.diffListMap[day.get()]?.let { diffObservableList ->
-			viewHolder?.adapterPosition?.let {
-				if (diffObservableList[it].temperature > maximumTempValue - 10) {
+			viewHolder.adapterPosition.let {
+				if (diffObservableList.size > it) {
+					if (diffObservableList[it].temperature > maximumTempValue - 10) {
+						return 0
+					}
+				} else {
+					logk("Array Left inconsistency! unexpected index $it")
 					return 0
 				}
 			}
@@ -70,11 +76,15 @@ abstract class SwipeToRightCallback(context: Context, private val mainViewModel:
 	private val background = ColorDrawable()
 	private val backgroundColor = Color.parseColor(getColorForTemperature(minimumTempValue))
 
-
 	override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
 		mainViewModel.statusRequestList.diffListMap[day.get()]?.let { diffObservableList ->
-			viewHolder?.adapterPosition?.let {
-				if (diffObservableList[it].temperature < minimumTempValue + 10) {
+			viewHolder.adapterPosition.let {
+				if (diffObservableList.size > it) {
+					if (diffObservableList[it].temperature < minimumTempValue + 10) {
+						return 0
+					}
+				} else {
+					logk("Array Right inconsistency! unexpected index $it")
 					return 0
 				}
 			}

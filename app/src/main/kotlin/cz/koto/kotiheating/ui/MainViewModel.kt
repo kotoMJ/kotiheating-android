@@ -6,17 +6,17 @@ import android.databinding.ObservableInt
 import common.log.logk
 import cz.koto.kotiheating.BR
 import cz.koto.kotiheating.R
-import cz.koto.kotiheating.model.entity.HeatingSchedule
-import cz.koto.kotiheating.model.entity.ScheduleType
+import cz.koto.kotiheating.common.areListsDifferent
+import cz.koto.kotiheating.model.entity.HeatingDeviceStatus
 import cz.koto.kotiheating.model.repo.HeatingRepository
 import cz.koto.kotiheating.model.repo.UserRepository
 import cz.koto.kotiheating.model.rest.HeatingScheduleApi
-import cz.koto.ktools.DiffObservableLiveHeatingSchedule
+import cz.koto.ktools.DiffObservableLiveHeatingStatus
 import cz.koto.ktools.inject
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 
@@ -28,72 +28,54 @@ class MainViewModel : BaseViewModel() {
 	val heatingRepository by inject<HeatingRepository>()
 
 	val itemBinding = ItemBinding.of<StatusItem>(BR.item, R.layout.item_heating)
-			.bindExtra(BR.viewModel, this)
+		.bindExtra(BR.viewModel, this)
 
-
-	var statusDeviceList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
-	var statusRequestList: DiffObservableLiveHeatingSchedule<HeatingSchedule>
+	var statusRequestList: DiffObservableLiveHeatingStatus<HeatingDeviceStatus>
 
 	private val scheduleApi by inject<HeatingScheduleApi>()
 
 	init {
 
 		userRepository.checkGoogleAccounts()
-		statusRequestList = DiffObservableLiveHeatingSchedule(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST), object : DiffObservableList.Callback<StatusItem> {
-			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
-			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
-		})
-		statusDeviceList = DiffObservableLiveHeatingSchedule(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE), object : DiffObservableList.Callback<StatusItem> {
+
+
+
+		statusRequestList = DiffObservableLiveHeatingStatus(heatingRepository.getStatus(userRepository.heatingSet.firstOrNull()), object : DiffObservableList.Callback<StatusItem> {
 			override fun areContentsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = ((oldItem?.hour == newItem?.hour) && (oldItem?.temperature == newItem?.temperature))
 			override fun areItemsTheSame(oldItem: StatusItem?, newItem: StatusItem?) = oldItem?.hour == newItem?.hour
 		})
 	}
 
 	fun refreshDataFromServer() {
-		launch(UI) {
-			heatingRepository.removeSchedule(ScheduleType.REQUEST)
-		}
-		statusDeviceList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.DEVICE))
-		statusRequestList.connectSource(heatingRepository.getSchedule(userRepository.heatingSet.firstOrNull(), ScheduleType.REQUEST))
+		statusRequestList.connectSource(heatingRepository.getStatus(userRepository.heatingSet.firstOrNull()))
 	}
 
-	fun updateRequestListWithServerResponse(serverResponseSchedule: HeatingSchedule) {
-		statusRequestList.value?.data?.timetable = serverResponseSchedule.timetable
+	fun updateRequestListWithServerResponse(serverResponseSchedule: HeatingDeviceStatus) {
 
 		for (day in 0..6) {
 			statusRequestList.diffListMap[day]?.forEachIndexed { hour, item ->
 				item.apply {
-					item.temperature = serverResponseSchedule.timetable[day][hour]
+					item.temperature = serverResponseSchedule.timetableServer[day][hour]
 				}
 			}
 		}
 
-		launch(UI) {
-			serverResponseSchedule.scheduleType = ScheduleType.REQUEST
-			heatingRepository.updateRemoteSchedule(serverResponseSchedule)
-			heatingRepository.updateLocalSchedule(serverResponseSchedule)
+		statusRequestList.value?.data?.timetableLocal = statusRequestList.value?.data?.timetableServer
+
+		GlobalScope.launch(Dispatchers.Main) {
+			heatingRepository.updateStatus(serverResponseSchedule)
 		}
 
 	}
 
-	fun revertLocalChanges(day: ObservableInt) {
-		refreshDataFromServer()
-//		statusRequestList.value = statusRequestList.value
-//		statusDeviceList.diffListMap[day.get()]?.forEachIndexed { hour, item ->
-//			item.apply {
-//				statusRequestList.diffListMap[day.get()]?.let { daySchedule ->
-//					item.temperature = daySchedule[hour].temperature
-//				}
-//			}
-//		}
-//		launch(UI) {
-//			statusRequestList.value?.data?.let {
-//				heatingRepository.updateSchedule(it)
-//			}
-//
-//		}
-	}
+	fun revertLocalChanges() {
+		statusRequestList.value?.data?.timetableLocal = statusRequestList.value?.data?.timetableServer
 
+		GlobalScope.launch(Dispatchers.Main) {
+			statusRequestList.value?.data?.let { heatingRepository.updateStatus(it) }
+			refreshDataFromServer()
+		}
+	}
 
 	fun decreaseLocalHourlyTemperatureTo(day: Int, hour: Int) {
 		statusRequestList.diffListMap.get(day)?.let { dayList ->
@@ -102,9 +84,9 @@ class MainViewModel : BaseViewModel() {
 			statusRequestList.setHourlyTemperatureTo(day, hour, newTemperature)
 		}
 
-		launch(UI) {
+		GlobalScope.launch(Dispatchers.Main) {
 			statusRequestList.value?.data?.let {
-				heatingRepository.updateLocalSchedule(it)
+				heatingRepository.updateStatus(it)
 			}
 		}
 	}
@@ -116,31 +98,31 @@ class MainViewModel : BaseViewModel() {
 			statusRequestList.setHourlyTemperatureTo(day, hour, newTemperature)
 		}
 
-		launch(UI) {
+		GlobalScope.launch(Dispatchers.Main) {
 			statusRequestList.value?.data?.let {
-				heatingRepository.updateLocalSchedule(it)
+				heatingRepository.updateStatus(it)
 			}
 		}
 	}
 
 	fun setLocalDailyTemperatureTo(day: Int, temp: Int) {
 		statusRequestList.setDailyTemperatureTo(day, temp)
-		launch(UI) {
+		GlobalScope.launch(Dispatchers.Main) {
 			statusRequestList.value?.data?.let {
-				heatingRepository.updateLocalSchedule(it)
+				heatingRepository.updateStatus(it)
 			}
 
 		}
 	}
 
 	fun differLocalRequestFromRemote(): Boolean {
-		val keySet = userRepository.heatingSet.firstOrNull()
-		return if (keySet == null) {
+		val status = statusRequestList.value?.data
+		val timetableLocal = status?.timetableLocal
+		return if (timetableLocal == null) {
 			false
 		} else {
-			heatingRepository.hasLocalScheduleChanges(keySet, ScheduleType.REQUEST)
+			areListsDifferent(localValues = timetableLocal, serverValues = status.timetableServer)
 		}
-
 	}
 
 	@SuppressLint("RestrictedApi")
@@ -152,7 +134,6 @@ class MainViewModel : BaseViewModel() {
 		userRepository.handleSignInResult(signInGoogleResultIntent, credentialsHasChanged)
 	}
 
-
 	fun signOutGoogleUser(credentialsHasChanged: () -> Unit) {
 		userRepository.signOutGoogleUser(credentialsHasChanged)
 	}
@@ -161,16 +142,16 @@ class MainViewModel : BaseViewModel() {
 		return userRepository.googleSignInAccount != null
 	}
 
-	fun sendRequestForSchedule(): HeatingSchedule? {
-		logk("Sending schedule request timetable:${statusRequestList.value?.data?.timetable}")
-		statusRequestList.value?.data?.timetable?.let { timeTable ->
+	fun sendRequestForSchedule(): HeatingDeviceStatus? {
+		logk("Sending schedule request timetable:${statusRequestList.value?.data?.timetableLocal}")
+		statusRequestList.value?.data?.timetableLocal?.let { timeTable ->
 			val heatingSet = userRepository.heatingSet.firstOrNull()
-					?: throw IllegalStateException("No heatingSet assigned to the user!")
+				?: throw IllegalStateException("No heatingSet assigned to the user!")
 			heatingSet.let { heatingId ->
 				try {
-					logk("Sending schedule request for heatingId:${heatingId}")
-					return runBlocking(CommonPool) {
-						scheduleApi.setHeatingSchedule(timeTable, heatingId)?.heatingSchedule
+					logk("Sending schedule request for heatingId:$heatingId")
+					return runBlocking(Dispatchers.Default) {
+						scheduleApi.setHeatingSchedule(timeTable, heatingId)?.heatingDeviceStatus
 					}
 				} catch (e: Throwable) {
 					logk("Unable to set new schedule! $e")

@@ -4,21 +4,17 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.support.annotation.MainThread
 import android.support.annotation.WorkerThread
-import cz.koto.ktools.NoConnectivityException
-import cz.koto.ktools.doAsync
-import cz.koto.ktools.map
-import cz.koto.ktools.uiThread
 import retrofit2.Response
 
 /**
  * Resource wrapper adding status and error to its value
  */
 data class Resource<T> constructor(
-		val status: Status,
-		val data: T? = null,
-		val message: String? = null,
-		val rawResponse: Response<T>? = null,
-		val throwable: Throwable? = null
+	val status: Status,
+	val data: T? = null,
+	val message: String? = null,
+	val rawResponse: Response<T>? = null,
+	val throwable: Throwable? = null
 ) {
 	enum class Status { SUCCESS, ERROR, FAILURE, NO_CONNECTION, LOADING }
 	companion object {
@@ -73,7 +69,7 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 
 		// Called to get the cached data from the database
 		@MainThread
-		fun loadFromDb(remoteCopyOnly:Boolean = false): LiveData<T>
+		fun loadFromDb(): LiveData<T>?
 
 		// Called to create the API call.
 		@MainThread
@@ -94,11 +90,12 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		savedSources.forEach { result.removeSource(it) }
 		savedSources.clear()
 
-		result.value = result.value?.copy(status = result.value?.status ?: Resource.Status.LOADING) ?: Resource.loading()
+		result.value = result.value?.copy(status = result.value?.status
+			?: Resource.Status.LOADING) ?: Resource.loading()
 
-		result.addSource(networkCallLiveData, { networkResource ->
+		result.addSource(networkCallLiveData) { networkResource ->
 			result.setValue(networkResource)
-		})
+		}
 	}
 
 	fun setupCached(resourceCallback: Callback<T>) {
@@ -108,22 +105,27 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		savedSources.forEach { result.removeSource(it) }
 		savedSources.clear()
 
-		result.value = result.value?.copy(status = result.value?.status ?: Resource.Status.LOADING) ?: Resource.loading()
+		result.value = result.value?.copy(status = result.value?.status
+			?: Resource.Status.LOADING) ?: Resource.loading()
 
 		val dbSource = callback!!.loadFromDb()
-		savedSources.add(dbSource)
-		result.addSource(dbSource, { data ->
-			savedSources.remove(dbSource)
-			result.removeSource(dbSource)
-			if (callback!!.shouldFetch(data)) {
-				fetchFromNetwork(dbSource)
-			} else {
-				savedSources.add(dbSource)
-				result.addSource(dbSource, { newData ->
-					result.setValue(Resource.success(newData))
-				})
+
+		dbSource?.let {
+			savedSources.add(it)
+			result.addSource(it) { data ->
+				savedSources.remove(it)
+				result.removeSource(it)
+				if (callback!!.shouldFetch(data)) {
+					fetchFromNetwork(it)
+				} else {
+					savedSources.add(it)
+					result.addSource(it) { newData ->
+						result.setValue(Resource.success(newData))
+					}
+				}
 			}
-		})
+		}
+
 	}
 
 	private fun fetchFromNetwork(dbSource: LiveData<T>) {
@@ -133,7 +135,7 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 		savedSources.add(dbSource)
 		result.addSource(dbSource, { newData -> result.setValue(Resource.loading(newData)) })
 		savedSources.add(apiResponse)
-		result.addSource(apiResponse, { networkResource ->
+		result.addSource(apiResponse) { networkResource ->
 			savedSources.remove(apiResponse)
 			result.removeSource(apiResponse)
 			savedSources.remove(dbSource)
@@ -143,11 +145,11 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 				saveResultAndReInit(networkResource)
 			} else {
 				savedSources.add(dbSource)
-				result.addSource(dbSource, { newData ->
+				result.addSource(dbSource) { newData ->
 					result.setValue(networkResource?.copy(data = newData))
-				})
+				}
 			}
-		})
+		}
 	}
 
 	@MainThread
@@ -157,10 +159,12 @@ class NetworkBoundResource<T>(private val result: ResourceLiveData<T>) {
 				resource.data?.let { callback!!.saveCallResult(it) }
 				uiThread {
 					val dbSource = callback!!.loadFromDb()
-					savedSources.add(dbSource)
-					result.addSource(dbSource, { newData ->
-						result.setValue(resource.copy(data = newData))
-					})
+					dbSource?.let {
+						savedSources.add(it)
+						result.addSource(it) { newData ->
+							result.setValue(resource.copy(data = newData))
+						}
+					}
 				}
 			}
 		}

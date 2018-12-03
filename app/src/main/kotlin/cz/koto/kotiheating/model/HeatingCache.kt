@@ -2,53 +2,46 @@ package cz.koto.kotiheating.model
 
 import android.arch.lifecycle.LiveData
 import common.log.logk
-import cz.koto.kotiheating.model.db.HeatingScheduleDao
 import cz.koto.kotiheating.model.db.HeatingStatusDao
 import cz.koto.kotiheating.model.entity.HeatingDeviceStatus
-import cz.koto.kotiheating.model.entity.HeatingSchedule
-import cz.koto.kotiheating.model.entity.ScheduleType
 import cz.koto.ktools.inject
-
 
 class HeatingCache {
 	private val statusDao by inject<HeatingStatusDao>()
-	private val scheduleDao by inject<HeatingScheduleDao>()
 
+//	private val localChangeDao by inject<HeatingLocalChangeDao>()
 
-	fun getStatus(deviceId: String): LiveData<HeatingDeviceStatus> {
+	fun getStatus(deviceId: String): LiveData<HeatingDeviceStatus>? {
 		val fromDb = statusDao.getHeatingStatus(deviceId)
-		logk("Reading status from db: ${fromDb.value}")
+		logk("Loading status from db: ${fromDb.value}")
 		return fromDb
 	}
 
 	fun putStatus(heatingDeviceStatus: HeatingDeviceStatus) {
-		logk("Saving heating device status: $heatingDeviceStatus")
+		logk("Storing heating device status: $heatingDeviceStatus")
+		heatingDeviceStatus.let {
+			val timetableLocal = it.timetableLocal
+			if (timetableLocal == null || timetableLocal.isEmpty()) {
+				it.timetableLocal = it.timetableServer
+			}
+		}
 		statusDao.putHeatingStatus(heatingDeviceStatus)
 	}
 
-	fun getSchedule(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): LiveData<HeatingSchedule>? {
-		val fromDb = scheduleDao.getHeatingSchedule(deviceId, scheduleType, remoteCopyOnly)
-		logk("Reading schedule $scheduleType remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb.value}")
-		return fromDb
+	fun removeSchedule(deviceId: String) {
+		logk("Removing schedule for all device id's from db!")
+		statusDao.deleteHeatingStatus(deviceId)
 	}
 
-	fun getScheduleX(deviceId: String, scheduleType: ScheduleType, remoteCopyOnly: Boolean): HeatingSchedule? {
-		val fromDb = scheduleDao.getHeatingScheduleX(deviceId, scheduleType, remoteCopyOnly)
-		logk("Reading schedule $scheduleType remoteOnly=$remoteCopyOnly for deviceId=[${deviceId}] with value ${fromDb} ")
-
-		return fromDb
-	}
-
-	fun putSchedule(heatingSchedule: HeatingSchedule, remoteCopyOnly: Boolean) {
-		logk("Saving heating schedule: $heatingSchedule")
-		heatingSchedule.remoteCopy = remoteCopyOnly
-		scheduleDao.putHeatingSchedule(heatingSchedule)
-	}
-
-	fun removeSchedule(scheduleType: ScheduleType) {
-		logk("Removing schedule for all device id's and scheduleType=$scheduleType from db!")
-		scheduleDao.deleteHeatingSchedule(scheduleType)
-	}
-
+//	fun getLocalChange(deviceId: String): LiveData<HeatingLocalChange>? {
+//		val fromDb = localChangeDao.getLocalChange(deviceId)
+//		logk("Reading local change from db: ${fromDb.value}")
+//		return fromDb
+//	}
+//
+//	fun putLocalChange(heatingLocalChange: HeatingLocalChange) {
+//		logk("Saving local change: $heatingLocalChange")
+//		localChangeDao.putLocalChange(heatingLocalChange)
+//	}
 
 }
