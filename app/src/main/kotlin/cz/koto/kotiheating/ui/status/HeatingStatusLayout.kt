@@ -39,7 +39,7 @@ class HeatingStatusLayout : FrameLayout {
 			showLayout(true)
 		}
 
-	var currentDay: Int? = null
+	var selectedDay: Int? = null
 		set(value) {
 			field = value
 			showLayout(true)
@@ -157,12 +157,17 @@ class HeatingStatusLayout : FrameLayout {
 			, circleNumberUnit)
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
-		centralTextStatusView.init(attrs, listToDisplay, currentDay)
+		centralTextStatusView.init(attrs = attrs, statusItemList = listToDisplay, selectedDayShortcut = getShortcutForDay(selectedDay),
+			heatingDayShortcut = getShortcutForDay(statusRequestLocalItemList?.value?.data?.deviceDay),
+			name = statusRequestLocalItemList?.value?.data?.name ?: "",
+			mode = getNameForMode(statusRequestLocalItemList?.value?.data?.deviceMode),
+			temperatureWithDegrees = "20 °C",//TODO fix temperatureWithDegrees
+			time = "18:25")//TODO fix time
 
 	}
 
 	private fun setProperDataSource(invokedByValueChange: Boolean) {
-		statusRequestLocalItemList?.diffListMap?.get(currentDay)?.let {
+		statusRequestLocalItemList?.diffListMap?.get(selectedDay)?.let {
 			listToDisplay = it
 		}
 
@@ -174,5 +179,38 @@ class HeatingStatusLayout : FrameLayout {
 		centralTextStatusView.showView()
 	}
 
+	private fun getShortcutForDay(day: Int?): String {
+		return when (day) {
+			0 -> context.getString(R.string.text_status_view_sunday)
+			1 -> context.getString(R.string.text_status_view_monday)
+			2 -> context.getString(R.string.text_status_view_tuesday)
+			3 -> context.getString(R.string.text_status_view_wednesday)
+			4 -> context.getString(R.string.text_status_view_thursday)
+			5 -> context.getString(R.string.text_status_view_friday)
+			6 -> context.getString(R.string.text_status_view_saturday)
+			else -> context.getString(R.string.text_status_view_undefined)
+		}
+	}
+
+	private fun getShortcutForDay(day: String?): String {
+		return when (day) {
+			"SU" -> context.getString(R.string.text_status_view_saturday)
+			"MO" -> context.getString(R.string.text_status_view_sunday)
+			"TU" -> context.getString(R.string.text_status_view_monday)
+			"WE" -> context.getString(R.string.text_status_view_tuesday)
+			"TH" -> context.getString(R.string.text_status_view_wednesday)
+			"FR" -> context.getString(R.string.text_status_view_thursday)
+			"SA" -> context.getString(R.string.text_status_view_friday)
+			else -> context.getString(R.string.text_status_view_undefined)
+		}
+	}
+
+	private fun getNameForMode(mode: Int?): String {
+		return when (mode) {
+			2 -> "automatic"
+			1 -> "manual"
+			else -> context.getString(R.string.text_status_view_undefined)
+		}
+	}
 }
 

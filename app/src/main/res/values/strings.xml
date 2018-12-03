@@ -16,5 +16,5 @@
 	<string name="text_status_view_friday">Fr</string>
 	<string name="text_status_view_saturday">Sa</string>
 	<string name="text_status_view_sunday">Su</string>
-	<string name="text_status_view_undefined">-</string>
+	<string name="text_status_view_undefined">#</string>
 </resources>
