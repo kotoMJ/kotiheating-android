@@ -7,7 +7,7 @@
 	<string name="auth_io_exception">Unable to connect server.</string>
 	<string name="auth_google_services_sign_in_failed">Failed to connect google services!</string>
 	<string name="auth_http_exception">User is not authorized to any heating.</string>
-	<string name="auth_else">Authorization error.</string>
+	<string name="auth_else">Unexpected google services error!</string>
 	<string name="auth_unable_encrypt">Unable to encrypt credentials!</string>
 
 	<string name="text_status_view_monday">Mo</string>
