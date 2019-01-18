@@ -67,7 +67,5 @@ def renameArtifact(variant, apkName) {
 
 tasks.whenTaskAdded {
 	theTask ->
-		//if(theTask.name.contains("Release")) {
 		theTask.dependsOn "askForPasswords"
-		//}
 }
