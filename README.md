@@ -1,5 +1,5 @@
 # kotiheating-android
-![RemoteControlLauncher](./app/main/res/mipmap-xxxhdpi/ic_launcher_round.png "RemoteControlLauncher")&nbsp;<br/>
+![RemoteControlLauncher](./app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png "RemoteControlLauncher")&nbsp;<br/>
 Android client for kotiheating-arduino  
   
 ![RemoteControlMain](./extras/screens/kh_main.png "RemoteControlMain")&nbsp;
