@@ -120,16 +120,18 @@ class UserRepository : BaseRepository() {
 		} catch (e: ApiException) {
 			// The ApiException status code indicates the detailed failure reason.
 			// Please refer to the GoogleSignInStatusCodes class reference for more information.
-			when (e.statusCode) {
+			val errorMessage = when (e.statusCode) {
 				12500 -> {
-					logk("Update Google Play services on device! exception=$e")
+					logk("Update Google Play services on device! Or fix SHA1 in developers console! exception=$e")
+					application.getString(R.string.auth_google_services_sign_in_failed)
 				}
 				else -> {
 					logk("Unexpected exception=$e")
+					application.getString(R.string.auth_else)
 				}
 			}
 			cleanUpGoogleUser({ credentialsHasChanged.invoke() })
-			googleSignInAccountError.set(application.getString(R.string.auth_else))
+			googleSignInAccountError.set(errorMessage)
 		}
 
 	}
