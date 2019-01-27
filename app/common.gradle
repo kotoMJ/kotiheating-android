@@ -27,36 +27,34 @@ android {
 
 task askForPasswords {
 
-	doLast {
+	def storePass
+	def keyAlias
+	def keyPass
 
-		def storePass
-		def keyAlias
-		def keyPass
+	def keystorePropertiesFile = new File((String) project.property("keystore.properties"))
 
-		def keystorePropertiesFile = new File((String) project.property("keystore.properties"))
-
-		if (project.hasProperty("keystore.properties") && keystorePropertiesFile.exists()) {
-			println "Loading keystore passwords from property file..."
-			Properties properties = new Properties()
-			properties.load(new FileInputStream(keystorePropertiesFile))
-			storePass = properties['keystore.store.password']
-			keyAlias = properties['keystore.key.alias']
-			keyPass = properties['keystore.key.password']
-		} else {
-			println "Getting keystore passwords from user input..."
-			storePass = new String(System.console().readPassword("\nStore password: "))
-			keyAlias = new String(System.console().readLine("Key alias: "))
-			keyPass = new String(System.console().readPassword("Key password: "))
-		}
-
-		android.signingConfigs.release.storePassword = storePass
-		android.signingConfigs.release.keyAlias = keyAlias
-		android.signingConfigs.release.keyPassword = keyPass
-
-		android.signingConfigs.debug.storePassword = storePass
-		android.signingConfigs.debug.keyAlias = keyAlias
-		android.signingConfigs.debug.keyPassword = keyPass
+	if (project.hasProperty("keystore.properties") && keystorePropertiesFile.exists()) {
+		println "Loading keystore passwords from property file..."
+		Properties properties = new Properties()
+		properties.load(new FileInputStream(keystorePropertiesFile))
+		storePass = properties['keystore.store.password']
+		println("storePass[$storePass]")
+		keyAlias = properties['keystore.key.alias']
+		println("keyAlias[$keyAlias]")
+		keyPass = properties['keystore.key.password']
+		println("keyPass[$keyPass]")
+	} else {
+		throw IllegalStateException("Missing keystore.properties file!")
 	}
+
+	android.signingConfigs.release.storePassword = storePass
+	android.signingConfigs.release.keyAlias = keyAlias
+	android.signingConfigs.release.keyPassword = keyPass
+
+	android.signingConfigs.debug.storePassword = storePass
+	android.signingConfigs.debug.keyAlias = keyAlias
+	android.signingConfigs.debug.keyPassword = keyPass
+
 }
 
 def renameArtifact(variant, apkName) {
@@ -69,7 +67,5 @@ def renameArtifact(variant, apkName) {
 
 tasks.whenTaskAdded {
 	theTask ->
-		//if(theTask.name.contains("Release")) {
 		theTask.dependsOn "askForPasswords"
-		//}
 }

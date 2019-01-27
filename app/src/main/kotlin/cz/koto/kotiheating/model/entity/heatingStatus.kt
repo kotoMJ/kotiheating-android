@@ -23,7 +23,8 @@ data class HeatingDeviceStatus(
 	//@Transient var timetableLocal: MutableList<MutableList<Int>>?,
 	//@Ignore var timetableLocal: MutableList<MutableList<Int>>?,
 	@Expose var timetableLocal: MutableList<MutableList<Int>>? = mutableListOf(),
-	@SerializedName("heatingId") val deviceId: String
+	@SerializedName("heatingId") val deviceId: String,
+	@SerializedName("heatingName") val name: String
 
 )
 

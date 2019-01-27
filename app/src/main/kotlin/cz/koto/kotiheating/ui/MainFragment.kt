@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import cz.koto.kotiheating.R
 import cz.koto.kotiheating.databinding.FragmentMainBinding
+import cz.koto.ktools.log
 import cz.koto.ktools.vmb
 
 
@@ -32,6 +33,7 @@ class MainFragment : Fragment(), MainFragmentView {
 
 		vmb.binding.circleProgress.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 			override fun onGlobalLayout() {
+				log("showLayout onGlobalLayout") //TODO trace log
 				if (vmb.binding.circleProgress.showLayout()) {
 					vmb.binding.circleProgress.viewTreeObserver.removeOnGlobalLayoutListener(this)
 				}
@@ -49,6 +51,7 @@ class MainFragment : Fragment(), MainFragmentView {
 
 	override fun onReloadStatusView() {
 		vmb.viewModel.refreshDataFromServer()
+		log("showLayout onReloadStatusView") //TODO trace log
 		vmb.binding.circleProgress.showLayout()
 	}
 

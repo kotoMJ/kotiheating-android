@@ -1,12 +1,13 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">>
 	<string name="demo_user_name">Demo Profile</string>
 	<string name="demo_email">demo@profile.com</string>
 	<string name="sign_out">Sign Out</string>
 	<string name="close">close</string>
 	<string name="init_client_id">950395156002-1emg9edo9g73u6bi1uuiksij6r05ddi6.apps.googleusercontent.com</string>
 	<string name="auth_io_exception">Unable to connect server.</string>
+	<string name="auth_google_services_sign_in_failed">Failed to connect google services!</string>
 	<string name="auth_http_exception">User is not authorized to any heating.</string>
-	<string name="auth_else">Authorization error.</string>
+	<string name="auth_else">Unexpected google services error!</string>
 	<string name="auth_unable_encrypt">Unable to encrypt credentials!</string>
 
 	<string name="text_status_view_monday">Mo</string>
@@ -16,5 +17,8 @@
 	<string name="text_status_view_friday">Fr</string>
 	<string name="text_status_view_saturday">Sa</string>
 	<string name="text_status_view_sunday">Su</string>
-	<string name="text_status_view_undefined">-</string>
+	<string name="text_status_view_undefined">#</string>
+
+	<string name="text_status_mode_manual">manual</string>
+	<string name="text_status_mode_automatic">automatic</string>
 </resources>
