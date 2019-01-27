@@ -127,7 +127,7 @@ internal class TextStatusView : View {
 		val upper2TextPaint = TextPaint().apply {
 			isDither = true
 			isAntiAlias = true
-			color = textColorAlpha
+			color = textColorHighlight
 			textSize = dayOfWeekTextPaint.textSize / 3
 			typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
 		}

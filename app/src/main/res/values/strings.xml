@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">>
 	<string name="demo_user_name">Demo Profile</string>
 	<string name="demo_email">demo@profile.com</string>
 	<string name="sign_out">Sign Out</string>
@@ -18,4 +18,7 @@
 	<string name="text_status_view_saturday">Sa</string>
 	<string name="text_status_view_sunday">Su</string>
 	<string name="text_status_view_undefined">#</string>
+
+	<string name="text_status_mode_manual">manual</string>
+	<string name="text_status_mode_automatic">automatic</string>
 </resources>

@@ -11,6 +11,7 @@ import cz.koto.kotiheating.R
 import cz.koto.kotiheating.model.entity.HeatingDeviceStatus
 import cz.koto.kotiheating.ui.StatusItem
 import cz.koto.ktools.DiffObservableLiveHeatingStatus
+import cz.koto.ktools.log
 
 class HeatingStatusLayout : FrameLayout {
 
@@ -36,12 +37,14 @@ class HeatingStatusLayout : FrameLayout {
 	var statusRequestLocalItemList: DiffObservableLiveHeatingStatus<HeatingDeviceStatus>? = null
 		set(value) {
 			field = value
+			log("showLayout statusRequestLocalItemList") //TODO trace log
 			showLayout(true)
 		}
 
 	var selectedDay: Int? = null
 		set(value) {
 			field = value
+			log("showLayout selectedDay") //TODO trace log
 			showLayout(true)
 		}
 
@@ -110,19 +113,21 @@ class HeatingStatusLayout : FrameLayout {
 		val unitHeatingRadio: RadioButton = findViewById(R.id.heatingUnit)
 		val unitTimeRadio: RadioButton = findViewById(R.id.timeUnit)
 
-		unitHeatingRadio.setOnClickListener({
+		unitHeatingRadio.setOnClickListener {
 			unitHeatingRadio.isChecked = true
 			unitTimeRadio.isChecked = false
 			circleNumberUnit = CircleStatusView.CircleNumberUnit.CELSIUS
+			log("showLayout unitHeatingRadio") //TODO trace log
 			showLayout()
-		})
+		}
 
-		unitTimeRadio.setOnClickListener({
+		unitTimeRadio.setOnClickListener {
 			unitTimeRadio.isChecked = true
 			unitHeatingRadio.isChecked = false
 			circleNumberUnit = CircleStatusView.CircleNumberUnit.HOURS
+			log("showLayout unitTimeRadio") //TODO trace log
 			showLayout()
-		})
+		}
 
 		if (!unitHeatingRadio.isChecked &&
 			!unitTimeRadio.isChecked) {
@@ -157,12 +162,15 @@ class HeatingStatusLayout : FrameLayout {
 			, circleNumberUnit)
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
-		centralTextStatusView.init(attrs = attrs, statusItemList = listToDisplay, selectedDayShortcut = getShortcutForDay(selectedDay),
+		centralTextStatusView.init(
+			attrs = attrs,
+			statusItemList = listToDisplay,
+			selectedDayShortcut = getShortcutForDay(selectedDay),
 			heatingDayShortcut = getShortcutForDay(statusRequestLocalItemList?.value?.data?.deviceDay),
 			name = statusRequestLocalItemList?.value?.data?.name ?: "",
 			mode = getNameForMode(statusRequestLocalItemList?.value?.data?.deviceMode),
-			temperatureWithDegrees = "20 °C",//TODO fix temperatureWithDegrees
-			time = "18:25")//TODO fix time
+			temperatureWithDegrees = "${statusRequestLocalItemList?.value?.data?.temperature?.div(10)} °C",
+			time = "${statusRequestLocalItemList?.value?.data?.deviceHour}:${statusRequestLocalItemList?.value?.data?.deviceMinute}")
 
 	}
 
@@ -195,20 +203,20 @@ class HeatingStatusLayout : FrameLayout {
 	private fun getShortcutForDay(day: String?): String {
 		return when (day) {
 			"SU" -> context.getString(R.string.text_status_view_saturday)
-			"MO" -> context.getString(R.string.text_status_view_sunday)
-			"TU" -> context.getString(R.string.text_status_view_monday)
-			"WE" -> context.getString(R.string.text_status_view_tuesday)
-			"TH" -> context.getString(R.string.text_status_view_wednesday)
-			"FR" -> context.getString(R.string.text_status_view_thursday)
-			"SA" -> context.getString(R.string.text_status_view_friday)
+			"MO" -> context.getString(R.string.text_status_view_monday)
+			"TU" -> context.getString(R.string.text_status_view_tuesday)
+			"WE" -> context.getString(R.string.text_status_view_wednesday)
+			"TH" -> context.getString(R.string.text_status_view_thursday)
+			"FR" -> context.getString(R.string.text_status_view_friday)
+			"SA" -> context.getString(R.string.text_status_view_saturday)
 			else -> context.getString(R.string.text_status_view_undefined)
 		}
 	}
 
 	private fun getNameForMode(mode: Int?): String {
 		return when (mode) {
-			2 -> "automatic"
-			1 -> "manual"
+			2 -> context.getString(R.string.text_status_mode_automatic)
+			1 -> context.getString(R.string.text_status_mode_manual)
 			else -> context.getString(R.string.text_status_view_undefined)
 		}
 	}
