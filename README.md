@@ -1,5 +1,5 @@
 # kotiheating-android
-
+![RemoteControlLauncher](./extras/graphics/KoTiHeatingIcon.png "RemoteControlLauncher")&nbsp;<br/>
 Android client for kotiheating-arduino  
   
 ![RemoteControlMain](./extras/screens/kh_main.png "RemoteControlMain")&nbsp;
