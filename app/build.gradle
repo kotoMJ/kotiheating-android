@@ -35,8 +35,8 @@ android {
         versionCode GIT_TAG_COUNT
         versionName GIT_TAG_NAME
         aaptOptions.cruncherEnabled false
+		resValue "string", "app_name", "KoTiHeat"
         //multiDexEnabled true
-        resValue "string", "app_name", "KoTiHeating"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -48,12 +48,10 @@ android {
             dimension = "env"
             applicationIdSuffix ".loc"
             versionNameSuffix "-loc"
-            resValue "string", "app_name", "KoTiHeating (Localhost)"
             buildConfigField "String", "REST_BASE_URL", "\"http://10.0.2.2:8080/api/\""
         }
         production {
             dimension = "env"
-            resValue "string", "app_name", "KoTiHeating"
             buildConfigField "String", "REST_BASE_URL", "\"https://kotopeky.cz/api/\""
         }
     }
