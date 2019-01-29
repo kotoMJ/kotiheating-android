@@ -21,4 +21,6 @@
 
 	<string name="text_status_mode_manual">manual</string>
 	<string name="text_status_mode_automatic">automatic</string>
+
+	<string name="text_status_flag_today">Today</string>
 </resources>

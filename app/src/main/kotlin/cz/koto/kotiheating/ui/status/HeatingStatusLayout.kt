@@ -11,7 +11,6 @@ import cz.koto.kotiheating.R
 import cz.koto.kotiheating.model.entity.HeatingDeviceStatus
 import cz.koto.kotiheating.ui.StatusItem
 import cz.koto.ktools.DiffObservableLiveHeatingStatus
-import cz.koto.ktools.log
 
 class HeatingStatusLayout : FrameLayout {
 
@@ -37,14 +36,12 @@ class HeatingStatusLayout : FrameLayout {
 	var statusRequestLocalItemList: DiffObservableLiveHeatingStatus<HeatingDeviceStatus>? = null
 		set(value) {
 			field = value
-			log("showLayout statusRequestLocalItemList") //TODO trace log
 			showLayout(true)
 		}
 
 	var selectedDay: Int? = null
 		set(value) {
 			field = value
-			log("showLayout selectedDay") //TODO trace log
 			showLayout(true)
 		}
 
@@ -117,7 +114,6 @@ class HeatingStatusLayout : FrameLayout {
 			unitHeatingRadio.isChecked = true
 			unitTimeRadio.isChecked = false
 			circleNumberUnit = CircleStatusView.CircleNumberUnit.CELSIUS
-			log("showLayout unitHeatingRadio") //TODO trace log
 			showLayout()
 		}
 
@@ -125,7 +121,6 @@ class HeatingStatusLayout : FrameLayout {
 			unitTimeRadio.isChecked = true
 			unitHeatingRadio.isChecked = false
 			circleNumberUnit = CircleStatusView.CircleNumberUnit.HOURS
-			log("showLayout unitTimeRadio") //TODO trace log
 			showLayout()
 		}
 
@@ -162,15 +157,17 @@ class HeatingStatusLayout : FrameLayout {
 			, circleNumberUnit)
 
 		centralTextStatusView = findViewById(R.id.centralTextStatusView)
-		centralTextStatusView.init(
-			attrs = attrs,
-			statusItemList = listToDisplay,
-			selectedDayShortcut = getShortcutForDay(selectedDay),
-			heatingDayShortcut = getShortcutForDay(statusRequestLocalItemList?.value?.data?.deviceDay),
-			name = statusRequestLocalItemList?.value?.data?.name ?: "",
-			mode = getNameForMode(statusRequestLocalItemList?.value?.data?.deviceMode),
-			temperatureWithDegrees = "${statusRequestLocalItemList?.value?.data?.temperature?.div(10)} °C",
-			time = "${statusRequestLocalItemList?.value?.data?.deviceHour}:${statusRequestLocalItemList?.value?.data?.deviceMinute}")
+		statusRequestLocalItemList?.value?.data?.let { heatingDeviceStatus ->
+			centralTextStatusView.init(
+				attrs = attrs,
+				statusItemList = listToDisplay,
+				selectedDayShortcut = getShortcutForDay(selectedDay),
+				heatingDayShortcut = getShortcutForDay(heatingDeviceStatus.deviceDay),
+				name = heatingDeviceStatus.name ?: "",
+				mode = getNameForMode(heatingDeviceStatus.deviceMode),
+				temperatureWithDegrees = "${heatingDeviceStatus.temperature.div(10)} °C",
+				time = "${heatingDeviceStatus.deviceHour}:${heatingDeviceStatus.deviceMinute}")
+		}
 
 	}
 

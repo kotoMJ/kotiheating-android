@@ -46,7 +46,7 @@ internal class TextStatusView : View {
 		this.selectedDayShortcut = selectedDayShortcut
 		this.name = name
 		this.mode = mode
-		this.dateTime = if (heatingDayShortcut == selectedDayShortcut) time else "$heatingDayShortcut $time"
+		this.dateTime = if (heatingDayShortcut == selectedDayShortcut) "${resources.getString(R.string.text_status_flag_today)} $time" else "$heatingDayShortcut $time"
 		this.temperatureWithDegrees = temperatureWithDegrees
 		this.highlightDetails = heatingDayShortcut == selectedDayShortcut
 		readAttributesAndSetupFields(attrs)
@@ -144,7 +144,7 @@ internal class TextStatusView : View {
 		val belowTextPaint = TextPaint().apply {
 			isDither = true
 			isAntiAlias = true
-			color = textColorAlpha
+			color = if (highlightDetails) textColorHighlight else textColorAlpha
 			textSize = dayOfWeekTextPaint.textSize / 3
 			typeface = ResourcesCompat.getFont(context, R.font.roboto_bold);
 		}
