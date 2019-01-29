@@ -87,7 +87,6 @@ class ViewModelBinding<out VM : ViewModel, out B : ViewDataBinding> constructor(
 				// Note: BR.viewModel, BR.view will be auto-generated if you have those variables somewhere in your layout files
 				// If you're not using both of them you will have to comment out one of the lines
 
-				//TODO MJ - uncomment this whenever some used.
 				binding.setVariable(BR.viewModel, viewModel)
 				binding.setVariable(BR.view, fragment ?: activity)
 
