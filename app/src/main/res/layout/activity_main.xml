@@ -9,11 +9,11 @@
 
 		<variable
 			name="viewModel"
-			type="cz.koto.kotiheating.ui.MainViewModel" />
+			type="cz.kotox.kotiheating.ui.MainViewModel" />
 
 		<variable
 			name="view"
-			type="cz.koto.kotiheating.ui.MainActivityView" />
+			type="cz.kotox.kotiheating.ui.MainActivityView" />
 	</data>
 
 	<LinearLayout
@@ -39,7 +39,7 @@
 
 					app:contentScrim="?attr/colorPrimary">
 
-					<cz.koto.kotiheating.ui.viewpager.StatusViewPager
+					<cz.kotox.kotiheating.ui.viewpager.StatusViewPager
 						android:id="@+id/main_pager"
 						android:layout_width="match_parent"
 						android:layout_height="match_parent"

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="cz.koto.kotiheating">
+	package="cz.kotox.kotiheating">
 
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 
 	<application
-		android:name=".app.HeatingApplication"
+		android:name="cz.kotox.kotiheating.app.HeatingApplication"
 		android:networkSecurityConfig="@xml/network_security_config"
 		android:allowBackup="true"
 		android:icon="@mipmap/ic_launcher"
@@ -16,11 +16,11 @@
 		android:theme="@style/AppTheme"
 		>
 		<activity
-			android:name=".ui.MainActivity"
+			android:name="cz.kotox.kotiheating.ui.MainActivity"
 			android:screenOrientation="portrait">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
-
+				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 

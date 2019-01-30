@@ -29,7 +29,7 @@ android {
     dataBinding.enabled = true
 
     defaultConfig {
-        applicationId "cz.koto.kotiheating"
+        applicationId "cz.kotox.kotiheating"
         minSdkVersion min_sdk_version
         targetSdkVersion compile_sdk_version
         versionCode GIT_TAG_COUNT

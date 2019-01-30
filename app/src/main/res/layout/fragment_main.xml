@@ -7,18 +7,18 @@
 
 		<variable
 			name="viewModel"
-			type="cz.koto.kotiheating.ui.MainViewModel" />
+			type="cz.kotox.kotiheating.ui.MainViewModel" />
 
 		<variable
 			name="view"
-			type="cz.koto.kotiheating.ui.MainFragmentView" />
+			type="cz.kotox.kotiheating.ui.MainFragmentView" />
 	</data>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical">
-		<cz.koto.kotiheating.ui.status.HeatingStatusLayout
+		<cz.kotox.kotiheating.ui.status.HeatingStatusLayout
 			android:id="@+id/circle_progress"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"

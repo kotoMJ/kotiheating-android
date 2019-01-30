@@ -6,15 +6,15 @@
 
 		<variable
 			name="item"
-			type="cz.koto.kotiheating.ui.StatusItem" />
+			type="cz.kotox.kotiheating.ui.StatusItem" />
 
 		<variable
 			name="viewModel"
-			type="cz.koto.kotiheating.ui.MainViewModel" />
+			type="cz.kotox.kotiheating.ui.MainViewModel" />
 
 		<variable
 			name="view"
-			type="cz.koto.kotiheating.ui.MainFragmentView" />
+			type="cz.kotox.kotiheating.ui.MainFragmentView" />
 
 
 	</data>
