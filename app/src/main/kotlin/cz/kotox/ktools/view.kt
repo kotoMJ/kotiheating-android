@@ -1,8 +1,8 @@
 package cz.kotox.ktools
 
-import android.support.design.widget.FloatingActionButton
 import android.view.View
 import android.view.ViewTreeObserver
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 fun View.setVisibilityInivisble() {
 	this.visibility = View.INVISIBLE

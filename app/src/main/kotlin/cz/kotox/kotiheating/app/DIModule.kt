@@ -1,7 +1,7 @@
 package cz.kotox.kotiheating.app
 
 import android.app.Application
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import com.google.gson.Gson
 import cz.kotox.kotiheating.model.HeatingCache
 import cz.kotox.kotiheating.model.db.HeatingDatabase

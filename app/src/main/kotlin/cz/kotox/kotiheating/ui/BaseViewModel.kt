@@ -1,9 +1,8 @@
 package cz.kotox.kotiheating.ui
 
-import android.arch.lifecycle.ViewModel
-import android.databinding.Observable
-import android.databinding.PropertyChangeRegistry
-
+import androidx.databinding.Observable
+import androidx.databinding.PropertyChangeRegistry
+import androidx.lifecycle.ViewModel
 
 open class BaseViewModel : ViewModel(), Observable {
 

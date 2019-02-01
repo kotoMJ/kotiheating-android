@@ -1,18 +1,16 @@
 package cz.kotox.ktools
 
 import android.app.Activity
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.OnLifecycleEvent
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import androidx.annotation.LayoutRes
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import cz.kotox.kotiheating.BR
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -22,24 +20,24 @@ import kotlin.reflect.KProperty
 // Example: `private val vmb by vmb<MainViewModel, ActivityMainBinding>(R.layout.activity_main)`
 // Example with ViewModel constructor: private val vmb by vmb<MainViewModel, ActivityMainBinding>(R.layout.activity_main) { MainViewModel(xxx) }
 
-inline fun <reified VM : ViewModel, B : ViewDataBinding> FragmentActivity.vmb(@LayoutRes layoutResId: Int, viewModelProvider: ViewModelProvider? = null) = object : ReadOnlyProperty<FragmentActivity, ViewModelBinding<VM, B>> {
+inline fun <reified VM : ViewModel, B : ViewDataBinding> androidx.fragment.app.FragmentActivity.vmb(@LayoutRes layoutResId: Int, viewModelProvider: ViewModelProvider? = null) = object : ReadOnlyProperty<androidx.fragment.app.FragmentActivity, ViewModelBinding<VM, B>> {
 	var instance = ViewModelBinding<VM, B>(this@vmb, VM::class.java, layoutResId, viewModelProvider, null)
-	override fun getValue(thisRef: FragmentActivity, property: KProperty<*>) = instance
+	override fun getValue(thisRef: androidx.fragment.app.FragmentActivity, property: KProperty<*>) = instance
 }
 
-inline fun <reified VM : ViewModel, B : ViewDataBinding> FragmentActivity.vmb(@LayoutRes layoutResId: Int, noinline viewModelFactory: () -> VM) = object : ReadOnlyProperty<FragmentActivity, ViewModelBinding<VM, B>> {
+inline fun <reified VM : ViewModel, B : ViewDataBinding> androidx.fragment.app.FragmentActivity.vmb(@LayoutRes layoutResId: Int, noinline viewModelFactory: () -> VM) = object : ReadOnlyProperty<androidx.fragment.app.FragmentActivity, ViewModelBinding<VM, B>> {
 	var instance = ViewModelBinding<VM, B>(this@vmb, VM::class.java, layoutResId, null, viewModelFactory)
-	override fun getValue(thisRef: FragmentActivity, property: KProperty<*>) = instance
+	override fun getValue(thisRef: androidx.fragment.app.FragmentActivity, property: KProperty<*>) = instance
 }
 
-inline fun <reified VM : ViewModel, B : ViewDataBinding> Fragment.vmb(@LayoutRes layoutResId: Int, viewModelProvider: ViewModelProvider? = null) = object : ReadOnlyProperty<Fragment, ViewModelBinding<VM, B>> {
+inline fun <reified VM : ViewModel, B : ViewDataBinding> androidx.fragment.app.Fragment.vmb(@LayoutRes layoutResId: Int, viewModelProvider: ViewModelProvider? = null) = object : ReadOnlyProperty<androidx.fragment.app.Fragment, ViewModelBinding<VM, B>> {
 	var instance = ViewModelBinding<VM, B>(this@vmb, VM::class.java, layoutResId, viewModelProvider, null)
-	override fun getValue(thisRef: Fragment, property: KProperty<*>) = instance
+	override fun getValue(thisRef: androidx.fragment.app.Fragment, property: KProperty<*>) = instance
 }
 
-inline fun <reified VM : ViewModel, B : ViewDataBinding> Fragment.vmb(@LayoutRes layoutResId: Int, noinline viewModelFactory: () -> VM) = object : ReadOnlyProperty<Fragment, ViewModelBinding<VM, B>> {
+inline fun <reified VM : ViewModel, B : ViewDataBinding> androidx.fragment.app.Fragment.vmb(@LayoutRes layoutResId: Int, noinline viewModelFactory: () -> VM) = object : ReadOnlyProperty<androidx.fragment.app.Fragment, ViewModelBinding<VM, B>> {
 	var instance = ViewModelBinding<VM, B>(this@vmb, VM::class.java, layoutResId, null, viewModelFactory)
-	override fun getValue(thisRef: Fragment, property: KProperty<*>) = instance
+	override fun getValue(thisRef: androidx.fragment.app.Fragment, property: KProperty<*>) = instance
 }
 
 // -- internal --
@@ -57,7 +55,7 @@ class ViewModelBinding<out VM : ViewModel, out B : ViewDataBinding> constructor(
 	val viewModelFactory: (() -> VM)?
 ) {
 	init {
-		if (!(lifecycleOwner is FragmentActivity || lifecycleOwner is Fragment))
+		if (!(lifecycleOwner is androidx.fragment.app.FragmentActivity || lifecycleOwner is androidx.fragment.app.Fragment))
 			throw IllegalArgumentException("Provided LifecycleOwner must be one of FragmentActivity or Fragment")
 	}
 
@@ -70,9 +68,10 @@ class ViewModelBinding<out VM : ViewModel, out B : ViewDataBinding> constructor(
 		initializeVmb()
 		viewModelProvider!!.get(viewModelClass)
 	}
-	val fragment: Fragment? = lifecycleOwner as? Fragment
-	val activity: FragmentActivity by lazy {
-		lifecycleOwner as? FragmentActivity ?: (lifecycleOwner as Fragment).activity!!
+	val fragment: androidx.fragment.app.Fragment? = lifecycleOwner as? androidx.fragment.app.Fragment
+	val activity: androidx.fragment.app.FragmentActivity by lazy {
+		lifecycleOwner as? androidx.fragment.app.FragmentActivity
+			?: (lifecycleOwner as androidx.fragment.app.Fragment).activity!!
 	}
 
 	private var initialized = false

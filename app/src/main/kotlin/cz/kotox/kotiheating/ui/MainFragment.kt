@@ -1,17 +1,16 @@
 package cz.kotox.kotiheating.ui
 
-import android.arch.lifecycle.ViewModelProviders
-import android.databinding.ObservableInt
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.databinding.ObservableInt
+import androidx.lifecycle.ViewModelProviders
 import cz.kotox.kotiheating.R
 import cz.kotox.kotiheating.databinding.FragmentMainBinding
 import cz.kotox.ktools.vmb
 
-class MainFragment : Fragment(), MainFragmentView {
+class MainFragment : androidx.fragment.app.Fragment(), MainFragmentView {
 
 	companion object {
 		fun newInstance(day: Int) = MainFragment().apply { arguments = Bundle().apply { putInt("day", day) } }

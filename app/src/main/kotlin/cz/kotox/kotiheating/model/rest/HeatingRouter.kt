@@ -1,6 +1,6 @@
 package cz.kotox.kotiheating.model.rest
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import cz.kotox.kotiheating.model.entity.HeatingAuthResult
 import cz.kotox.kotiheating.model.entity.HeatingScheduleSetRequest
 import cz.kotox.kotiheating.model.entity.HeatingStatusResult

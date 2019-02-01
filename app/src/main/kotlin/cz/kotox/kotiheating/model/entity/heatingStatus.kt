@@ -1,6 +1,6 @@
 package cz.kotox.kotiheating.model.entity
 
-import android.arch.persistence.room.Entity
+import androidx.room.Entity
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.util.Date

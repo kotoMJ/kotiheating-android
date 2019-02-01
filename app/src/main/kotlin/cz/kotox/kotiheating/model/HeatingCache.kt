@@ -1,6 +1,6 @@
 package cz.kotox.kotiheating.model
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import common.log.logk
 import cz.kotox.kotiheating.model.db.HeatingStatusDao
 import cz.kotox.kotiheating.model.entity.HeatingDeviceStatus

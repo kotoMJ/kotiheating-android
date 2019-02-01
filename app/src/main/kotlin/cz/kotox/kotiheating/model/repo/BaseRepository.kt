@@ -1,7 +1,7 @@
 package cz.kotox.kotiheating.model.repo
 
-import android.databinding.Observable
-import android.databinding.PropertyChangeRegistry
+import androidx.databinding.Observable
+import androidx.databinding.PropertyChangeRegistry
 
 
 open class BaseRepository : Observable {

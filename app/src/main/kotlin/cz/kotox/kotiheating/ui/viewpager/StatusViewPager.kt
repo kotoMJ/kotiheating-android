@@ -1,13 +1,11 @@
 package cz.kotox.kotiheating.ui.viewpager
 
 import android.content.Context
-import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 
-
-class StatusViewPager : ViewPager {
+class StatusViewPager : androidx.viewpager.widget.ViewPager {
 
 	constructor(context: Context) : super(context) {
 

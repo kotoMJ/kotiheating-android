@@ -1,13 +1,13 @@
 package cz.kotox.ktools
 
-import android.databinding.BindingAdapter
-import android.databinding.BindingConversion
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.support.annotation.DrawableRes
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.databinding.BindingAdapter
+import androidx.databinding.BindingConversion
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import cz.kotox.kotiheating.ui.glide.GlideApp

@@ -1,13 +1,12 @@
 package cz.kotox.kotiheating.ui.recycler
 
 import android.content.Context
-import android.databinding.ObservableInt
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.core.content.ContextCompat
+import androidx.databinding.ObservableInt
+import androidx.recyclerview.widget.ItemTouchHelper
 import common.log.logk
 import cz.kotox.kotiheating.R
 import cz.kotox.kotiheating.common.getColorForTemperature
@@ -22,7 +21,7 @@ abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: 
 	private val background = ColorDrawable()
 	private val backgroundColor = Color.parseColor(getColorForTemperature(maximumTempValue))
 
-	override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+	override fun getMovementFlags(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder): Int {
 		mainViewModel.statusRequestList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder.adapterPosition.let {
 				if (diffObservableList.size > it) {
@@ -39,11 +38,11 @@ abstract class SwipeToLeftCallback(context: Context, private val mainViewModel: 
 		return super.getMovementFlags(recyclerView, viewHolder)
 	}
 
-	override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+	override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
 		return false
 	}
 
-	override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+	override fun onChildDraw(c: Canvas, recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
 		val itemView = viewHolder.itemView
 		val itemHeight = itemView.bottom - itemView.top
 
@@ -76,7 +75,7 @@ abstract class SwipeToRightCallback(context: Context, private val mainViewModel:
 	private val background = ColorDrawable()
 	private val backgroundColor = Color.parseColor(getColorForTemperature(minimumTempValue))
 
-	override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+	override fun getMovementFlags(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder): Int {
 		mainViewModel.statusRequestList.diffListMap[day.get()]?.let { diffObservableList ->
 			viewHolder.adapterPosition.let {
 				if (diffObservableList.size > it) {
@@ -93,11 +92,11 @@ abstract class SwipeToRightCallback(context: Context, private val mainViewModel:
 		return super.getMovementFlags(recyclerView, viewHolder)
 	}
 
-	override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+	override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, target: androidx.recyclerview.widget.RecyclerView.ViewHolder): Boolean {
 		return false
 	}
 
-	override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+	override fun onChildDraw(c: Canvas, recyclerView: androidx.recyclerview.widget.RecyclerView, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
 		val itemView = viewHolder.itemView
 		val itemHeight = itemView.bottom - itemView.top
 

@@ -3,8 +3,8 @@ package cz.kotox.kotiheating.model.repo
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Intent
-import android.databinding.Bindable
-import android.databinding.ObservableField
+import androidx.databinding.Bindable
+import androidx.databinding.ObservableField
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -89,7 +89,7 @@ class UserRepository : BaseRepository() {
 			googleSignInAccountError.set("")
 			GlobalScope.launch(Dispatchers.Main) {
 				try {
-					val heatingAuth = heatingApi.authorizeGoogleUser(account.idToken)
+					val heatingAuth = heatingApi.authorizeGoogleUser(account!!.idToken)
 					heatingAuth?.let {
 						it.heatingSet?.let { hs ->
 							heatingSet = hs
@@ -124,6 +124,9 @@ class UserRepository : BaseRepository() {
 				12500 -> {
 					logk("Update Google Play services on device! Or fix SHA1 in developers console! exception=$e")
 					application.getString(R.string.auth_google_services_sign_in_failed)
+				}
+				7 -> {
+					application.getString(R.string.auth_google_services_network_error)
 				}
 				else -> {
 					logk("Unexpected exception=$e")

@@ -6,18 +6,17 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
-import android.support.v4.content.res.ResourcesCompat
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Interpolator
+import androidx.core.content.res.ResourcesCompat
 import common.log.logk
 import cz.kotox.kotiheating.R
 import cz.kotox.kotiheating.common.ArcUtils
 import cz.kotox.kotiheating.common.getColorForTemperature
 import cz.kotox.kotiheating.ui.StatusItem
-
 
 internal class CircleStatusView : View {
 

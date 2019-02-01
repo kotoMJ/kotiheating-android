@@ -1,10 +1,6 @@
 package cz.kotox.kotiheating.ui
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-
-class MainFragmentAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
+class MainFragmentAdapter(fragmentManager: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentStatePagerAdapter(fragmentManager) {
 
 	companion object {
 		const val TAB_COUNT = 7
@@ -14,7 +10,7 @@ class MainFragmentAdapter(fragmentManager: FragmentManager) : FragmentStatePager
 		return TAB_COUNT
 	}
 
-	override fun getItem(position: Int): Fragment {
+	override fun getItem(position: Int): androidx.fragment.app.Fragment {
 		if (position in 0 until TAB_COUNT) {
 			return MainFragment.newInstance(position)
 		} else {

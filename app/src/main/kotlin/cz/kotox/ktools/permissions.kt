@@ -1,11 +1,10 @@
 package cz.kotox.ktools
 
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.FragmentActivity
-import android.support.v4.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
-class PermissionManager(val activity: FragmentActivity) {
+class PermissionManager(val activity: androidx.fragment.app.FragmentActivity) {
 	private var lastRequestId = 0
 	private val permissionRequests = HashMap<Int, PermissionRequest>()
 	fun requestPermission(permissionRequest: PermissionRequest) {

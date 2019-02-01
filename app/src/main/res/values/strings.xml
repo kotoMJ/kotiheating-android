@@ -6,6 +6,7 @@
 	<string name="init_client_id">950395156002-1emg9edo9g73u6bi1uuiksij6r05ddi6.apps.googleusercontent.com</string>
 	<string name="auth_io_exception">Unable to connect server.</string>
 	<string name="auth_google_services_sign_in_failed">Failed to connect google services!</string>
+	<string name="auth_google_services_network_error">A network error occurred! Retrying should resolve the problem.</string>
 	<string name="auth_http_exception">User is not authorized to any heating.</string>
 	<string name="auth_else">Unexpected google services error!</string>
 	<string name="auth_unable_encrypt">Unable to encrypt credentials!</string>

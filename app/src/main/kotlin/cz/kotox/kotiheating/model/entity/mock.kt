@@ -1,6 +1,6 @@
 package cz.kotox.kotiheating.model.entity
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import cz.kotox.kotiheating.ui.StatusItem
 import cz.kotox.ktools.Resource
 import java.util.Date

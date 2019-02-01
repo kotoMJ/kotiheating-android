@@ -1,7 +1,7 @@
 package cz.kotox.kotiheating.model.rest
 
 import android.app.Application
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import cz.kotox.kotiheating.BuildConfig
 import cz.kotox.kotiheating.model.entity.HeatingDeviceStatus

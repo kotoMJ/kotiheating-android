@@ -2,9 +2,9 @@ package cz.kotox.kotiheating.ui.profile
 
 import android.content.Context
 import android.content.DialogInterface
-import android.databinding.DataBindingUtil
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import cz.kotox.kotiheating.R
 import cz.kotox.kotiheating.databinding.DialogProfileBinding
 import cz.kotox.kotiheating.ui.MainActivityView

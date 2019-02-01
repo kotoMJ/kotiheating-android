@@ -2,7 +2,8 @@ package cz.kotox.kotiheating.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.databinding.ObservableInt
+import androidx.databinding.ObservableInt
+import arrow.core.Try
 import common.log.logk
 import cz.kotox.kotiheating.BR
 import cz.kotox.kotiheating.R
@@ -142,24 +143,22 @@ class MainViewModel : BaseViewModel() {
 		return userRepository.googleSignInAccount != null
 	}
 
-	fun sendRequestForSchedule(): HeatingDeviceStatus? {
+	fun sendRequestForSchedule(): Try<HeatingDeviceStatus> {
 		logk("Sending schedule request timetable:${statusRequestList.value?.data?.timetableLocal}")
 		statusRequestList.value?.data?.timetableLocal?.let { timeTable ->
 			val heatingSet = userRepository.heatingSet.firstOrNull()
 				?: throw IllegalStateException("No heatingSet assigned to the user!")
 			heatingSet.let { heatingId ->
-				try {
-					logk("Sending schedule request for heatingId:$heatingId")
-					return runBlocking(Dispatchers.Default) {
+				logk("Sending schedule request for heatingId:$heatingId")
+				return Try {
+					runBlocking(Dispatchers.Default) {
 						scheduleApi.setHeatingSchedule(timeTable, heatingId)?.heatingDeviceStatus
 					}
-				} catch (e: Throwable) {
-					logk("Unable to set new schedule! $e")
+
 				}
 			}
 		}
-		return null
+		return Try.raise(java.lang.IllegalStateException("TODO no data found"))
 	}
-
 }
 

@@ -1,7 +1,6 @@
 package cz.kotox.ktools
 
-
-import android.databinding.Observable
+import androidx.databinding.Observable
 
 typealias ObservablePropertyCallback = Observable.OnPropertyChangedCallback
 

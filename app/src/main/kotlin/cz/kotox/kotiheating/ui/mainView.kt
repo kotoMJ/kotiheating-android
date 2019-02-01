@@ -3,16 +3,13 @@ package cz.kotox.kotiheating.ui
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuItem
-import common.log.logk
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ItemTouchHelper
+import com.google.android.material.snackbar.Snackbar
 import cz.kotox.kotiheating.R
 import cz.kotox.kotiheating.databinding.ActivityMainBinding
 import cz.kotox.kotiheating.ui.profile.createProfileDialog
@@ -152,7 +149,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 
 	private fun setupRecycler() {
 		val swipeLeftHandler = object : SwipeToLeftCallback(this, vmb.viewModel, vmb.viewModel.selectedDay) {
-			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+			override fun onSwiped(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, direction: Int) {
 				updateLocalItem(viewHolder, increase = true, day = vmb.viewModel.selectedDay.get())
 			}
 		}
@@ -160,7 +157,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		itemTouchLeftHelper.attachToRecyclerView(vmb.binding.dailyScheduleRecycler)
 
 		val swipeRightHandler = object : SwipeToRightCallback(this, vmb.viewModel, vmb.viewModel.selectedDay) {
-			override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+			override fun onSwiped(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, direction: Int) {
 				updateLocalItem(viewHolder, increase = false, day = vmb.viewModel.selectedDay.get())
 			}
 		}
@@ -172,7 +169,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	private fun setupViewpager() {
 		vmb.binding.mainPager.offscreenPageLimit = 1
 		vmb.binding.mainPager.adapter = MainFragmentAdapter(supportFragmentManager)
-		vmb.binding.mainPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+		vmb.binding.mainPager.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
 			override fun onPageScrollStateChanged(state: Int) {}
 
 			override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -186,7 +183,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 		})
 	}
 
-	private fun updateLocalItem(viewHolder: RecyclerView.ViewHolder, increase: Boolean, day: Int) {
+	private fun updateLocalItem(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, increase: Boolean, day: Int) {
 		val position = viewHolder.layoutPosition
 		if (increase) vmb.viewModel.increaseLocalHourlyTemperatureTo(day, position) else vmb.viewModel.decreaseLocalHourlyTemperatureTo(day, position)
 		vmb.binding.dailyScheduleRecycler.adapter?.notifyDataSetChanged()//This is necessary to refresh colored recycler item.
@@ -215,18 +212,25 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	override fun onSend() {
 		vmb.binding.fabSend.isEnabled = false
 		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_sync))
-		try {
-			vmb.viewModel.sendRequestForSchedule()?.let {
-				vmb.viewModel.updateRequestListWithServerResponse(it)
-				updateFab()
+
+		vmb.viewModel.sendRequestForSchedule().fold({
+
+			when (it) {
+				is IllegalStateException -> {
+					//TODO localize
+					Snackbar.make(vmb.rootView.coordinate, "User has no heating deice assigned", Snackbar.LENGTH_LONG).show()
+				}
+				else -> {
+					//TODO localize
+					Snackbar.make(vmb.rootView.coordinate, "Unexpected issue when setting new schedule", Snackbar.LENGTH_LONG).show()
+				}
 			}
-		} catch (ise: IllegalStateException) {
-			logk("IllegalStateException! ${ise.message}")
-			Snackbar.make(vmb.rootView.coordinate, "User has no heating deice assigned", Snackbar.LENGTH_LONG).show()
-		} catch (th: Throwable) {
-			logk("Unable to send request! $th")
-		}
+
+		}, {
+			vmb.viewModel.updateRequestListWithServerResponse(it)
+		})
 		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_send))
+		updateFab()
 		vmb.binding.fabSend.isEnabled = true
 
 	}
@@ -238,5 +242,3 @@ interface MainActivityView {
 	fun onSend()
 	val lifecycleAwareAdapter: LifecycleAwareBindingRecyclerViewAdapter<StatusItem> // TODO: Temp fix for tatarka - remove when tatarka adds support for lifecycle
 }
-
-

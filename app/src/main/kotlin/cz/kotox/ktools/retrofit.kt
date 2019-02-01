@@ -1,8 +1,8 @@
 package cz.kotox.ktools
 
-import android.arch.lifecycle.LiveData
 import android.content.Context
 import android.net.ConnectivityManager
+import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory

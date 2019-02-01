@@ -23,7 +23,7 @@ class HeatingScheduleApi {
 				customInterceptors = *arrayOf(headerRequestInterceptor)).create(HeatingRouter::class.java)
 		}
 
-	suspend fun setHeatingSchedule(timeTable: MutableList<MutableList<Int>>, deviceId: String): HeatingStatusResult? {
+	suspend fun setHeatingSchedule(timeTable: MutableList<MutableList<Int>>, deviceId: String): HeatingStatusResult {
 		return api.setHeatingSchedule(HeatingScheduleSetRequest(timeTable), deviceId).await()
 	}
 }

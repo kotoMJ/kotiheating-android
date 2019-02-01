@@ -1,7 +1,7 @@
 package cz.kotox.kotiheating.common
 
 import android.graphics.Color
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 
 val SWIPE_REFRESH_COLORS = intArrayOf(
 	android.R.color.holo_blue_bright,

@@ -1,15 +1,14 @@
 package cz.kotox.ktools
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import android.databinding.BindingAdapter
-import android.databinding.ObservableInt
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.databinding.BindingAdapter
+import androidx.databinding.ObservableInt
+import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import cz.kotox.kotiheating.model.entity.HeatingDeviceStatus
 import cz.kotox.kotiheating.ui.StatusItem
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
@@ -90,7 +89,7 @@ class DiffObservableLiveHeatingStatus<T : HeatingDeviceStatus>(liveData: LiveDat
 
 @Suppress("UNCHECKED_CAST")
 @BindingAdapter(value = ["liveDataItemBinding", "liveDataItems", "liveDataAdapter", "currentDay"], requireAll = false)
-fun <T> setAdapterLiveData(recyclerView: RecyclerView,
+fun <T> setAdapterLiveData(recyclerView: androidx.recyclerview.widget.RecyclerView,
 	liveDataItemBinding: ItemBinding<StatusItem>,
 	liveDataItems: DiffObservableLiveHeatingStatus<HeatingDeviceStatus>,
 	presetAdapter: BindingRecyclerViewAdapter<StatusItem>?,
