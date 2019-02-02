@@ -44,15 +44,16 @@ buildscript {
 	dependencies {
 		classpath "com.android.tools.build:gradle:$android_gradle_version"
 		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-		classpath "io.fabric.tools:gradle:$fabric_version"
+		classpath 'com.google.gms:google-services:4.2.0'
+		classpath 'io.fabric.tools:gradle:1.27.1'
 	}
 }
 
 allprojects {
 	repositories {
 		mavenCentral()
-		maven {url 'https://maven.fabric.io/public'}
 		maven {url "https://www.jitpack.io"}
+		maven {url 'https://maven.google.com/'}
 		//maven {url 'https://oss.jfrog.org/artifactory/oss-snapshot-local'}
 		google()
 		jcenter()

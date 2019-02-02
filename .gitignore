@@ -48,3 +48,4 @@ out/
 
 #SSL
 /extras/keystore
+/app/google-services.json
