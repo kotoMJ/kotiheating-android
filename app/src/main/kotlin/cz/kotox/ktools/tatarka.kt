@@ -44,7 +44,9 @@ class DiffObservableLiveHeatingStatus<T : HeatingDeviceStatus>(liveData: LiveDat
 		value?.data?.let {
 			val timetableLocal = it.timetableLocal
 			timetableLocal?.forEachIndexed { day, dayList ->
-				timetableLocal[day] = mutableListOf(setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp)
+				if (day == setDay) {
+					timetableLocal[day] = mutableListOf(setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp, setTemp)
+				}
 			}
 			it.timetableLocal = timetableLocal
 		}
