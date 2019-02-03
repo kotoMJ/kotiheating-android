@@ -1,0 +1,73 @@
+{
+	"project_info": {
+		"project_number": "61324928908",
+		"firebase_url": "https://kotiheating.firebaseio.com",
+		"project_id": "kotiheating",
+		"storage_bucket": "kotiheating.appspot.com"
+	},
+	"client": [
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:61324928908:android:036569fe7e08b9cf",
+				"android_client_info": {
+					"package_name": "cz.kotox.kotiheating"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "61324928908-5ijc8bv5dghjfaquf83que2umh3jbp7e.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyAVDI__TFw_3i4wOSOTHaBgOZAki_npqns"
+				}
+			],
+			"services": {
+				"analytics_service": {
+					"status": 1
+				},
+				"appinvite_service": {
+					"status": 1,
+					"other_platform_oauth_client": []
+				},
+				"ads_service": {
+					"status": 2
+				}
+			}
+		},
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:61324928908:android:a3f4b1b32f20a152",
+				"android_client_info": {
+					"package_name": "cz.kotox.kotiheating.loc"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "61324928908-5ijc8bv5dghjfaquf83que2umh3jbp7e.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyAVDI__TFw_3i4wOSOTHaBgOZAki_npqns"
+				}
+			],
+			"services": {
+				"analytics_service": {
+					"status": 1
+				},
+				"appinvite_service": {
+					"status": 1,
+					"other_platform_oauth_client": []
+				},
+				"ads_service": {
+					"status": 2
+				}
+			}
+		}
+	],
+	"configuration_version": "1"
+}
