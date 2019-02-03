@@ -71,7 +71,6 @@ class MainViewModel : BaseViewModel() {
 
 	fun revertLocalChanges() {
 		statusRequestList.value?.data?.timetableLocal = statusRequestList.value?.data?.timetableServer
-
 		GlobalScope.launch(Dispatchers.Main) {
 			statusRequestList.value?.data?.let { heatingRepository.updateStatus(it) }
 			refreshDataFromServer()

@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import cz.kotox.kotiheating.R
 import cz.kotox.kotiheating.databinding.ActivityMainBinding
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		Crashlytics.getInstance().crash()
 		setSupportActionBar(vmb.binding.toolbar)
 		supportActionBar?.apply {
 			setDisplayUseLogoEnabled(false)
