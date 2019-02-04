@@ -52,4 +52,4 @@ out/
 #Google services keys
 /extras/google-services/
 /app/src/localhost/google-services.json
-/app/src/main/google-services.json
+/app/src/production/google-services.json
