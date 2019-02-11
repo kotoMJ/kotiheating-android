@@ -24,4 +24,8 @@
 	<string name="text_status_mode_automatic">automatic</string>
 
 	<string name="text_status_flag_today">Today</string>
+	<string name="quick_option_revert_changes">revert changes</string>
+	<string name="quick_option_anti_freeze">anti freeze</string>
+	<string name="quick_option_night_temperature">night temperature</string>
+	<string name="quick_option_day_temperature">day temperature</string>
 </resources>

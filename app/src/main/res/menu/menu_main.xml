@@ -21,25 +21,25 @@
 			<item
 				android:id="@+id/action_clear_all"
 				android:icon="@drawable/ic_clear_all"
-				android:title="revert changes"
+				android:title="@string/quick_option_revert_changes"
 				app:showAsAction="ifRoom" />
 
 			<item
 				android:id="@+id/action_anti_freeze"
 				android:icon="@drawable/ic_anti_freeze"
-				android:title="anti freeze"
+				android:title="@string/quick_option_anti_freeze"
 				app:showAsAction="ifRoom" />
 
 			<item
 				android:id="@+id/action_night_temp"
 				android:icon="@drawable/ic_night_temperature"
-				android:title="night temperature"
+				android:title="@string/quick_option_night_temperature"
 				app:showAsAction="ifRoom" />
 
 			<item
 				android:id="@+id/action_daily_temp"
 				android:icon="@drawable/ic_daily_temperature"
-				android:title="day temperature"
+				android:title="@string/quick_option_day_temperature"
 				app:showAsAction="ifRoom" />
 
 		</menu>

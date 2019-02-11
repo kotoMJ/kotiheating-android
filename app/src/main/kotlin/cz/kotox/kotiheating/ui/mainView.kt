@@ -19,6 +19,7 @@ import cz.kotox.ktools.LifecycleAwareBindingRecyclerViewAdapter
 import cz.kotox.ktools.vmb
 import kotlinx.android.synthetic.main.activity_main.view.coordinate
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnClickListener {
 
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	}
 
 	override fun onResume() {
+		setTabToCurrentDay()
 		refresh()
 		super.onResume()
 	}
@@ -146,6 +148,10 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	}
 
 	override val lifecycleAwareAdapter = LifecycleAwareBindingRecyclerViewAdapter<StatusItem>(this)
+
+	private fun setTabToCurrentDay() {
+		vmb.binding.mainPager.currentItem = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1
+	}
 
 	private fun setupRecycler() {
 		val swipeLeftHandler = object : SwipeToLeftCallback(this, vmb.viewModel, vmb.viewModel.selectedDay) {

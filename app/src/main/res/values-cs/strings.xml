@@ -1,0 +1,31 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">>
+	<string name="demo_user_name">Demo Profile</string>
+	<string name="demo_email">demo@profile.com</string>
+	<string name="sign_out">Odhlásit</string>
+	<string name="close">zavřít</string>
+	<string name="init_client_id">950395156002-1emg9edo9g73u6bi1uuiksij6r05ddi6.apps.googleusercontent.com</string>
+	<string name="auth_io_exception">Chyba spojení se serverem.</string>
+	<string name="auth_google_services_sign_in_failed">Chyba spojení s google službami!</string>
+	<string name="auth_google_services_network_error">Chyba sítě! Prosím zopakujte akci.</string>
+	<string name="auth_http_exception">User is not authorized to any heating.</string>
+	<string name="auth_else">Neočekávaná chyba google služeb!</string>
+	<string name="auth_unable_encrypt">Chyba čtení přihlašovacích údajů!</string>
+
+	<string name="text_status_view_monday">Po</string>
+	<string name="text_status_view_tuesday">Út</string>
+	<string name="text_status_view_wednesday">St</string>
+	<string name="text_status_view_thursday">Čt</string>
+	<string name="text_status_view_friday">Pá</string>
+	<string name="text_status_view_saturday">So</string>
+	<string name="text_status_view_sunday">Ne</string>
+	<string name="text_status_view_undefined">#</string>
+
+	<string name="text_status_mode_manual">manuál</string>
+	<string name="text_status_mode_automatic">automatika</string>
+
+	<string name="text_status_flag_today">Dnes</string>
+	<string name="quick_option_revert_changes">Vrátit změny</string>
+	<string name="quick_option_anti_freeze">Nezamrznout</string>
+	<string name="quick_option_night_temperature">Noční teplota</string>
+	<string name="quick_option_day_temperature">Denní teplota</string>
+</resources>
