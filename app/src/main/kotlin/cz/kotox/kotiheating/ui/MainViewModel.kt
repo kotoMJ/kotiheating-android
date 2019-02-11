@@ -146,12 +146,12 @@ class MainViewModel : BaseViewModel() {
 		logk("Sending schedule request timetable:${statusRequestList.value?.data?.timetableLocal}")
 		statusRequestList.value?.data?.timetableLocal?.let { timeTable ->
 			val heatingSet = userRepository.heatingSet.firstOrNull()
-				?: throw IllegalStateException("No heatingSet assigned to the user!")
+				?: return Try.raise(java.lang.IllegalStateException("No heatingSet assigned to the user!"))
 			heatingSet.let { heatingId ->
 				logk("Sending schedule request for heatingId:$heatingId")
 				return Try {
 					runBlocking(Dispatchers.Default) {
-						scheduleApi.setHeatingSchedule(timeTable, heatingId)?.heatingDeviceStatus
+						scheduleApi.setHeatingSchedule(timeTable, heatingId).heatingDeviceStatus
 					}
 
 				}
