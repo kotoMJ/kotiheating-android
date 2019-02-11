@@ -28,4 +28,7 @@
 	<string name="quick_option_anti_freeze">Nezamrznout</string>
 	<string name="quick_option_night_temperature">Noční teplota</string>
 	<string name="quick_option_day_temperature">Denní teplota</string>
+
+	<string name="schedule_error_no_device">Uživatel nemá přístup k žádnému termostatu!</string>
+	<string name="schedule_error_unexpected">Neočekávaná chyba při nahrávání rozvrhu!</string>
 </resources>

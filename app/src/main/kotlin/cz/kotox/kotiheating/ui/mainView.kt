@@ -1,7 +1,10 @@
 package cz.kotox.kotiheating.ui
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -9,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import cz.kotox.kotiheating.R
 import cz.kotox.kotiheating.databinding.ActivityMainBinding
@@ -16,6 +20,7 @@ import cz.kotox.kotiheating.ui.profile.createProfileDialog
 import cz.kotox.kotiheating.ui.recycler.SwipeToLeftCallback
 import cz.kotox.kotiheating.ui.recycler.SwipeToRightCallback
 import cz.kotox.ktools.LifecycleAwareBindingRecyclerViewAdapter
+import cz.kotox.ktools.runDelayed
 import cz.kotox.ktools.vmb
 import kotlinx.android.synthetic.main.activity_main.view.coordinate
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter
@@ -216,29 +221,27 @@ class MainActivity : AppCompatActivity(), MainActivityView, DialogInterface.OnCl
 	}
 
 	override fun onSend() {
-		vmb.binding.fabSend.isEnabled = false
-		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_sync))
+		vmb.binding.fabSend.setProgress(applicationContext)
+		runDelayed({
+			//Delay ensures loader icon visibility
+			vmb.viewModel.sendRequestForSchedule().fold({
 
-		vmb.viewModel.sendRequestForSchedule().fold({
-
-			when (it) {
-				is IllegalStateException -> {
-					//TODO localize
-					Snackbar.make(vmb.rootView.coordinate, "User has no heating deice assigned", Snackbar.LENGTH_LONG).show()
+				when (it) {
+					is IllegalStateException -> {
+						Snackbar.make(vmb.rootView.coordinate, applicationContext.getText(R.string.schedule_error_no_device), Snackbar.LENGTH_LONG).show()
+					}
+					else -> {
+						Snackbar.make(vmb.rootView.coordinate, applicationContext.getText(R.string.schedule_error_unexpected), Snackbar.LENGTH_LONG).show()
+					}
 				}
-				else -> {
-					//TODO localize
-					Snackbar.make(vmb.rootView.coordinate, "Unexpected issue when setting new schedule", Snackbar.LENGTH_LONG).show()
-				}
-			}
 
-		}, {
-			vmb.viewModel.updateRequestListWithServerResponse(it)
+			}, {
+				vmb.viewModel.updateRequestListWithServerResponse(it)
+			})
+
+			updateFab()
+			vmb.binding.fabSend.setReady(applicationContext)
 		})
-		vmb.binding.fabSend.setImageDrawable(ContextCompat.getDrawable(baseContext, R.drawable.ic_send))
-		updateFab()
-		vmb.binding.fabSend.isEnabled = true
-
 	}
 }
 
@@ -247,4 +250,19 @@ interface MainActivityView {
 	fun onSignOut()
 	fun onSend()
 	val lifecycleAwareAdapter: LifecycleAwareBindingRecyclerViewAdapter<StatusItem> // TODO: Temp fix for tatarka - remove when tatarka adds support for lifecycle
+}
+
+fun FloatingActionButton.setProgress(context: Context) {
+	hide()
+	setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_sync))
+	backgroundTintList = ColorStateList.valueOf(Color.GRAY);
+	elevation = 0f
+	isEnabled = false
+	show()
+}
+
+fun FloatingActionButton.setReady(context: Context) {
+	setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_send))
+	backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.secondaryColor))
+	isEnabled = true
 }

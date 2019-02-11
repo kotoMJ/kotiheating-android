@@ -28,4 +28,7 @@
 	<string name="quick_option_anti_freeze">anti freeze</string>
 	<string name="quick_option_night_temperature">night temperature</string>
 	<string name="quick_option_day_temperature">day temperature</string>
+
+	<string name="schedule_error_no_device">User has no heating device assigned!</string>
+	<string name="schedule_error_unexpected">Unexpected issue when setting new schedule!</string>
 </resources>
