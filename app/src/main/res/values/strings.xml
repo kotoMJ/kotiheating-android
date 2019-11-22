@@ -16,6 +16,8 @@
 
 	<string name="privacy_disclosure_logout">User will clean saved user key stored in the app by pressing logout button.</string>
 
+	<string name="privacy_disclosure_checkbox">By checking the checkbox you agree to pass your email and profile identity to the heating server by login to the application in order to identify heating user.</string>
+
 	<string name="text_status_view_monday">Mo</string>
 	<string name="text_status_view_tuesday">Tu</string>
 	<string name="text_status_view_wednesday">We</string>

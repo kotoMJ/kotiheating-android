@@ -2,6 +2,7 @@ package cz.kotox.kotiheating.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
 import arrow.core.Try
 import common.log.logk
@@ -24,6 +25,8 @@ import me.tatarka.bindingcollectionadapter2.collections.DiffObservableList
 class MainViewModel : BaseViewModel() {
 
 	var selectedDay = ObservableInt(/*Calendar.getInstance().get(Calendar.DAY_OF_WEEK)*/0)
+
+	var eula = ObservableBoolean(false)
 
 	val userRepository by inject<UserRepository>()
 	val heatingRepository by inject<HeatingRepository>()

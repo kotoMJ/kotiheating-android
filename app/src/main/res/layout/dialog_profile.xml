@@ -1,5 +1,4 @@
-<layout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools">
 
@@ -25,43 +24,43 @@
 			android:layout_height="@dimen/global_spacing_56"
 			android:layout_marginTop="8dp"
 			app:imgCircular="@{true}"
-			app:imgUrl="@{viewModel.userRepository.googleSignInAccount.photoUrl}"
 			app:imgPlaceholder="@{@drawable/ic_account_circle}"
-			tools:src="@drawable/ic_account_circle"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintHorizontal_bias="0.5"
+			app:imgUrl="@{viewModel.userRepository.googleSignInAccount.photoUrl}"
 			app:layout_constraintEnd_toStartOf="@+id/profile_name"
-			app:layout_constraintTop_toTopOf="parent" />
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:src="@drawable/ic_account_circle" />
 
 		<TextView
 			android:id="@+id/profile_name"
+			style="@style/TextAppearance.KoTiHeating.Title"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
 			android:layout_marginBottom="8dp"
 			android:text="@{viewModel.userRepository.googleName}"
-			tools:text="@string/demo_user_name"
-			style="@style/TextAppearance.KoTiHeating.Title"
-			app:layout_constraintStart_toEndOf="@+id/profile_image_view"
+			app:layout_constraintBottom_toTopOf="@+id/profile_email"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toEndOf="@+id/profile_image_view"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toTopOf="@+id/profile_email" />
+			tools:text="@string/demo_user_name" />
 
 		<TextView
 			android:id="@+id/profile_email"
+			style="@style/TextAppearance.KoTiHeating.Caption"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="8dp"
 			android:layout_marginBottom="8dp"
 			android:text="@{viewModel.userRepository.googleEmail}"
-			tools:text="@string/demo_email"
-			style="@style/TextAppearance.KoTiHeating.Caption"
-			app:layout_constraintStart_toEndOf="@+id/profile_image_view"
+			app:layout_constraintBottom_toTopOf="@+id/login_disclosure"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.465"
-			app:layout_constraintBottom_toTopOf="@+id/login_disclosure"
-			app:layout_constraintTop_toTopOf="parent" />
+			app:layout_constraintStart_toEndOf="@+id/profile_image_view"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="@string/demo_email" />
 
 		<TextView
 			android:id="@+id/login_disclosure"
@@ -79,34 +78,48 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/profile_email" />
 
+		<CheckBox
+			android:id="@+id/login_disclosure_checkbox"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:checked="@={viewModel.eula}"
+			android:paddingTop="8dp"
+			android:paddingBottom="8dp"
+			android:text="@string/privacy_disclosure_checkbox"
+			android:visibility="@{viewModel.userRepository.googleSignInAccount==null}"
+			app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/login_disclosure" />
+
 		<com.google.android.gms.common.SignInButton
 			android:id="@+id/sign_in_button"
 			android:layout_width="match_parent"
 			android:layout_height="52dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
-			android:visibility="@{viewModel.userRepository.googleSignInAccount==null}"
+			android:enabled="@{viewModel.eula}"
 			android:onClickListener="@{() -> view.onGoogleSignIn()}"
-			app:layout_constraintStart_toStartOf="parent"
+			android:visibility="@{viewModel.userRepository.googleSignInAccount==null}"
+			app:layout_constraintBottom_toTopOf="@+id/errorText"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintBottom_toTopOf="@+id/errorText"
+			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/login_disclosure" />
 
 		<TextView
 			android:id="@+id/errorText"
+			style="@style/TextAppearance.KoTiHeating.Caption.Error"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginEnd="8dp"
 			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
 			android:text="@{viewModel.userRepository.googleSignInAccountError}"
 			android:visibility="@{viewModel.userRepository.googleSignInAccountError.length>0}"
-			style="@style/TextAppearance.KoTiHeating.Caption.Error"
-			tools:text="Auth error"
-			app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
 			app:layout_constraintBottom_toTopOf="@+id/sign_out_button"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent" />
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
+			tools:text="Auth error" />
 
 		<Button
 			android:id="@+id/sign_out_button"
@@ -114,13 +127,14 @@
 			android:layout_height="wrap_content"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
-			android:text="@string/sign_out"
 			android:onClick="@{() -> view.onSignOut()}"
+			android:text="@string/sign_out"
 			android:visibility="@{viewModel.userRepository.googleSignInAccount!=null}"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/errorText"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintHorizontal_bias="0.5" />
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/errorText" />
 
 		<TextView
 			android:id="@+id/logout_disclosure"
