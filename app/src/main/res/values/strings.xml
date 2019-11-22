@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">>
 	<string name="demo_user_name">Demo Profile</string>
 	<string name="demo_email">demo@profile.com</string>
-	<string name="sign_out">Sign Out</string>
+	<string name="sign_out">Logout</string>
 	<string name="close">close</string>
 	<string name="init_client_id">950395156002-1emg9edo9g73u6bi1uuiksij6r05ddi6.apps.googleusercontent.com</string>
 	<string name="auth_io_exception">Unable to connect server.</string>
@@ -10,6 +10,11 @@
 	<string name="auth_http_exception">User is not authorized to any heating.</string>
 	<string name="auth_else">Unexpected google services error!</string>
 	<string name="auth_unable_encrypt">Unable to encrypt credentials!</string>
+
+	<string name="privacy_disclosure_login">User key authenticated by user\'s google account will be saved to the app in the secured way after signing in. \n\n
+	This will ensure that user will stay logged to the heating server from the device until the logout button will be pressed (or until app is uninstalled). </string>
+
+	<string name="privacy_disclosure_logout">User will clean saved user key stored in the app by pressing logout button.</string>
 
 	<string name="text_status_view_monday">Mo</string>
 	<string name="text_status_view_tuesday">Tu</string>

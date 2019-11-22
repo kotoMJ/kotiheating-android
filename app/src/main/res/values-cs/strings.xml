@@ -11,6 +11,11 @@
 	<string name="auth_else">Neočekávaná chyba google služeb!</string>
 	<string name="auth_unable_encrypt">Chyba čtení přihlašovacích údajů!</string>
 
+	<string name="privacy_disclosure_login">Aplikace po přihlášení uloží uživatelský klíč autorizovaný google účtem do telefonu v zabezpečené formě.
+	Toto zaručí, že uživatel zůstane přihlášen k serveru topení dokud nestiskne tlačítko odhlásit, nebo dokud neodinstaluje aplikaci</string>
+
+	<string name="privacy_disclosure_logout">Siskem tlačítka odhlásit dojde k vymazání uloženého uživatelského klíče s aplikace.</string>
+
 	<string name="text_status_view_monday">Po</string>
 	<string name="text_status_view_tuesday">Út</string>
 	<string name="text_status_view_wednesday">St</string>

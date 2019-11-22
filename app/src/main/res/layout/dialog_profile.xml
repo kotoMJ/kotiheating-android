@@ -60,7 +60,24 @@
 			app:layout_constraintStart_toEndOf="@+id/profile_image_view"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.465"
-			app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toTopOf="@+id/sign_in_button" />
+			app:layout_constraintBottom_toTopOf="@+id/login_disclosure"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<TextView
+			android:id="@+id/login_disclosure"
+			style="@style/TextAppearance.KoTiHeating.Subhead"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="8dp"
+			android:layout_marginStart="8dp"
+			android:paddingTop="8dp"
+			android:paddingBottom="8dp"
+			android:text="@string/privacy_disclosure_login"
+			android:visibility="@{viewModel.userRepository.googleSignInAccount==null}"
+			app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/profile_email" />
 
 		<com.google.android.gms.common.SignInButton
 			android:id="@+id/sign_in_button"
@@ -74,7 +91,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.5"
 			app:layout_constraintBottom_toTopOf="@+id/errorText"
-			app:layout_constraintTop_toBottomOf="@+id/profile_image_view" />
+			app:layout_constraintTop_toBottomOf="@+id/login_disclosure" />
 
 		<TextView
 			android:id="@+id/errorText"
@@ -104,6 +121,21 @@
 			app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/errorText"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintHorizontal_bias="0.5" />
+
+		<TextView
+			android:id="@+id/logout_disclosure"
+			style="@style/TextAppearance.KoTiHeating.Subhead"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
+			android:paddingTop="8dp"
+			android:paddingBottom="8dp"
+			android:text="@string/privacy_disclosure_logout"
+			android:visibility="@{viewModel.userRepository.googleSignInAccount!=null}"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/sign_out_button" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
