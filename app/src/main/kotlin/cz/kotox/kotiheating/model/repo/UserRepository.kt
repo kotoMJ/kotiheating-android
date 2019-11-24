@@ -162,7 +162,6 @@ class UserRepository : BaseRepository() {
 		// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
 		val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 			.requestIdToken(application.getString(R.string.init_client_id))
-			.requestProfile()
 			.requestEmail()
 			.build()
 
