@@ -16,7 +16,7 @@
 
 	<string name="privacy_disclosure_logout">Siskem tlačítka odhlásit dojde k vymazání uloženého uživatelského klíče s aplikace.</string>
 
-	<string name="privacy_disclosure_checkbox">Zaškrtnutím checkboxu souhlasíte s předáním svého google emailu a profilu na server topení současně s přihlášením pro účely ověření identity.</string>
+	<string name="privacy_disclosure_checkbox">Zaškrtnutím checkboxu souhlasíte s předáním svého google emailu na server topení současně s přihlášením pro účely ověření identity.</string>
 
 
 	<string name="text_status_view_monday">Po</string>
