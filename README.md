@@ -9,10 +9,4 @@ Android client for kotiheating-arduino
 ![RemoteControlQuickOption](./extras/screens/kh_quick_option.png "RemoteControlQuickOption") &nbsp;
 ![RemoteControlUser](./extras/screens/kh_user.png "RemoteControlUser")&nbsp;<br/><br/>
 
-
-#Privacy policy howto
-https://play.google.com/about/privacy-security-deception/user-data/#!?zippy_activeEl=personal-sensitive#personal-sensitive
-
-
-#Privacy policy for app
-https://jenicek.dev/kotiheat/kotiheat-privacy-policy/
+# https://jenicek.dev/kotiheat/
